@@ -7,12 +7,12 @@ open Printf
 let debugmode = ref false;;
 let verbosemode = ref false;;
 
-(* Nom du fichier source à lire *)
 
-let srcfile = ref stdin;;
+(* Par défaut on initialise sur le flux standard, on le remplacera ensuite par le fichier que l'on aura ouvert *)
+let srcfile = ref stdin;; (* Type in_channel *)
 
 let getsrcfile filename =
-  (* Lis le fichier source passé en argument anonyme *)
+  (* Lis le fichier source passé en argument anonyme et l'ouvre comme flux *)
   srcfile := open_in filename
 ;;
 
