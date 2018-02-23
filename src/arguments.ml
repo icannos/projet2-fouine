@@ -29,6 +29,6 @@ let optlist =
 ;;
 
 (* Message de doc  *)
-let usage = "Interpreter Fouine -- Edwige Cyffers & Maxime";;
+let usage = "Interpreter Fouine -- Edwige Cyffers & Maxime Darrin";;
 
 
