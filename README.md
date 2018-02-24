@@ -28,3 +28,9 @@ https://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html#TYPEin_channe
 Quelques explications sur le module qui gère les arguments passés en CLI (voir notamment les arguments anonymes ie sans mots clefs. On s'en sert pour passer le chemin du fichier source à lire)
 http://scylardor.fr/2013/10/04/ocaml-parser-les-arguments-dun-programme-avec-le-module-arg/
 http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
+
+
+#### Scripts
+
+- `./auto_test.sh` Effectuera l'ensemble des tests situés dans le dossier `tests/`. Il effectue un `diff` sur les sorties des scripts exécutés par `fouine` et par `ocaml` lui même. La définition de `prInt` est ajoutée à la volé lors du passage du fichier à OCaml.
+- `./comp.sh` Permet d'exécuter un script .ml avec `OCaml` et `fouine`, de la même manière que pour `./auto_test.sh` la définition de `prInt` est ajoutée à la volée pour l'exécution par OCaml. Il affiche les 2 sorties de manière distincte.   
