@@ -37,5 +37,6 @@ expression:			    /* règles de grammaire pour les expressions */
   | expression PLUS expression          { Add($1,$3) }
   | expression TIMES expression         { Mul($1,$3) }
   | expression MOINS expression         { Sou($1,$3) }
+  | MOINS expression                    { Sou( Const(0), $2) }
 ;
 
