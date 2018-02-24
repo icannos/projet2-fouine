@@ -3,6 +3,7 @@ type expr =
     Const of int
   | Add of expr*expr
   | Mul of expr*expr
+  | Sou of expr*expr
 
 
 
@@ -22,11 +23,13 @@ let rec affiche_expr e =
   | Const k -> print_int k
   | Add(e1,e2) -> aff_aux "Add(" e1 e2
   | Mul(e1,e2) -> aff_aux "Mul(" e1 e2
+  | Sou(e1,e2) -> aff_aux "Sou(" e1 e2
 
 (* sémantique opérationnelle à grands pas *)
 let rec eval = function
   | Const k -> k
   | Add(e1,e2) -> (eval e1) + (eval e2)
   | Mul(e1,e2) -> (eval e1) * (eval e2)
+  | Sou(e1,e2) -> (eval e1) - (eval e2)
 
   

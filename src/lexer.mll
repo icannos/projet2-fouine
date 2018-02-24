@@ -13,6 +13,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '\n'            { EOL }
   | '+'             { PLUS }
   | '*'             { TIMES }
+  | '-'             { MOINS }
   | '('             { LPAREN }
   | ')'             { RPAREN }
   | ['0'-'9']+ as s { INT (int_of_string s) }

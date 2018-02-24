@@ -8,12 +8,13 @@ open Expr   (* rappel: dans expr.ml:
 /* description des lexèmes, ceux-ci sont décrits (par vous) dans lexer.mll */
 
 %token <int> INT       /* le lexème INT a un attribut entier */
-%token PLUS TIMES 
+%token PLUS TIMES MOINS
 %token LPAREN RPAREN
 %token EOL             /* retour à la ligne */
 
 
 %left PLUS   /* associativité gauche: a+b+c, c'est (a+b)+c */
+%left MOINS
 %left TIMES
 
 
@@ -35,5 +36,6 @@ expression:			    /* règles de grammaire pour les expressions */
   | LPAREN expression RPAREN           { $2 } /* on récupère le deuxième élément */
   | expression PLUS expression          { Add($1,$3) }
   | expression TIMES expression         { Mul($1,$3) }
+  | expression MOINS expression         { Sou($1,$3) }
 ;
 
