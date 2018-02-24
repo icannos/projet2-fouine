@@ -14,7 +14,12 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '+'             { PLUS }
   | '*'             { TIMES }
   | '-'             { MOINS }
+  | '/'             { DIV }
   | '('             { LPAREN }
   | ')'             { RPAREN }
+  | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
+  | "in"            { IN }
+  | '='             { EGAL }
   | ['0'-'9']+ as s { INT (int_of_string s) }
+  | ['a'-'z']+ as s { NOM (s) }
   | eof             { raise Eof } 

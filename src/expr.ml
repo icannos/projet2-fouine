@@ -4,6 +4,7 @@ type expr =
   | Add of expr*expr
   | Mul of expr*expr
   | Sou of expr*expr
+  | Div of expr*expr
 
 
 
@@ -24,6 +25,7 @@ let rec affiche_expr e =
   | Add(e1,e2) -> aff_aux "Add(" e1 e2
   | Mul(e1,e2) -> aff_aux "Mul(" e1 e2
   | Sou(e1,e2) -> aff_aux "Sou(" e1 e2
+  | Div(e1,e2) -> aff_aux "Div(" e1 e2
 
 (* sémantique opérationnelle à grands pas *)
 let rec eval = function
@@ -31,5 +33,6 @@ let rec eval = function
   | Add(e1,e2) -> (eval e1) + (eval e2)
   | Mul(e1,e2) -> (eval e1) * (eval e2)
   | Sou(e1,e2) -> (eval e1) - (eval e2)
+  | Div(e1,e2) -> (eval e1) / (eval e2)
 
   
