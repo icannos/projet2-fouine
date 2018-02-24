@@ -4,7 +4,7 @@
 
 output_fouine=$( ./bin/fouine $1 )
 
-# On ajoute à la volé la définition de prInt pour qu' OCaml ne râle pas
+# On ajoute à la volée la définition de prInt pour qu' OCaml ne râle pas
 output_ocaml=$(ocaml <(echo "let prInt x = print_int x;print_newline(); x;;" ; cat $1 ))
 
 printf "Fouine: \n"

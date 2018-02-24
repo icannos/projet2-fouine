@@ -13,7 +13,7 @@ do
 	printf "%10s \n"
 
 		# On pipe les sorties des deux exécutions sur le diff
-		# On ajoute à la volé la définition de prInt pour qu' OCaml ne râle pas
+		# On ajoute à la volée la définition de prInt pour qu' OCaml ne râle pas
 		output=$(diff <( ./bin/fouine $tests_dir/$test ) <( ocaml <(echo "let prInt x = print_int x;print_newline(); x;;" ; cat $tests_dir/$test) ) )
 
 		# on affiche ok s'il n'y a pas de problèmes, sinon on affiche la sortie du diff.

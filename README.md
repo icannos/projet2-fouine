@@ -32,5 +32,5 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 
 #### Scripts
 
-- `./auto_test.sh` Effectuera l'ensemble des tests situés dans le dossier `tests/`. Il effectue un `diff` sur les sorties des scripts exécutés par `fouine` et par `ocaml` lui même. La définition de `prInt` est ajoutée à la volé lors du passage du fichier à OCaml.
+- `./auto_test.sh` Effectuera l'ensemble des tests situés dans le dossier `tests/`. Il effectue un `diff` sur les sorties des scripts exécutés par `fouine` et par `ocaml` lui même. La définition de `prInt` est ajoutée à la volée lors du passage du fichier à OCaml.
 - `./comp.sh` Permet d'exécuter un script .ml avec `OCaml` et `fouine`, de la même manière que pour `./auto_test.sh` la définition de `prInt` est ajoutée à la volée pour l'exécution par OCaml. Il affiche les 2 sorties de manière distincte.   

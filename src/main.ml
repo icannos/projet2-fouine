@@ -10,15 +10,15 @@ let interpreter () =
   (* Arg.parse List -> (anon_arg string -> ()) -> in_channel*)
   Arg.parse optlist getsrcfile usage;
 
-  (* On  initialise le lexeur et le lexeur en lui donnant notre fichier comme flux entrant. Voir Arguments.ml pour les déclarations
+  (* On  initialise le parseur et le lexeur en lui donnant notre fichier comme flux entrant. Voir Arguments.ml pour les déclarations
  *)
   let lexbuf = Lexing.from_channel (!srcfile) in
   let parse () = Parser.main Lexer.token lexbuf in
 
-  flush stdout
+  flush stdout  (*parse génère du texte, qui est affiché par cette commande ?*)
 ;;
 
 
 
-(* On  exécute l'interpertrer *)
+(* On  exécute l'interpréteur *)
 let _ = interpreter ();;
