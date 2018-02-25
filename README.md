@@ -33,4 +33,32 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 #### Scripts
 
 - `./auto_test.sh` Effectuera l'ensemble des tests situés dans le dossier `tests/`. Il effectue un `diff` sur les sorties des scripts exécutés par `fouine` et par `ocaml` lui même. La définition de `prInt` est ajoutée à la volée lors du passage du fichier à OCaml.
-- `./comp.sh` Permet d'exécuter un script .ml avec `OCaml` et `fouine`, de la même manière que pour `./auto_test.sh` la définition de `prInt` est ajoutée à la volée pour l'exécution par OCaml. Il affiche les 2 sorties de manière distincte.   
+- `./comp.sh` Permet d'exécuter un script .ml avec `OCaml` et `fouine`, de la même manière que pour `./auto_test.sh` la définition de `prInt` est ajoutée à la volée pour l'exécution par OCaml. Il affiche les 2 sorties de manière distincte. 
+
+
+#### Petit tour d'horizon
+- pour le main : on a ajouté un fichier arguments pour gérer les options plus proprement. Par défaut srcfile vaut stdin, ce qui permet de garder la syntaxe habituelle possible :)
+- pour le lexer : a priori pas de difficulté particulière, je pourrais toujours faire cette partie (donc j'ai mis plein de trucs qui ne sont pas faits ailleurs)
+- pour le parseur : il faut construire l'arbre à partir du résultat du lexeur.
+- pour expr : c'est là qu'on utilise l'arbre qu'on a construit. Contient les définitions des value et des expr ainsi que les fonctions d'évaluations et d'affichage : ne serait-ce pas judicieux de scinder les deux ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

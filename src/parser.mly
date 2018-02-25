@@ -1,17 +1,18 @@
 %{
 (* --- préambule: ici du code Caml --- *)
 
-open Expr   (* rappel: dans expr.ml: 
-             type expr = Const of int | Add of expr*expr | Mull of expr*expr *)
+open Expr   
 
 %}
-/* description des lexèmes, ceux-ci sont décrits (par vous) dans lexer.mll */
+/* description des lexèmes, ceux-ci sont décrits dans lexer.mll */
 
 %token <int> INT       /* le lexème INT a un attribut entier */
 %token PLUS TIMES MOINS DIV
-%token EGAL
+%token EGAL NONEGAL INF_S INF_L SUP_S SUP_L
 %token LPAREN RPAREN
 %token LET IN
+%token FUN DONNE
+%token IF THEN ELSE
 %token <string> NOM
 %token EOL             /* retour à la ligne */
 
@@ -32,17 +33,30 @@ open Expr   (* rappel: dans expr.ml:
                             /* à droite, les valeurs associées */
 
 
-main:                       /* <- le point d'entrée (cf. + haut, "start") */
-    expression EOL                { $1 }  /* on veut reconnaître une "expression" */
+main:                       
+    expression EOL                { $1 } 
 ;
 expression:			    /* règles de grammaire pour les expressions */
-  | INT                                         { Const $1 }
-  | LPAREN expression RPAREN                    { $2 } /* on récupère le deuxième élément */
-  | expression PLUS expression                  { Add($1,$3) }
-  | expression TIMES expression                 { Mul($1,$3) }
-  | expression MOINS expression                 { Sou($1,$3) }
-  | MOINS expression                            { Sou( Const(0), $2) }
-  | expression DIV expression                   { Div($1,$3) }/*en fait c'est non demandé, je le vire peut être */
-/*  | LET NOM EGAL expression IN expression       {à remplir, il faut remplacer les occurrences, comment on fait ça... }*/
+  | INT                                           { Const $1 }
+  | LPAREN expression RPAREN                      { $2 }
+
+  
+  | expression PLUS expression                    { Add($1,$3) }
+  | expression TIMES expression                   { Mul($1,$3) }
+  | expression MOINS expression                   { Sou($1,$3) }
+  | MOINS expression                              { Sou( Const(0), $2) }
+  | expression DIV expression                     { Div($1,$3) }
+
+  
+  | LET NOM EGAL expression IN expression         { Let($2, $4, $6) }
+  | IF expression THEN expression ELSE expression { Cond($2, $4, S6) }
+
+  | expression EGAL expression                    { Testeq($1,$3) }
+  | expression NONEGAL expression                 { Testneq($1,$3) }
+  | expression INF_S expression                   { Testlt($1,$3) }
+  | expression SUP_S expression                   { Testgt($1,$3) }
+  | expression INF_L expression                   { Testlet($1,$3) }
+  | expression SUP_L expression                   { Testget($1,$3) }
+
 ;
 

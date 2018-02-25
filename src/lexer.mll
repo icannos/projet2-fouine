@@ -10,6 +10,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
                                    (* lexbuf: argument implicite
                                       associé au tampon où sont
                                       lus les caractères *)
+    (*token de base*)
   | '\n'            { EOL }
   | '+'             { PLUS }
   | '*'             { TIMES }
@@ -17,9 +18,24 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '/'             { DIV }
   | '('             { LPAREN }
   | ')'             { RPAREN }
+
+    (*mots-clés*)
   | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
   | "in"            { IN }
+  | "if"            { IF }
+  | "then"          { THEN }
+  | "else"          { ELSE }
+
+  | "fun"           { FUN }
+  | "->"            { DONNE }
+
+  (*opérateurs logiques*)
+  | '<'             { INF_S }
+  | '>'             { SUP_S }
+  | "<="            { INF_L }
+  | ">="            { SUP_L }
   | '='             { EGAL }
+  | "<>"            { NONEGAL }
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z']+ as s { NOM (s) }
   | eof             { raise Eof } 
