@@ -1,5 +1,7 @@
 
-open Arguments
+open Arguments;;
+open Expr;;
+open Parser;;
 
 
 
@@ -15,9 +17,10 @@ let interpreter () =
   let lexbuf = Lexing.from_channel (!srcfile) in
   let parse () = Parser.main Lexer.token lexbuf in
 
-  flush stdout  (*parse génère du texte, qui est affiché par cette commande ?*)
-;;
+  let ast = parse () in eval ast ( Environnement.empty);
 
+  flush stdout;  (*parse génère du texte, qui est affiché par cette commande ?*)
+;;
 
 
 (* On  exécute l'interpréteur *)
