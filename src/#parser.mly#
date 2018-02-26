@@ -1,15 +1,15 @@
 %{
-(* --- préambule: ici du code Caml --- *)
+(* --- prÃ©ambule: ici du code Caml --- *)
 
 open Expr   
 
 %}
-/* description des lexèmes, ceux-ci sont décrits dans lexer.mll */
+/* description des lexÃ¨mes, ceux-ci sont dÃ©crits dans lexer.mll */
 
 %token EOF
 %token EOL
 
-%token <int> INT       /* le lexème INT a un attribut entier */
+%token <int> INT       /* le lexÃ¨me INT a un attribut entier */
 %token PLUS TIMES MOINS DIV
 %token EGAL /* NONEGAL INF_S INF_L SUP_S SUP_L*/
 %token LPAREN RPAREN
@@ -19,7 +19,7 @@ open Expr
 %token <string> NOM
 
 %left EGAL
-%left PLUS   /* associativité gauche: a+b+c, c'est (a+b)+c */
+%left PLUS   /* associativitÃ© gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
 %left TIMES
 %left DIV
@@ -28,19 +28,19 @@ open Expr
 
 
 
-%start main             /* "start" signale le point d'entrée: */
-                        /* c'est ici main, qui est défini plus bas */
-%type <Expr.expr> main     /* on _doit_ donner le type associé à main, qui est le point d'entrée */
+%start main             /* "start" signale le point d'entrÃ©e: */
+                        /* c'est ici main, qui est dÃ©fini plus bas */
+%type <Expr.expr> main     /* on _doit_ donner le type associÃ© Ã  main, qui est le point d'entrÃ©e */
 
 %%
-    /* --- début des règles de grammaire --- */
-                            /* à droite, les valeurs associées */
+    /* --- dÃ©but des rÃ¨gles de grammaire --- */
+                            /* Ã  droite, les valeurs associÃ©es */
 
 
 main:                       
     expression EOF               { $1 } 
 ;
-expression:			    /* règles de grammaire pour les expressions */
+expression:			    /* rÃ¨gles de grammaire pour les expressions */
   | INT                                           { Const $1 }
   | LPAREN expression RPAREN                      { $2 }
 

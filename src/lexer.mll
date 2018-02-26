@@ -30,10 +30,10 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
     (*mots-clés*)
   | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
   | "in"            { IN }
-(*  | "if"            { IF }
+  | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
-
+(*
   | "fun"           { FUN }
   | "->"            { DONNE }
 

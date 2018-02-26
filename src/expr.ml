@@ -92,10 +92,10 @@ let rec eval e env  = match e  with
   | Div(e1,e2) -> (eval e1 env) / (eval e2 env)
   | Let(nom, e1, e2) -> let envir = Environnement.add nom (eval e1 env) env in
                         eval e2 envir
- (* | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+  | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
  and evalb e env = match e with
-  | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)
-  | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)
+   | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
+ (* | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)
   | Testlt(e1,e2) -> (eval e1 env) < (eval e2 env)
   | Testgt(e1,e2) -> (eval e1 env) > (eval e2 env)
   | Testlet(e1,e2) -> (eval e1 env) <= (eval e2 env)
