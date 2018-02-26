@@ -30,7 +30,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
     (*mots-clés*)
   | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
   | "in"            { IN }
-  | "if"            { IF }
+(*  | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
 
@@ -41,9 +41,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '<'             { INF_S }
   | '>'             { SUP_S }
   | "<="            { INF_L }
-  | ">="            { SUP_L }
+  | ">="            { SUP_L }*)
   | '='             { EGAL }
-  | "<>"            { NONEGAL }
+  (* | "<>"            { NONEGAL }*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z']+ as s { NOM (s) }
   
