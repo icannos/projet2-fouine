@@ -1,0 +1,4 @@
+
+let line_number = ref 0;;
+
+let incr_line () = line_number := !line_number + 1;;

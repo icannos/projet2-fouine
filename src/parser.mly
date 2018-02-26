@@ -6,6 +6,9 @@ open Expr
 %}
 /* description des lexèmes, ceux-ci sont décrits dans lexer.mll */
 
+%token EOF
+%token EOL
+
 %token <int> INT       /* le lexème INT a un attribut entier */
 %token PLUS TIMES MOINS DIV
 %token EGAL NONEGAL INF_S INF_L SUP_S SUP_L
@@ -14,7 +17,6 @@ open Expr
 %token FUN DONNE
 %token IF THEN ELSE
 %token <string> NOM
-%token EOL             /* retour à la ligne */
 
 
 %left PLUS   /* associativité gauche: a+b+c, c'est (a+b)+c */
@@ -34,7 +36,7 @@ open Expr
 
 
 main:                       
-    expression EOL                { $1 } 
+    expression EOF               { $1 } 
 ;
 expression:			    /* règles de grammaire pour les expressions */
   | INT                                           { Const $1 }
@@ -49,7 +51,7 @@ expression:			    /* règles de grammaire pour les expressions */
 
   
   | LET NOM EGAL expression IN expression         { Let($2, $4, $6) }
-  | IF expression THEN expression ELSE expression { Cond($2, $4, S6) }
+  | IF expression THEN expression ELSE expression { Cond($2, $4, $6) } /* Attention $ pas S :p */
 
   | expression EGAL expression                    { Testeq($1,$3) }
   | expression NONEGAL expression                 { Testneq($1,$3) }
@@ -57,6 +59,8 @@ expression:			    /* règles de grammaire pour les expressions */
   | expression SUP_S expression                   { Testgt($1,$3) }
   | expression INF_L expression                   { Testlet($1,$3) }
   | expression SUP_L expression                   { Testget($1,$3) }
+
+  /* Errors Managements */
 
 ;
 

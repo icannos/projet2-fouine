@@ -1,7 +1,8 @@
 {
-  open Parser;;        (* le type "token" est défini dans parser.mli *)
+  open Errmgr;;
+  open Parser;;     (* le type "token" est défini dans parser.mli *)
 (* ce n'est pas à vous d'écrire ce fichier, il est engendré automatiquement *)
-exception Eof;;
+(* exception Eof;; *)
 }
 
 rule token = parse    (* la "fonction" aussi s'appelle token .. *)
@@ -10,8 +11,15 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
                                    (* lexbuf: argument implicite
                                       associé au tampon où sont
                                       lus les caractères *)
-    (*token de base*)
+
+
+  (* File/errors management  *)
+  | eof             { EOF }
   | '\n'            { EOL }
+  
+
+  (* Arith *)
+
   | '+'             { PLUS }
   | '*'             { TIMES }
   | '-'             { MOINS }
@@ -38,4 +46,4 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "<>"            { NONEGAL }
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z']+ as s { NOM (s) }
-  | eof             { raise Eof } 
+  
