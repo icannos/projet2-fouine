@@ -30,6 +30,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
     (*mots-clés*)
   | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
   | "in"            { IN }
+  | ";;"	    { IN }
   | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
