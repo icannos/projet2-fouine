@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Exécute en parallèle sur Fouine et OCaml le script .ml passé en argument
 

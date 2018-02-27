@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 #
 # Ce script exécute parallèlement les scripts .ml avec fouine et ocaml puis effectue un diff des sorties
