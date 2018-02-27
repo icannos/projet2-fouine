@@ -20,7 +20,7 @@ let interpreter () =
 
   let ast = parse () in eval ast ( Environnement.empty);
 
-  flush stdout;  (*parse génère du texte, qui est affiché par cette commande ?*)
+  flush stdout; 
 ;;
 
 

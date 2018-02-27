@@ -11,7 +11,7 @@ open Expr
 
 %token <int> INT       /* le lexème INT a un attribut entier */
 %token PLUS TIMES MOINS DIV
-%token EGAL /* NONEGAL INF_S INF_L SUP_S SUP_L*/
+%token EGAL  NONEGAL INF_S INF_L SUP_S SUP_L
 %token LPAREN RPAREN SEMICOL
 %token LET IN
 /* %token FUN DONNE */
@@ -21,6 +21,11 @@ open Expr
 
 
 %left EGAL
+%left NONEGAL
+%left INF_S
+%left INF_L
+%left SUP_S
+%left SUP_L
 %left SEMICOL
 %left PLUS   /* associativité gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
@@ -64,11 +69,11 @@ expression:/* règles de grammaire pour les expressions */
   | IF expression THEN expression ELSE expression { Cond($2, $4, $6) }
 
   | expression EGAL expression                    { Testeq($1,$3) }
-/*  | expression NONEGAL expression                 { Testneq($1,$3) }
+  | expression NONEGAL expression                 { Testneq($1,$3) }
   | expression INF_S expression                   { Testlt($1,$3) }
   | expression SUP_S expression                   { Testgt($1,$3) }
   | expression INF_L expression                   { Testlet($1,$3) }
-  | expression SUP_L expression                   { Testget($1,$3) } */
+  | expression SUP_L expression                   { Testget($1,$3) }
 
   /* Errors Managements */
 

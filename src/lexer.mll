@@ -41,14 +41,14 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
 (*
   | "fun"           { FUN }
   | "->"            { DONNE }
-
+ *)
   (*opérateurs logiques*)
   | '<'             { INF_S }
   | '>'             { SUP_S }
   | "<="            { INF_L }
-  | ">="            { SUP_L }*)
+  | ">="            { SUP_L }
   | '='             { EGAL }
-  (* | "<>"            { NONEGAL }*)
+  | "<>"            { NONEGAL }
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z' '_']+ as s { NOM (s) }
   
