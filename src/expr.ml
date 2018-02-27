@@ -82,6 +82,8 @@ let rec affiche_expr e =
 let debug e env =
   if !debugmode then (print_env env);; 
 
+
+
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
 let rec eval e env  = match e  with
@@ -93,19 +95,20 @@ let rec eval e env  = match e  with
   | Mul(e1,e2) ->debug e env; (eval e1 env) * (eval e2 env)
   | Sou(e1,e2) ->debug e env; (eval e1 env) - (eval e2 env)
   | Div(e1,e2) ->debug e env; (eval e1 env) / (eval e2 env)
-  | Let(nom, e1, e2) ->debug e env;
-                       begin
-                         match nom with
-                         |"_" -> eval e1 env; eval e2 env
-                         |_ -> let envir = Environnement.add nom (eval e1 env) env in eval e2 envir
-                       end
+  | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
   | Cond(booleen,e1,e2) ->debug e env; if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
  and evalb e env = match e with
-   | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
+  | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
   | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)
   | Testlt(e1,e2) -> (eval e1 env) < (eval e2 env)
   | Testgt(e1,e2) -> (eval e1 env) > (eval e2 env)
   | Testlet(e1,e2) -> (eval e1 env) <= (eval e2 env)
   | Testget(e1,e2) -> (eval e1 env) >= (eval e2 env)
 
+  and evallet e nom e1 e2 env = debug e env;
+                       begin
+                         match nom with
+                         |"_" -> eval e1 env; eval e2 env
+                         |_ -> let envir = Environnement.add nom (eval e1 env) env in eval e2 envir
+                       end;;
   
