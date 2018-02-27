@@ -1,6 +1,7 @@
 
 open Arguments;;
 open Expr;;
+open Env;;
 open Parser;;
 
 

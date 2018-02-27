@@ -6,7 +6,7 @@
 }
 
 rule token = parse    (* la "fonction" aussi s'appelle token .. *)
-  | [' ' '\t']     { token lexbuf }    (* on saute les blancs et les tabulations *)
+  | [' ' '\t' '\n']     { token lexbuf }    (* on saute les blancs et les tabulations *)
  	     	   	           (* token: appel récursif *)
                                    (* lexbuf: argument implicite
                                       associé au tampon où sont
@@ -16,6 +16,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   (* File/errors management  *)
   | eof             { EOF }
   | '\n'            { EOL }
+
+  (* Built in *)
+  |"prInt"	    { PRINT }
   
 
   (* Arith *)
@@ -31,6 +34,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
   | "in"            { IN }
   | ";;"	    { IN }
+  | ';'		    { SEMICOL }
   | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
@@ -46,5 +50,5 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '='             { EGAL }
   (* | "<>"            { NONEGAL }*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
-  | ['a'-'z']+ as s { NOM (s) }
+  | ['a'-'z' '_']+ as s { NOM (s) }
   

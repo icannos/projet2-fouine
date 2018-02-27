@@ -1,7 +1,9 @@
 (* un type pour toutes les expressions qu'on manipule *)
 
+open Env;;
+open Arguments;;
+open Display;;
 
-type name = String.t;;
 
 type expr =
 
@@ -12,9 +14,15 @@ type expr =
   | Sou of expr*expr
   | Div of expr*expr
 
+  (* Seq *)
+  |Seq of expr*expr
+
   (* Binding constr  *)
   | Let of name * expr * expr
-  | Name of name
+  | Identifier of name
+
+  (* Built in *)
+  |PrintInt of expr
 
 
   (* Tests Constructor *)
@@ -27,18 +35,6 @@ type expr =
   | Testlet of expr * expr
   | Testget of expr * expr
 ;;
-
-
- module Environnement = Map.Make(String);; (*création des nos superbes environnements :dire que c'est une string doit suffire, un raffinement possible en définissant le type précis des noms de variables*)
-         
- (*cette double définition ne marche pas, or je ne vois pas comment supprimer cette intrication*)
- (*je crois qu'en fait value ne doit être que int, et qu'il faut gérer la cloture autrement *) 
-type value =
-  | Int of int
-       (*  | Cloture of fun * env *) (*J'ai commenté ce morceau car en vrai je ne sais pas si le type fun est approprié ce sera une question à poser vendredi *)
-(*qui sont soit entières soit des fonctions, définies avec leur vieil environnement*)
-;;
-type env = value Environnement.t;; (*ces environnements contiennent des value*)
 
                  
 (* fonction d'affichage *)
@@ -53,6 +49,7 @@ let rec affiche_expr e =
       end
   in
   match e with
+  | Identifier s -> ps s
   | Const k -> print_int k
   | Add(e1,e2) -> aff_aux "Add(" e1 e2
   | Mul(e1,e2) -> aff_aux "Mul(" e1 e2
@@ -80,19 +77,29 @@ let rec affiche_expr e =
    | Testgt(e1,e2) -> aff_aux "Testgt(" e1 e2
    | Testlet(e1,e2) -> aff_aux "Testlet(" e1 e2
    | Testget(e1,e2) -> aff_aux "Testget(" e1 e2
+;;
 
+let debug e env =
+  if !debugmode then (print_env env);; 
 
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
 let rec eval e env  = match e  with
-  | Const k -> k
-  | Add(e1,e2) -> (eval e1 env) + (eval e2 env)
-  | Mul(e1,e2) -> (eval e1 env) * (eval e2 env)
-  | Sou(e1,e2) -> (eval e1 env) - (eval e2 env)
-  | Div(e1,e2) -> (eval e1 env) / (eval e2 env)
-  | Let(nom, e1, e2) -> let envir = Environnement.add nom (eval e1 env) env in
-                        eval e2 envir
-  | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+  | Const k -> debug e env; k
+  | Identifier k ->debug e env; Environnement.find k env
+  | PrintInt e -> prInt (eval e env)
+                  (* | Seq(e1,e2) -> eval e1 env; *)
+  | Add(e1,e2) ->debug e env; (eval e1 env) + (eval e2 env)
+  | Mul(e1,e2) ->debug e env; (eval e1 env) * (eval e2 env)
+  | Sou(e1,e2) ->debug e env; (eval e1 env) - (eval e2 env)
+  | Div(e1,e2) ->debug e env; (eval e1 env) / (eval e2 env)
+  | Let(nom, e1, e2) ->debug e env;
+                       begin
+                         match nom with
+                         |"_" -> eval e1 env; eval e2 env
+                         |_ -> let envir = Environnement.add nom (eval e1 env) env in eval e2 envir
+                       end
+  | Cond(booleen,e1,e2) ->debug e env; if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
  and evalb e env = match e with
    | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
  (* | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)

@@ -2,7 +2,9 @@
 
 # Exécute en parallèle sur Fouine et OCaml le script .ml passé en argument
 
-output_fouine=$( ./bin/fouine $1 )
+ROOTPROJECT=$(dirname ${BASH_SOURCE[0]})
+
+output_fouine=$( $ROOTPROJECT/bin/fouine $1 )
 
 # On ajoute à la volée la définition de prInt pour qu' OCaml ne râle pas
 output_ocaml=$(ocaml <(echo "let prInt x = print_int x;print_newline(); x;;" ; cat $1 ))

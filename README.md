@@ -33,7 +33,7 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 #### Scripts
 
 - `./auto_test.sh` Effectuera l'ensemble des tests situés dans le dossier `tests/`. Il effectue un `diff` sur les sorties des scripts exécutés par `fouine` et par `ocaml` lui même. La définition de `prInt` est ajoutée à la volée lors du passage du fichier à OCaml.
-- `./comp.sh` Permet d'exécuter un script .ml avec `OCaml` et `fouine`, de la même manière que pour `./auto_test.sh` la définition de `prInt` est ajoutée à la volée pour l'exécution par OCaml. Il affiche les 2 sorties de manière distincte. 
+- `./comp.sh` Permet d'exécuter un script .ml avec `OCaml` et `fouine`, de la même manière que pour `./auto_test.sh` la définition de `prInt` est ajoutée à la volée pour l'exécution par OCaml. Il affiche les 2 sorties de manière distincte.
 
 
 #### Petit tour d'horizon
@@ -43,22 +43,13 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 - pour expr : c'est là qu'on utilise l'arbre qu'on a construit. Contient les définitions des value et des expr ainsi que les fonctions d'évaluations et d'affichage : ne serait-ce pas judicieux de scinder les deux ?
 
 
+#### J'ai fait 2-3 trucs
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Un peu de réorganisation (rien de fou)
+- J'ai ajouté une fonction debug dans laquelle on fera ce qu'il faut en fonction du niveau de débuggage voulu, l'idée c'est qu'on la met tout le temps, partout
+- On gère maintenant les let _ = ... in/;;
+- J'ai écrit quelques tests qui fonctionnent correctement
+- J'ai fait la fonction d'affiche de l'environnement
+- A l'avenir il faudra certainement réécrire les opérateurs arithmétiques: puisque eval renverra un truc de type value ie int ou cloture, d'ailleurs on devrait quoi qu'il arrive faire en sorte qu'eval renvoie une cloture (int, env) ou (fun, env): cela permettra de gérer les séquencements plus efficacement je pense
+- Ce serait aussi pas mal d'écrire des fonctions pour chaque cas du matching au lieu d'avoir le code directement dedans
+- J'ai réfléchi à la méthode pour faire les fonctions et les fonctions récursives: ça va bien se passer ;)

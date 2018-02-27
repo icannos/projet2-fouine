@@ -16,7 +16,6 @@ let getsrcfile filename =
   srcfile := open_in filename
 ;;
 
-(* Arguments disponibles : pourquoi autant ?  *)
 
 let optlist =
   [

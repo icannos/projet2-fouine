@@ -1,2 +1,1 @@
-let b = "Hey" in print_string b;;
-prInt 15;;
+let b = 15 in let c = 2 * b in prInt c
