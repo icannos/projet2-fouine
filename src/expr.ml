@@ -22,6 +22,7 @@ type expr =
   | Let of name * expr * expr
   | Identifier of name
   | Fun of name * expr
+  | App of expr * expr
 
   (* Built in *)
   |PrintInt of expr
@@ -65,7 +66,7 @@ let rec affiche_expr e =
 	print_string ", ";
 	affiche_expr e2;
 	print_string ")"
-  | Fun(nom,e) -> aff_aux "Fun(" nom e
+  | Fun(nom,e) -> aff_aux "Fun(" (Identifier nom)  e
         
   | Cond(b,e1,e2) ->
         print_string "Cond(";
@@ -88,6 +89,35 @@ let debug e env =
 
 exception EE of string;;
 
+(* Renvoie les variables libres d'une expression *)
+let rec freevars bindedvars fvars = function
+  |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
+  |Identifier x -> fvars
+  | PrintInt e -> freevars bindedvars fvars e
+  (* | Seq(e1,e2) -> eval e1 env; *)
+
+  | Let(nom, e1, e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
+  | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevars bindedvars fvars booleen) 
+
+  |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr 
+
+
+  | Add(e1,e2) 
+  | Mul(e1,e2) 
+  | Sou(e1,e2) 
+  | Div(e1,e2) 
+  | App(e1, e2)
+  | Testeq(e1,e2) 
+  | Testneq(e1,e2)
+  | Testlt(e1,e2) 
+  | Testgt(e1,e2)
+  | Testlet(e1,e2)
+  | Testget(e1,e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
+;;
+
+ 
+  
+
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
 let rec eval e env  =
@@ -95,30 +125,34 @@ let rec eval e env  =
 
   try
     match e with
-    | Const k -> debug e env; k
+    | Const k -> Int k
     | Identifier k -> Environnement.find k env
-    | PrintInt e -> prInt (eval e env)
+    | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     (* | Seq(e1,e2) -> eval e1 env; *)
-    | Add(e1,e2) -> (eval e1 env) + (eval e2 env)
-    | Mul(e1,e2) -> (eval e1 env) * (eval e2 env)
-    | Sou(e1,e2) -> (eval e1 env) - (eval e2 env)
-    | Div(e1,e2) -> let d = (eval e2 env) in  if (d <> 0) then ( (eval e1 env) / d ) else ( failwith "Div 0" )  
+    | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
+    | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
+    | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
+    | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
     | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
-    | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+    | Cond(booleen,e1,e2) -> let b = (evalb booleen env) in  if b  then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+
+    |Fun(nom, expr) -> Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
+
   with
   | _ -> let start_pos = Parsing.rhs_start_pos 5 in
-         ps "Error at line:"; print_int start_pos.pos_lnum; 0
+         ps "Error at line:"; print_int start_pos.pos_lnum; Int 0
          
  and evalb e env = match e with
-  | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
-  | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)
-  | Testlt(e1,e2) -> (eval e1 env) < (eval e2 env)
-  | Testgt(e1,e2) -> (eval e1 env) > (eval e2 env)
-  | Testlet(e1,e2) -> (eval e1 env) <= (eval e2 env)
-  | Testget(e1,e2) -> (eval e1 env) >= (eval e2 env)
+  | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)  
+  | Testneq(e1,e2) -> safe_op (eval e1 env) (<>) (eval e2 env)
+  | Testlt(e1,e2) ->  safe_op (eval e1 env) (<) (eval e2 env)
+  | Testgt(e1,e2) ->  safe_op (eval e1 env) (>) (eval e2 env)
+  | Testlet(e1,e2) -> safe_op (eval e1 env) (<=) (eval e2 env)
+  | Testget(e1,e2) -> safe_op (eval e1 env) (>=) (eval e2 env)
 
   and evallet e nom e1 e2 env = match nom with
                          |"_" -> eval e1 env; eval e2 env
                          |_ -> let envir = Environnement.add nom (eval e1 env) env in eval e2 envir
+
 ;;
   
