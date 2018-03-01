@@ -24,7 +24,28 @@ type expr =
 
   (* Built in *)
   |PrintInt of expr
-
+Let(nom,e1,e2) ->Let(nom,e1,e2) ->Let(nom,e1,e2) ->
+        print_string "Let(";
+        print_string nom;
+	print_string ", ";
+	affiche_expr e1;
+	print_string ", ";
+	affiche_expr e2;
+	print_string ")"
+        print_string "Let(";
+        print_string nom;
+	print_string ", ";
+	affiche_expr e1;
+	print_string ", ";
+	affiche_expr e2;
+	print_string ")"
+        print_string "Let(";
+        print_string nom;
+	print_string ", ";
+	affiche_expr e1;
+	print_string ", ";
+	affiche_expr e2;
+	print_string ")"
 
   (* Tests Constructor *)
   |Cond of expr * expr * expr
@@ -87,8 +108,8 @@ let debug e env =
 
 
 
-(* sémantique opérationnelle à grands pas *)
-(*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
+(* sÃ©mantique opÃ©rationnelle Ã  grands pas *)
+(*modifions le type de cette fonction, dÃ©sormais eval -> expr -> env -> value*)
 let rec eval e env  = match e  with
   | Const k -> debug e env; k
   | Identifier k ->debug e env; Environnement.find k env
@@ -99,7 +120,8 @@ let rec eval e env  = match e  with
   | Sou(e1,e2) ->debug e env; (eval e1 env) - (eval e2 env)
   | Div(e1,e2) ->debug e env; (eval e1 env) / (eval e2 env)
   | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
-  | Cond(booleen,e1,e2) ->debug e env; if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+  | Fun(nom,e1)->debug e env ;  fun x -> (eval e1 env)
+  | Cond(booleen,e1,e2) ->debug e env; if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gÃ©rer les boolÃ©ens*)
  and evalb e env = match e with
   | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
   | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)

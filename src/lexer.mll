@@ -38,10 +38,10 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
-(*
+
   | "fun"           { FUN }
   | "->"            { DONNE }
- *)
+
   (*opérateurs logiques*)
   | '<'             { INF_S }
   | '>'             { SUP_S }

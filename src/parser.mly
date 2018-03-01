@@ -14,7 +14,7 @@ open Expr
 %token EGAL  NONEGAL INF_S INF_L SUP_S SUP_L
 %token LPAREN RPAREN SEMICOL
 %token LET IN
-/* %token FUN DONNE */
+%token FUN DONNE
 %token IF THEN ELSE 
 %token <string> NOM
 %token PRINT
@@ -33,6 +33,7 @@ open Expr
 %left TIMES
 %left DIV
 %left ELSE
+%right DONNE
 %right IN
 
 
@@ -74,6 +75,8 @@ expression:/* règles de grammaire pour les expressions */
   | expression SUP_S expression                   { Testgt($1,$3) }
   | expression INF_L expression                   { Testlet($1,$3) }
   | expression SUP_L expression                   { Testget($1,$3) }
+
+  | FUN NOM DONNE expression                      { Fun($2, $4) }
 
   /* Errors Managements */
 
