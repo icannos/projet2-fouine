@@ -5,6 +5,7 @@ open Arguments;;
 open Display;;
 
 
+
 type expr =
 
   (* Arith Constr *)
@@ -82,21 +83,29 @@ let rec affiche_expr e =
 let debug e env =
   if !debugmode then (print_env env);; 
 
-
+exception EE of string;;
 
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
-let rec eval e env  = match e  with
-  | Const k -> debug e env; k
-  | Identifier k ->debug e env; Environnement.find k env
-  | PrintInt e -> prInt (eval e env)
-                  (* | Seq(e1,e2) -> eval e1 env; *)
-  | Add(e1,e2) ->debug e env; (eval e1 env) + (eval e2 env)
-  | Mul(e1,e2) ->debug e env; (eval e1 env) * (eval e2 env)
-  | Sou(e1,e2) ->debug e env; (eval e1 env) - (eval e2 env)
-  | Div(e1,e2) ->debug e env; (eval e1 env) / (eval e2 env)
-  | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
-  | Cond(booleen,e1,e2) ->debug e env; if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+let rec eval e env  =
+  debug e env;
+
+  try
+    match e with
+    | Const k -> debug e env; k
+    | Identifier k -> Environnement.find k env
+    | PrintInt e -> prInt (eval e env)
+    (* | Seq(e1,e2) -> eval e1 env; *)
+    | Add(e1,e2) -> (eval e1 env) + (eval e2 env)
+    | Mul(e1,e2) -> (eval e1 env) * (eval e2 env)
+    | Sou(e1,e2) -> (eval e1 env) - (eval e2 env)
+    | Div(e1,e2) -> let d = (eval e2 env) in  if (d <> 0) then ( (eval e1 env) / d ) else ( failwith "Div 0" )  
+    | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
+    | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+  with
+  | _ -> let start_pos = Parsing.rhs_start_pos 5 in
+         ps "Error at line:"; print_int start_pos.pos_lnum; 0
+         
  and evalb e env = match e with
   | Testeq(e1,e2) -> (eval e1 env) = (eval e2 env)  
   | Testneq(e1,e2) -> (eval e1 env) <> (eval e2 env)
@@ -105,10 +114,8 @@ let rec eval e env  = match e  with
   | Testlet(e1,e2) -> (eval e1 env) <= (eval e2 env)
   | Testget(e1,e2) -> (eval e1 env) >= (eval e2 env)
 
-  and evallet e nom e1 e2 env = debug e env;
-                       begin
-                         match nom with
+  and evallet e nom e1 e2 env = match nom with
                          |"_" -> eval e1 env; eval e2 env
                          |_ -> let envir = Environnement.add nom (eval e1 env) env in eval e2 envir
-                       end;;
+;;
   
