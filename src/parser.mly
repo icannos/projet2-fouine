@@ -49,36 +49,42 @@ open Expr
 
 
 main:                       
-    expression EOF               { $1 } 
+    simplexpr EOF               { $1 } 
 ;
-expression:/* règles de grammaire pour les expressions */
-  | NOM	      	     		       	   	  { Identifier $1 }
-  | INT                                           { Const $1 }
-  | LPAREN expression RPAREN                      { $2 }
-  | PRINT expression  				  { PrintInt $2 }
+simplexpr:
 
-  /* | expression SEMICOL expression		  {Seq($1, $3)} */
+  | PRINT simplexpr  				  { PrintInt $2 }
+  | FUN NOM DONNE simplexpr                     { (Fun($2, $4)) }
 
-  | expression PLUS expression                    { Add($1,$3) }
-  | expression TIMES expression                   { Mul($1,$3) }
-  | expression MOINS expression                   { Sou($1,$3) }
-  | MOINS expression                              { Sou( Const(0), $2) }
-  | expression DIV expression                     { Div($1,$3) }
+  /* | simplexpr SEMICOL simplexpr		  {Seq($1, $3)} */
 
-  | LET NOM EGAL expression IN expression         { Let($2, $4, $6) }
-  | LET NOM EGAL expression IN 			  { Let($2, $4, Const 0)}
-  | IF expression THEN expression ELSE expression { Cond($2, $4, $6) }
+  | simplexpr PLUS simplexpr                    { Add($1,$3) }
+  | simplexpr TIMES simplexpr                   { Mul($1,$3) }
+  | simplexpr MOINS simplexpr                   { Sou($1,$3) }
+  | simplexpr DIV simplexpr                     { Div($1,$3) }
+  | MOINS simplexpr                             { (Sou(Const(0), $2)) }
 
-  | expression EGAL expression                    { Testeq($1,$3) }
-  | expression NONEGAL expression                 { Testneq($1,$3) }
-  | expression INF_S expression                   { Testlt($1,$3) }
-  | expression SUP_S expression                   { Testgt($1,$3) }
-  | expression INF_L expression                   { Testlet($1,$3) }
-  | expression SUP_L expression                   { Testget($1,$3) }
 
-  | FUN NOM DONNE expression                      { Fun($2, $4) }
+  | LET NOM EGAL simplexpr IN simplexpr         { Let($2, $4, $6) }
+  | LET NOM EGAL simplexpr IN 	        	{ Let($2, $4, Const 0)}
+  | IF simplexpr THEN simplexpr ELSE simplexpr  { Cond($2, $4, $6) }
+
+  | simplexpr EGAL simplexpr                    { Testeq($1,$3) }
+  | simplexpr NONEGAL simplexpr                 { Testneq($1,$3) }
+  | simplexpr INF_S simplexpr                   { Testlt($1,$3) }
+  | simplexpr SUP_S simplexpr                   { Testgt($1,$3) }
+  | simplexpr INF_L simplexpr                   { Testlet($1,$3) }
+  | simplexpr SUP_L simplexpr                   { Testget($1,$3) }
+  | priexpr priexpr                             { App($1,$2) }
 
   /* Errors Managements */
 
 ;
+    
+priexpr:
+  | NOM	      	     		       	   	  { Identifier $1 }
+  | INT                                           { Const $1 }   
+  | LPAREN simplexpr RPAREN                       { $2 }
+;
+   
 
