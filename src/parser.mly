@@ -27,13 +27,13 @@ open Expr
 %left SUP_S
 %left SUP_L
 %left SEMICOL
+%right DONNE
 %left PLUS   /* associativité gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
 %left PRINT
 %left TIMES
 %left DIV
 %left ELSE
-%right DONNE
 %right IN
 
 
@@ -51,10 +51,11 @@ open Expr
 main:                       
     simplexpr EOF               { $1 } 
 ;
+
 simplexpr:
 
   | PRINT simplexpr  				  { PrintInt $2 }
-  | FUN NOM DONNE simplexpr                     { (Fun($2, $4)) }
+  | FUN NOM DONNE simplexpr                      { (Fun($2, $4)) }
 
   /* | simplexpr SEMICOL simplexpr		  {Seq($1, $3)} */
 
@@ -76,6 +77,7 @@ simplexpr:
   | simplexpr INF_L simplexpr                   { Testlet($1,$3) }
   | simplexpr SUP_L simplexpr                   { Testget($1,$3) }
   | priexpr priexpr                             { App($1,$2) }
+  | priexpr                                     { $1 }
 
   /* Errors Managements */
 

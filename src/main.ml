@@ -18,7 +18,9 @@ let interpreter () =
   let lexbuf = Lexing.from_channel (!srcfile) in
   let parse () = Parser.main Lexer.token lexbuf in
 
-  let ast = parse () in eval ast ( Environnement.empty);
+  let ast = parse () in
+  if(!debugmode) then (affiche_expr ast);
+  eval ast ( Environnement.empty);
 
   flush stdout; 
 ;;

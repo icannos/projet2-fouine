@@ -67,6 +67,9 @@ let rec affiche_expr e =
 	affiche_expr e2;
 	print_string ")"
   | Fun(nom,e) -> aff_aux "Fun(" (Identifier nom)  e
+  | App(e1, e2) -> ps "App("; affiche_expr e1;ps ", "; affiche_expr e2; ps ")"
+  | PrintInt(e) -> ps "prInt("; affiche_expr e; ps ")"
+
         
   | Cond(b,e1,e2) ->
         print_string "Cond(";
@@ -82,6 +85,8 @@ let rec affiche_expr e =
    | Testgt(e1,e2) -> aff_aux "Testgt(" e1 e2
    | Testlet(e1,e2) -> aff_aux "Testlet(" e1 e2
    | Testget(e1,e2) -> aff_aux "Testget(" e1 e2
+
+   |_ -> ps "A traiter"
 ;;
 
 let debug e env =
@@ -123,7 +128,6 @@ let rec freevars bindedvars fvars = function
 let rec eval e env  =
   debug e env;
 
-  try
     match e with
     | Const k -> Int k
     | Identifier k -> Environnement.find k env
@@ -137,10 +141,8 @@ let rec eval e env  =
     | Cond(booleen,e1,e2) -> let b = (evalb booleen env) in  if b  then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
 
     |Fun(nom, expr) -> Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
+    |App(e1, e2) -> let Fonction(f) = (eval e1 env) in f (eval e2 env)
 
-  with
-  | _ -> let start_pos = Parsing.rhs_start_pos 5 in
-         ps "Error at line:"; print_int start_pos.pos_lnum; Int 0
          
  and evalb e env = match e with
   | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)  
