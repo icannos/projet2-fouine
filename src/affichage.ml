@@ -1,6 +1,7 @@
 open Display;;
 open Env;;
 open Expr;;
+open Arguments;;
 
 
 let print_value = function

@@ -5,6 +5,7 @@ open Env;;
 open Safe;;
 open Parser;;
 open Affichage;;
+open Eval;;
 
 
 (* Fonction principale  *)
