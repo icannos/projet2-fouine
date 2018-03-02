@@ -4,7 +4,7 @@ open Expr;;
 open Env;;
 open Safe;;
 open Parser;;
-
+open Affichage;;
 
 
 (* Fonction principale  *)

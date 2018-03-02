@@ -74,9 +74,4 @@ let rec freevars bindedvars fvars = function
 
 
 
-let print_env env = ps "{"; Environnement.iter penv_item env; ps "} \n";;
-
-
-let debug e env =
-  if !debugmode then (print_env env);; 
 
