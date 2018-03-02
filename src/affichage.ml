@@ -19,17 +19,7 @@ let penv_item identifier v =
 
 
 (* fonction d'affichage *)
-let rec affiche_expr e =
-  let aff_aux s a b = 
-      begin
-	print_string s;
-	affiche_expr a;
-	print_string ", ";
-	affiche_expr b;
-	print_string ")"
-      end
-  in
-  match e with
+let rec affiche_expr e = match e with
   | Identifier s -> ps s
   | Const k -> print_int k
   | Add(e1,e2) -> aff_aux "Add(" e1 e2
@@ -51,20 +41,31 @@ let rec affiche_expr e =
         
   | Cond(b,e1,e2) ->
         print_string "Cond(";
-        affiche_expr b;
+        affiche_bexpr b;
 	print_string ", ";
 	affiche_expr e1;
 	print_string ", ";
 	affiche_expr e2;
 	print_string ")"
+
+  |_ -> ps "A traiter"
+      
+and affiche_bexpr b = match b with
    | Testeq(e1,e2) -> aff_aux "Testeq(" e1 e2
    | Testneq(e1,e2) -> aff_aux "Testneq(" e1 e2
    | Testlt(e1,e2) -> aff_aux "Testlt(" e1 e2
    | Testgt(e1,e2) -> aff_aux "Testgt(" e1 e2
    | Testlet(e1,e2) -> aff_aux "Testlet(" e1 e2
    | Testget(e1,e2) -> aff_aux "Testget(" e1 e2
+and  aff_aux s a b = 
+      begin
+	print_string s;
+	affiche_expr a;
+	print_string ", ";
+	affiche_expr b;
+	print_string ")"
+      end
 
-   |_ -> ps "A traiter"
 ;;
 
 

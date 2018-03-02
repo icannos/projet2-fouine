@@ -29,8 +29,9 @@ type expr =
 
 
   (* Tests Constructor *)
-  |Cond of expr * expr * expr
+  |Cond of bexpr * expr * expr
 
+ and bexpr =
 
   | Testeq of expr * expr
   | Testneq of expr * expr
@@ -44,6 +45,7 @@ type expr =
 
 
 (* Renvoie les variables libres d'une expression *)
+(*type de la fonction : set -> set ->expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
 let rec freevars bindedvars fvars = function
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
   |Identifier x -> fvars
@@ -51,7 +53,7 @@ let rec freevars bindedvars fvars = function
   (* | Seq(e1,e2) -> eval e1 env; *)
 
   | Let(nom, e1, e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
-  | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevars bindedvars fvars booleen) 
+  | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen) 
 
   |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr 
 
@@ -60,7 +62,8 @@ let rec freevars bindedvars fvars = function
   | Mul(e1,e2) 
   | Sou(e1,e2) 
   | Div(e1,e2) 
-  | App(e1, e2)
+  | App(e1, e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
+and freevarsb bindedvars fvars = function
   | Testeq(e1,e2) 
   | Testneq(e1,e2)
   | Testlt(e1,e2) 

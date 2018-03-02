@@ -19,12 +19,12 @@ let rec eval e env  =
     | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
     | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
     | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
-    | Cond(booleen,e1,e2) -> let b = (evalb booleen env) in  if b  then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+    | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
 
     |Fun(nom, expr) -> Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
     |App(e1, e2) -> let Fonction(f) = (eval e1 env) in f (eval e2 env)
 
-         
+(* evalb de type bexpr -> env -> bool*)         
  and evalb e env = match e with
   | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)  
   | Testneq(e1,e2) -> safe_op (eval e1 env) (<>) (eval e2 env)

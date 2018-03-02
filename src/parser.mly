@@ -68,14 +68,8 @@ simplexpr:
 
   | LET NOM EGAL simplexpr IN simplexpr         { Let($2, $4, $6) }
   | LET NOM EGAL simplexpr IN 	        	{ Let($2, $4, Const 0)}
-  | IF simplexpr THEN simplexpr ELSE simplexpr  { Cond($2, $4, $6) }
+  | IF bexpr THEN simplexpr ELSE simplexpr  { Cond($2, $4, $6) }
 
-  | simplexpr EGAL simplexpr                    { Testeq($1,$3) }
-  | simplexpr NONEGAL simplexpr                 { Testneq($1,$3) }
-  | simplexpr INF_S simplexpr                   { Testlt($1,$3) }
-  | simplexpr SUP_S simplexpr                   { Testgt($1,$3) }
-  | simplexpr INF_L simplexpr                   { Testlet($1,$3) }
-  | simplexpr SUP_L simplexpr                   { Testget($1,$3) }
   | priexpr priexpr                             { App($1,$2) }
   | priexpr                                     { $1 }
 
@@ -88,5 +82,12 @@ priexpr:
   | INT                                           { Const $1 }   
   | LPAREN simplexpr RPAREN                       { $2 }
 ;
-   
+
+bexpr:
+  | simplexpr EGAL simplexpr                    { Testeq($1,$3) }
+  | simplexpr NONEGAL simplexpr                 { Testneq($1,$3) }
+  | simplexpr INF_S simplexpr                   { Testlt($1,$3) }
+  | simplexpr SUP_S simplexpr                   { Testgt($1,$3) }
+  | simplexpr INF_L simplexpr                   { Testlet($1,$3) }
+  | simplexpr SUP_L simplexpr                   { Testget($1,$3) }
 
