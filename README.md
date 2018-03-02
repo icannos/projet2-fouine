@@ -53,3 +53,37 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 - A l'avenir il faudra certainement réécrire les opérateurs arithmétiques: puisque eval renverra un truc de type value ie int ou cloture, d'ailleurs on devrait quoi qu'il arrive faire en sorte qu'eval renvoie une cloture (int, env) ou (fun, env): cela permettra de gérer les séquencements plus efficacement je pense
 - Ce serait aussi pas mal d'écrire des fonctions pour chaque cas du matching au lieu d'avoir le code directement dedans
 - J'ai réfléchi à la méthode pour faire les fonctions et les fonctions récursives: ça va bien se passer ;)
+
+
+#### Nouveau tour d'horizon
+
+- env.ml : définition des environnements, des values et des varibles liées. On y gère les safe_op.
+- expr.ml : définie le type des expressions et leur évaluation et l'affichage.
+- parser.mly : nos simplexpr et priexpr
+- main.ml : ok
+- errmgr.ml : pourquoi ce nom ? stocke le numéro de ligne pour les erreurs
+- display.ml : définition de prInt et debug (ps = print_string)
+- lexer.ml : correct sauf pour le ;; qui est trop simplifié en in
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

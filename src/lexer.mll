@@ -31,7 +31,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | ')'             { RPAREN }
 
     (*mots-clés*)
-  | "let"           { LET }  (*j'ai mis trois plombes à comprendre qu'il fallait des guillements*)
+  | "let"           { LET } 
   | "in"            { IN }
   | ";;"	    { IN }
   | ';'		    { SEMICOL }

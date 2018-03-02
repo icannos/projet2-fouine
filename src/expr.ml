@@ -130,7 +130,8 @@ let rec eval e env  =
 
     match e with
     | Const k -> Int k
-    | Identifier k -> Environnement.find k env
+    | Identifier k -> try Environnement.find k env with
+                      | Not_found -> print_string k; 0
     | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     (* | Seq(e1,e2) -> eval e1 env; *)
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)

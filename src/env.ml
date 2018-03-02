@@ -8,12 +8,8 @@ module Environnement = Map.Make(String);;
 
 module VarsSet = Set.Make(String);;
 
-(*création des nos superbes environnements :dire que c'est une string doit suffire, un raffinement possible en définissant le type précis des noms de variables*)
 
-
-         
- (*cette double définition ne marche pas, or je ne vois pas comment supprimer cette intrication*)
- (*je crois qu'en fait value ne doit être que int, et qu'il faut gérer la cloture autrement *) 
+ 
 type value = Int of int | Fonction of (value -> value)
 and
 env = value Environnement.t;; (*ces environnements contiennent des value*)
