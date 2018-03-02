@@ -57,13 +57,13 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 
 #### Nouveau tour d'horizon
 
-- env.ml : définition des environnements, des values et des varibles liées. On y gère les safe_op.
-- expr.ml : définie le type des expressions et leur évaluation et l'affichage.
+- env.ml : définition des environnements, des values et des varibles liées. On y gère les safe_op. Suggestion : séparer ce dernier cas en un autre fichier : il suffit d'y inclure env, donne moi ton accord et je le fais
+- expr.ml : définie le type des expressions et leur évaluation et l'affichage. Suggestion : faire un fichier pour l'affichage et un pour l'évaluation.
 - parser.mly : nos simplexpr et priexpr
 - main.ml : ok
 - errmgr.ml : pourquoi ce nom ? stocke le numéro de ligne pour les erreurs
 - display.ml : définition de prInt et debug (ps = print_string)
-- lexer.ml : correct sauf pour le ;; qui est trop simplifié en in
+- lexer.ml : correct sauf pour le ;; qui est trop simplifié en in.
 
 
 
