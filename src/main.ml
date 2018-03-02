@@ -2,6 +2,7 @@
 open Arguments;;
 open Expr;;
 open Env;;
+open Safe;;
 open Parser;;
 
 

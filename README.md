@@ -67,7 +67,9 @@ http://caml.inria.fr/pub/docs/manual-ocaml-4.01/libref/Arg.html#TYPEkey
 
 
 
+Il serait intelligent d'utiliser freevars pour récupérer les variables libres de l'expression de la fonction
 
+Changer bexpr et les opératuers binaires pour supprimer la redondance
 
 
 
