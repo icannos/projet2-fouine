@@ -71,6 +71,15 @@ Il serait intelligent d'utiliser freevars pour récupérer les variables libres 
 
 Changer bexpr et les opératuers binaires pour supprimer la redondance
 
+#### Nouvelle vitrine
+- affichage.ml : toutes les fonctions d'affichage, qui appellent donc Display
+- expr.ml : ajout de bexpr et freevarsb sur la demande de Daniel
+- eval.ml notre fonction d'évaluation, anciennement dans expr
+- safe.ml regroupe tes fonctions qui évitent qu'on fasse n'importe quoi
+- env.ml est devenu tout petit, et il faut y changer la définition de fonction.
+
+
+
 
 
 
