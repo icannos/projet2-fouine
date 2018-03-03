@@ -1,12 +1,12 @@
-open Expr
+open Expr;;
 open Display;;
 
-type name = String.t;;
+
 
 
 module Environnement = Map.Make(String);;
 
-module VarsSet = Set.Make(String);;
+
 
 
  
