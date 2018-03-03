@@ -25,24 +25,25 @@ let buildEnv nom env expr =
 let rec eval e env  =
   debug e env;
 
-    match e with
-    | Const k -> Int k
-    | Identifier k -> begin  try (Environnement.find k env) with Not_found -> ps "hey: " ;ps k; (Int 0) end
+  match e with
+  | TESTLINE k -> print_int k; Int 0 
+  | Const k -> Int k
+  | Identifier k -> begin  try (Environnement.find k env) with Not_found -> ps "hey: " ;ps k; (Int 0) end
                                                                         
-    | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
-    (* | Seq(e1,e2) -> eval e1 env; *)
-    | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
-    | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
-    | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
-    | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
-    | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
-    | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
-
-
-    |Fun(nom, expr) -> Fonct(nom, expr, buildEnv nom env expr)
-    |App(e1, e2) -> let Fonct(nom, expr, fenv) = eval e1 env in
-                    eval expr (Environnement.add nom (eval e2 env) fenv)
-                                                     
+  | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
+  (* | Seq(e1,e2) -> eval e1 env; *)
+  | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
+  | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
+  | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
+  | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
+  | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
+  | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+                         
+                         
+  |Fun(nom, expr) -> Fonct(nom, expr, buildEnv nom env expr)
+  |App(e1, e2) -> let Fonct(nom, expr, fenv) = eval e1 env in
+                  eval expr (Environnement.add nom (eval e2 env) fenv)
+                  
     (* |Fun(nom, expr) ->
       Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
      

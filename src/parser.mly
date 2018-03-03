@@ -1,7 +1,8 @@
 %{
 (* --- préambule: ici du code Caml --- *)
 
-open Expr   
+open Expr
+open Errmgr
 
 %}
 /* description des lexèmes, ceux-ci sont décrits dans lexer.mll */
@@ -18,6 +19,8 @@ open Expr
 %token IF THEN ELSE 
 %token <string> NOM
 %token PRINT
+
+%token TEST
 
 
 %left EGAL
@@ -53,7 +56,7 @@ main:
 ;
 
 simplexpr:
-
+  | TEST					{TESTLINE(!line_number) }
   | PRINT simplexpr  				  { PrintInt $2 }
   | FUN NOM DONNE simplexpr                      { (Fun($2, $4)) }
 

@@ -7,6 +7,7 @@ type name = String.t;;
 module VarsSet = Set.Make(String);;
 
 type expr =
+  |TESTLINE of int
 
   (* Arith Constr *)
   | Const of int
