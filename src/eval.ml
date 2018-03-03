@@ -4,14 +4,31 @@ open Env;;
 open Display;;
 open Safe;;
 
+
+
+let buildEnv nom env expr =
+  let nenv = ref (Environnement.empty) in
+  let addVar key  =
+    nenv := Environnement.add key (Environnement.find key env) (!nenv)
+  in
+
+  let freeV = freevars (VarsSet.singleton nom) (VarsSet.empty) expr in
+
+  VarsSet.iter addVar freeV; !nenv
+;;
+     
+
+
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
+
 let rec eval e env  =
   debug e env;
 
     match e with
     | Const k -> Int k
-    | Identifier k ->  Environnement.find k env
+    | Identifier k -> begin  try (Environnement.find k env) with Not_found -> ps "hey: " ;ps k; (Int 0) end
+                                                                        
     | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     (* | Seq(e1,e2) -> eval e1 env; *)
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
@@ -21,8 +38,20 @@ let rec eval e env  =
     | Let(nom, e1, e2) -> evallet e  nom e1 e2 env
     | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
 
-    |Fun(nom, expr) -> Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
+
+    |Fun(nom, expr) -> Fonct(nom, expr, buildEnv nom env expr)
+    |App(e1, e2) -> let Fonct(nom, expr, fenv) = eval e1 env in
+                    eval expr (Environnement.add nom (eval e2 env) fenv)
+                                                     
+    (* |Fun(nom, expr) ->
+      Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
+     
+     
     |App(e1, e2) -> let Fonction(f) = (eval e1 env) in f (eval e2 env)
+
+     *)
+
+ (* J'aimais bien cette méthode  *)
 
 (* evalb de type bexpr -> env -> bool*)         
  and evalb e env = match e with

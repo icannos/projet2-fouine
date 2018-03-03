@@ -1,10 +1,10 @@
 (* un type pour toutes les expressions qu'on manipule *)
 
-open Env;;
-open Safe;;
 open Arguments;;
 open Display;;
 
+type name = String.t;;
+module VarsSet = Set.Make(String);;
 
 type expr =
 
@@ -47,6 +47,7 @@ type expr =
 (* Renvoie les variables libres d'une expression *)
 (*type de la fonction : set -> set ->expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
 let rec freevars bindedvars fvars = function
+  |Const k -> fvars
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
   |Identifier x -> fvars
   | PrintInt e -> freevars bindedvars fvars e
@@ -56,7 +57,6 @@ let rec freevars bindedvars fvars = function
   | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen) 
 
   |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr 
-
 
   | Add(e1,e2) 
   | Mul(e1,e2) 
@@ -70,6 +70,7 @@ and freevarsb bindedvars fvars = function
   | Testgt(e1,e2)
   | Testlet(e1,e2)
   | Testget(e1,e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
+                   
 ;;
 
  
