@@ -69,8 +69,8 @@ simplexpr:
   | MOINS simplexpr                             { (Sou(Const(0), $2)) }
 
 
-  | LET NOM EGAL simplexpr IN simplexpr         { Let($2, $4, $6) }
-  | LET NOM EGAL simplexpr IN 	        	{ Let($2, $4, Const 0)}
+  | LET NOM functexpr IN simplexpr              { Let($2, $3, $5) }
+  /*  | LET NOM functexpr	                 	{ Let($2, $3, Const 0)} */
   | IF bexpr THEN simplexpr ELSE simplexpr      { Cond($2, $4, $6) }
 
   | listexpr                                    { $1 }
@@ -79,6 +79,14 @@ simplexpr:
   /* Errors Managements */
 
   ;
+
+    
+functexpr:
+   | EGAL simplexpr                      { $2 }
+   | NOM functexpr                       { Fun($1, $2) }
+     
+      
+    
 listexpr:
   | priexpr                                     { $1 }
   | listexpr priexpr                            { App($1, $2) }
