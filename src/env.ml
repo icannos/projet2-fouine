@@ -11,8 +11,8 @@ module Environnement = Map.Make(String);;
 
  
 type value = Int of int
-           |Fonct of name * expr * env
-           |Fonction of (value -> value) (* Je laisse ça là parce que je trouvais ça élégant *)
+           |Fonction of name * expr * env
+          (* |Fonction of (value -> value)  Je laisse ça là parce que je trouvais ça élégant *)
 
 (*à changer il faut un truc de forme x * expr * env*)
 and

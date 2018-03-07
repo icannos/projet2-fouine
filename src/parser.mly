@@ -71,14 +71,18 @@ simplexpr:
 
   | LET NOM EGAL simplexpr IN simplexpr         { Let($2, $4, $6) }
   | LET NOM EGAL simplexpr IN 	        	{ Let($2, $4, Const 0)}
-  | IF bexpr THEN simplexpr ELSE simplexpr  { Cond($2, $4, $6) }
+  | IF bexpr THEN simplexpr ELSE simplexpr      { Cond($2, $4, $6) }
 
-  | priexpr priexpr                             { App($1,$2) }
-  | priexpr                                     { $1 }
+  | listexpr                                    { $1 }
+
 
   /* Errors Managements */
 
-;
+  ;
+listexpr:
+  | priexpr                                     { $1 }
+  | listexpr priexpr                            { App($1, $2) }
+  
     
 priexpr:
   | NOM	      	     		       	   	  { Identifier $1 }

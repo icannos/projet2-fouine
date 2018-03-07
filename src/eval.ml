@@ -26,7 +26,6 @@ let rec eval e env  =
   debug e env;
 
   match e with
-  | TESTLINE k -> print_int k; Int 0 
   | Const k -> Int k
   | Identifier k -> begin  try (Environnement.find k env) with Not_found -> ps "hey: " ;ps k; (Int 0) end
                                                                         
@@ -40,16 +39,13 @@ let rec eval e env  =
   | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
                          
                          
-  |Fun(nom, expr) -> Fonct(nom, expr, buildEnv nom env expr)
-  |App(e1, e2) -> let Fonct(nom, expr, fenv) = eval e1 env in
-                  eval expr (Environnement.add nom (eval e2 env) fenv)
+  |Fun(argument, expr) -> Fonction(argument, expr, buildEnv argument env expr) (*de type name * expr * env*)
+  |App(e1, e2) -> let Fonction(argument, expr, fenv) = eval e1 env in
+                  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                   
     (* |Fun(nom, expr) ->
       Fonction (fun x -> (let fenv = (Environnement.add nom x env) in  eval expr fenv))
-     
-     
     |App(e1, e2) -> let Fonction(f) = (eval e1 env) in f (eval e2 env)
-
      *)
 
  (* J'aimais bien cette méthode  *)
