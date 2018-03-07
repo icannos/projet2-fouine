@@ -22,6 +22,8 @@ open Errmgr
 
 %token TEST
 
+%nonassoc IN
+%right LET  /*on voudrait essayer par defaut de voir s'il y a un in, donc il faut forcer le shift, mais je n'y arrive pas*/
 
 %left EGAL
 %left NONEGAL
@@ -37,7 +39,7 @@ open Errmgr
 %left TIMES
 %left DIV
 %left ELSE
-%right IN
+
 
 
 
@@ -70,7 +72,7 @@ simplexpr:
 
 
   | LET NOM functexpr IN simplexpr              { Let($2, $3, $5) }
-  /*  | LET NOM functexpr	                 	{ Let($2, $3, Const 0)} */
+  | LET NOM functexpr	                 	{ Let($2, $3, Const 0)} /*j'ai l'impressions qu'il faudrait juste réussir à fusionner les deux cas */
   | IF bexpr THEN simplexpr ELSE simplexpr      { Cond($2, $4, $6) }
 
   | listexpr                                    { $1 }
