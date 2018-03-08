@@ -22,8 +22,10 @@ open Errmgr
 
 %token TEST
 
-%nonassoc IN
-%right LET  
+
+%right IN
+%right LET
+
 
 %left EGAL
 %left NONEGAL
@@ -32,13 +34,17 @@ open Errmgr
 %left SUP_S
 %left SUP_L
 %left SEMICOL
+%right IF
+%right THEN
+%right ELSE
 %right DONNE
 %left PLUS   /* associativité gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
 %left PRINT
 %left TIMES
 %left DIV
-%left ELSE
+
+
 
 
 %start main 
@@ -91,7 +97,7 @@ simplexpr:
   | simplexpr DIV simplexpr                     { Div($1,$3) }
   | MOINS simplexpr                             { Sou(Const(0), $2) }
   | binding IN simplexpr			{ Let($1, $3) }
-  | binding    					{ Let($1, Const 0) }
+ /* | binding    					{ Let($1, Const 0) } */
   | IF bexpr THEN simplexpr ELSE simplexpr      { Cond($2, $4, $6) }
 
   | listexpr                                    { $1 }

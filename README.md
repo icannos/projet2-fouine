@@ -79,6 +79,11 @@ Changer bexpr et les opératuers binaires pour supprimer la redondance
 - env.ml est devenu tout petit, et il faut y changer la définition de fonction.
 
 
+#### Fonctions récursives
+
+Les fonctions récursives fonctionnent maintenant très bien. Et les questions de priorités d'opérateurs semblent réglées. J'ai écrit la factorielle et la fonction d'ackermann en récursif et en utilisant plusieurs syntaxes. Tout semble fonctionner. Je pense qu'il nous faudrait nous concentrer sur la propreté du débuggage, des sorties et des arguments --verbose et de --debug. Ainsi que sur la gestion des erreurs avec de jolies exceptions bien rattrapées ! 
+
+
 
 
 

@@ -35,7 +35,7 @@ let rec affiche_expr e = match e with
 	affiche_expr e2;
 	print_string ")"
   | LetRec((nom,e1),e2) ->
-        print_string "Let(";
+        print_string "LetRec(";
         print_string nom;
 	print_string ", ";
 	affiche_expr e1;
