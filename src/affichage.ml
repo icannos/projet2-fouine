@@ -26,7 +26,15 @@ let rec affiche_expr e = match e with
   | Mul(e1,e2) -> aff_aux "Mul(" e1 e2
   | Sou(e1,e2) -> aff_aux "Sou(" e1 e2
   | Div(e1,e2) -> aff_aux "Div(" e1 e2
-  | Let(nom,e1,e2) ->
+  | Let((nom,e1),e2) ->
+        print_string "Let(";
+        print_string nom;
+	print_string ", ";
+	affiche_expr e1;
+	print_string ", ";
+	affiche_expr e2;
+	print_string ")"
+  | LetRec((nom,e1),e2) ->
         print_string "Let(";
         print_string nom;
 	print_string ", ";
@@ -48,7 +56,6 @@ let rec affiche_expr e = match e with
 	affiche_expr e2;
 	print_string ")"
 
-  |_ -> ps "A traiter"
       
 and affiche_bexpr b = match b with
    | Testeq(e1,e2) -> aff_aux "Testeq(" e1 e2

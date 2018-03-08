@@ -7,7 +7,6 @@ type name = String.t;;
 module VarsSet = Set.Make(String);;
 
 type expr =
-  |TESTLINE of int
 
   (* Arith Constr *)
   | Const of int
@@ -17,10 +16,11 @@ type expr =
   | Div of expr*expr
 
   (* Seq *)
-  |Seq of expr*expr
+  (* |Seq of expr*expr*)
 
   (* Binding constr  *)
-  | Let of name * expr * expr
+  | Let of (name * expr) * expr
+  | LetRec of (name *expr) * expr
   | Identifier of name
   | Fun of name * expr
   | App of expr * expr
@@ -54,7 +54,9 @@ let rec freevars bindedvars fvars = function
   | PrintInt e -> freevars bindedvars fvars e
   (* | Seq(e1,e2) -> eval e1 env; *)
 
-  | Let(nom, e1, e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
+  | Let((nom, e1), e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
+  | LetRec((nom, e1), e2) -> VarsSet.union (freevars (VarsSet.add nom bindedvars) fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
+
   | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen) 
 
   |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr 

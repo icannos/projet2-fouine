@@ -14,7 +14,7 @@ open Errmgr
 %token PLUS TIMES MOINS DIV
 %token EGAL  NONEGAL INF_S INF_L SUP_S SUP_L
 %token LPAREN RPAREN SEMICOL
-%token LET IN
+%token LET IN REC
 %token FUN DONNE
 %token IF THEN ELSE 
 %token <string> NOM
@@ -41,63 +41,72 @@ open Errmgr
 %left ELSE
 
 
-
-
-
-%start main             /* "start" signale le point d'entrée: */
-                        /* c'est ici main, qui est défini plus bas */
-%type <Expr.expr> main     /* on _doit_ donner le type associé à main, qui est le point d'entrée */
+%start main 
+                       
+%type <Expr.expr> main    
 
 %%
-    /* --- début des règles de grammaire --- */
-                            /* à droite, les valeurs associées */
 
-
-main:                       
-    simplexpr EOF               { $1 } 
+main:
+  |toplevel EOF					{ $1 }
+  |simplexpr EOF               			{ $1 } 
 ;
 
+
+toplevel:
+  |binding toplevel				{ Let($1, $2) }
+  |binding SEMICOL SEMICOL toplevel 		{ Let($1, $4) }
+  |binding SEMICOL SEMICOL simplexpr		{ Let($1, $4) }
+  |binding IN toplevel	   			{ Let($1, $3) }
+  |binding IN simplexpr				{ Let($1, $3) }
+
+  |recursive IN toplevel			{ LetRec($1, $3) }
+  |recursive IN simplexpr			{ LetRec($1, $3) }
+  |recursive SEMICOL SEMICOL toplevel		{ LetRec($1, $4) }
+  |recursive SEMICOL SEMICOL simplexpr		{ LetRec($1, $4) }
+  |recursive toplevel	     			{ LetRec($1, $2) }
+
+;
+
+binding:
+  |LET NOM functexpr				{($2, $3)}
+;
+
+recursive:
+  |LET REC NOM functexpr			{($3, $4)}
+
+;
+  
+functexpr:
+  | EGAL simplexpr				{ $2 }
+  | NOM functexpr                       	{ Fun($1, $2) }    
+;	
+
 simplexpr:
-  | TEST					{TESTLINE(!line_number) }
-  | PRINT simplexpr  				  { PrintInt $2 }
-  | FUN NOM DONNE simplexpr                      { (Fun($2, $4)) }
-
-  /* | simplexpr SEMICOL simplexpr		  {Seq($1, $3)} */
-
+  | PRINT simplexpr				{ PrintInt $2 }
+  | FUN NOM DONNE simplexpr                     { Fun($2, $4) }
   | simplexpr PLUS simplexpr                    { Add($1,$3) }
   | simplexpr TIMES simplexpr                   { Mul($1,$3) }
   | simplexpr MOINS simplexpr                   { Sou($1,$3) }
   | simplexpr DIV simplexpr                     { Div($1,$3) }
-  | MOINS simplexpr                             { (Sou(Const(0), $2)) }
-
-
-  | LET NOM functexpr IN simplexpr              { Let($2, $3, $5) }
-  | LET NOM functexpr	                 	{ Let($2, $3, Const 0)} /*j'ai l'impressions qu'il faudrait juste réussir à fusionner les deux cas */
+  | MOINS simplexpr                             { Sou(Const(0), $2) }
+  | binding IN simplexpr			{ Let($1, $3) }
+  | binding    					{ Let($1, Const 0) }
   | IF bexpr THEN simplexpr ELSE simplexpr      { Cond($2, $4, $6) }
 
   | listexpr                                    { $1 }
 
-
-  /* Errors Managements */
-
-  ;
-
-    
-functexpr:
-   | EGAL simplexpr                      { $2 }
-   | NOM functexpr                       { Fun($1, $2) }
-     
-      
-    
+;
+  
 listexpr:
   | priexpr                                     { $1 }
   | listexpr priexpr                            { App($1, $2) }
   
     
 priexpr:
-  | NOM	      	     		       	   	  { Identifier $1 }
-  | INT                                           { Const $1 }   
-  | LPAREN simplexpr RPAREN                       { $2 }
+  | NOM	      	     		       	   	{ Identifier $1 }
+  | INT                                         { Const $1 }   
+  | LPAREN simplexpr RPAREN                      { $2 }
 ;
 
 bexpr:

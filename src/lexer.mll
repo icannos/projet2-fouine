@@ -32,9 +32,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | ')'             { RPAREN }
 
     (*mots-clés*)
-  | "let"           { LET } 
+  | "let"           { LET }
+  | "rec"	    { REC }
   | "in"            { IN }
-  | ";;"	    { IN }
   | ';'		    { SEMICOL }
   | "if"            { IF }
   | "then"          { THEN }
