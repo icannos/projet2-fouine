@@ -37,7 +37,7 @@ let rec eval e env  =
   | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
   | Let((nom, e1), e2) -> evallet  nom e1 e2 env
   | LetRec((nom, e1), e2) -> evalletrec  nom e1 e2 env
-  | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) (*il me semble que c'est ainsi qu'on va gérer les booléens*)
+  | Cond(booleen,e1,e2) -> if  (evalb booleen env)   then (eval e1 env) else (eval e2 env) 
                          
 
                          
@@ -45,10 +45,10 @@ let rec eval e env  =
   |App(e1, e2) -> match  eval e1 env with
                   |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                     
-                  |Int k -> Int k
+                  |Int k -> Int k  (*cas des fonctions constantes *)
 
 (* evalb de type bexpr -> env -> bool*)         
- and evalb e env = match e with
+and evalb e env = match e with  (*à réécrire bientot*)
   | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)  
   | Testneq(e1,e2) -> safe_op (eval e1 env) (<>) (eval e2 env)
   | Testlt(e1,e2) ->  safe_op (eval e1 env) (<) (eval e2 env)
@@ -62,6 +62,7 @@ let rec eval e env  =
 
   and evalletrec nom e1 e2 env = match nom with
     |"_" -> let _ = eval e1 env in eval e2 env
+    |_ -> let Fun(arg, fexpr) in let envir = Environnement.add nom (Rec(nom, arg, fexpr, buildEnv arg env fexpr)) env 
 
 
 ;;

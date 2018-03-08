@@ -23,7 +23,7 @@ open Errmgr
 %token TEST
 
 %nonassoc IN
-%right LET  /*on voudrait essayer par defaut de voir s'il y a un in, donc il faut forcer le shift, mais je n'y arrive pas*/
+%right LET  
 
 %left EGAL
 %left NONEGAL
@@ -53,14 +53,14 @@ main:
 ;
 
 
-toplevel:
-  |binding toplevel				{ Let($1, $2) }
-  |binding SEMICOL SEMICOL toplevel 		{ Let($1, $4) }
-  |binding SEMICOL SEMICOL simplexpr		{ Let($1, $4) }
-  |binding IN toplevel	   			{ Let($1, $3) }
-  |binding IN simplexpr				{ Let($1, $3) }
+toplevel:   /* les let de surface */
+  |binding toplevel				{ Let($1, $2) }   /* le cas de base let a = 5*/
+  |binding SEMICOL SEMICOL toplevel 		{ Let($1, $4) }   /* let a = 5 ... let b = 8;; expr*/
+  |binding SEMICOL SEMICOL simplexpr		{ Let($1, $4) }   /* let a = 5 ... let v = 2;; a*v */
+  |binding IN toplevel	   			{ Let($1, $3) }   /* let a = 5 in 2+2 */
+  |binding IN simplexpr				{ Let($1, $3) }   /* let a = 2 in a+2 */
 
-  |recursive IN toplevel			{ LetRec($1, $3) }
+  |recursive IN toplevel			{ LetRec($1, $3) }  
   |recursive IN simplexpr			{ LetRec($1, $3) }
   |recursive SEMICOL SEMICOL toplevel		{ LetRec($1, $4) }
   |recursive SEMICOL SEMICOL simplexpr		{ LetRec($1, $4) }
@@ -69,7 +69,7 @@ toplevel:
 ;
 
 binding:
-  |LET NOM functexpr				{($2, $3)}
+  |LET NOM functexpr				{($2, $3)} /*on renvoie un couple (identifier, expression)*/
 ;
 
 recursive:
@@ -106,7 +106,7 @@ listexpr:
 priexpr:
   | NOM	      	     		       	   	{ Identifier $1 }
   | INT                                         { Const $1 }   
-  | LPAREN simplexpr RPAREN                      { $2 }
+  | LPAREN simplexpr RPAREN                     { $2 }
 ;
 
 bexpr:

@@ -46,7 +46,7 @@ type expr =
 
 
 (* Renvoie les variables libres d'une expression *)
-(*type de la fonction : set -> set ->expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
+(*type de la fonction : set -> set -> expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
 let rec freevars bindedvars fvars = function
   |Const k -> fvars
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
