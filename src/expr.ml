@@ -1,7 +1,5 @@
 (* un type pour toutes les expressions qu'on manipule *)
 
-open Arguments;;
-open Display;;
 
 type name = String.t;;
 module VarsSet = Set.Make(String);;
