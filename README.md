@@ -86,6 +86,16 @@ Les fonctions récursives fonctionnent maintenant très bien. Et les questions d
 
 
 
+#### L'impératif
+
+J'ai ajouté les refs, := et !, ça a l'air de fonctionner correctement, j'ai aussi implémenté la mémoire. J'ai fait 2 tests: ref et reffun, qui testent d'abord les refs d'entiers et ensuite les refs de fonctions.
+J'ai commenté le code que j'avais modifié.
+
+Par ailleurs: on utilise pas de Map au final mais des tableas de hashages de caml car les map ne possèdent pas de méthode pour récupérer facilement leur taille de plus les accès sont en log n ce qui est beaucoup au final quand on peut avoir avec un tableau dynamique un temps constant en amorti (voire ici un temps constant tout court car j'ai initialisé la table de hashage à 100 cases ce qui devrait amplement suffire).
+Le truc chelou avec une struct dans Memory ça permet de définir un type init et les opérations de tests et de hashage qui lui sont associés. Ca sert à consruire la table de hashage. J'ai trouvé ça sur internet, on pourra en parler mais c'est pas compliqué.
+
+Il y a un truc que je ne comprends pas: c'est la question du () qui est mentionné dans l'énoncé je ne comprends pas trop ce que l'on doit en faire: si ça permet de renvoyer des trucs de type unit dans le programme ou alors faire des fonctions qui ne prennent pas d'arguments... je veux bien ton avis là dessus.
+
 
 
 

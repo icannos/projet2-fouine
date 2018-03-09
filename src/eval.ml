@@ -28,8 +28,12 @@ let rec eval e env  =
 
   match e with
   | Const k -> Int k
+  (* Ici on traite les cas impératifs  *)
+  (* Si on tente un accès mémoire, on récupère la référence associée et donc l'adresse en mémoire, puis on lit là où il faut *)
   | Acc(nom) -> let Reference(addr) = Environnement.find nom env in read_address addr
+  (* Pour l'affectation on récupère de même l'adresse associée au nom dans l'environnement, puis on ajoute dans la mémoire l'évaluation de l'expression, on retourne ici un nouveau type Unit qui correspond au unit de caml *)
   | Aff(nom, e) -> let Reference(addr) = Environnement.find nom env in add_memory addr (eval e env); Unit
+  (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
   | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)
                                                                  
   | Identifier nom -> begin  try (Environnement.find nom env) with Not_found -> ps "hey: " ;ps nom; (Int 0) end
@@ -50,7 +54,7 @@ let rec eval e env  =
                   |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                   |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)
                   |Int k -> Int k  (*cas des fonctions constantes *)
-                  |Reference(_) -> failwith "cannot apply a ref"
+                  |Reference(_) -> failwith "cannot apply a ref" (* On râle si on essaie d'appliquer une référence *)
 
 (* evalb de type bexpr -> env -> bool*)         
 and evalb e env = match e with  (*à réécrire bientot*)

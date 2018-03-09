@@ -6,7 +6,7 @@ open Display;;
 
 module Environnement = Map.Make(String);;
 
-
+(* Le type unit va correspondre à () et Reference(addr) c'est pour les références *) 
 type value = Int of int
            |Unit
            |Reference of int
