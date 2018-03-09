@@ -1,21 +1,38 @@
 (*fonctions de gestion de la mémoire*)
 open Env;;
-(*création de notre mémoire : map indéxée par des int*)
+(*création de notre mémoire : HashTable indéxée par des int*)
 
-module Mem = Map.Make(int);;
+(* Ca c'est pour définir une table de hashage indexée par des int, on donne le test d'égalité et 
+la fonction de hash, on doit le faire aussi si on utilise des Map indexées par des int mais 
+en réfléchissant c'est débile de faire une Map dont le cout d'accès est du log n alors que ma table de hashage c'est du temps constant
+*)
+module IntHash =
+        struct
+          type t = int
+          let equal i j = i=j
+          let hash i = i land max_int
+        end
+;;
 
-type memoire = value Mem.t;; (*définitions analogues aux environnements*)
+module Mem  = Hashtbl.Make(IntHash);;
+
+type memoire_t = value Mem.t;; (*définitions analogues aux environnements*)
+
+let memoire = (Mem.create 100);;(*initialisation de la mémoire, ce n'est pas un peu sale d'en faire une ref ?*)
+
+(*A priori temporaire c'est juste pour permettre au compilateur d'inférer les types, je ne sais pas faire autrement: il faudra demander. *)
+Mem.add memoire 0 (Int 0);;
+Mem.remove memoire 0;; 
+
+ (*fonction qui remplit une adresse*)
+let add_memory addr v  =  Mem.replace memoire addr v;;
+ 
   
-let memoire = Mem.empty;; (*initialisation de la mémoire, ce n'est pas un peu sale d'en faire une ref ?*) (* si d'ailleurs c'en est pas une *)
-
-let add_memory add v  =
-  (*fonction qui remplit une adresse*)
-  let memoire = Mem.add add v memoire;;
-
-let read_address add =
-  (*fonction qui lit une référence*)
-  Mem.find add memoire;;
+ (*fonction qui lit une référence*)
+let read_address addr =  Mem.find memoire addr;; 
+ 
   
-
-let new_address =
-  (*en fait je n'arrive pas à voir comment on fait*)
+ (*en fait je n'arrive pas à voir comment on fait*)
+let new_address ()  = Mem.length memoire;;
+  
+ 

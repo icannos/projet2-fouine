@@ -22,7 +22,7 @@ let interpreter () =
 
   let ast = parse () in
   if(!debugmode) then (affiche_expr ast);
-  eval ast ( Environnement.empty);
+  let _ = eval ast ( Environnement.empty) in
 
   flush stdout; 
 ;;

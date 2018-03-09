@@ -26,6 +26,9 @@ let rec affiche_expr e = match e with
   | Mul(e1,e2) -> aff_aux "Mul(" e1 e2
   | Sou(e1,e2) -> aff_aux "Sou(" e1 e2
   | Div(e1,e2) -> aff_aux "Div(" e1 e2
+  | Aff(nom, e) -> ps nom; ps " := "; affiche_expr e
+  | Ref(e) -> ps "ref " ; affiche_expr e
+  | Acc(nom) -> ps "!"; ps nom
   | Let((nom,e1),e2) ->
         print_string "Let(";
         print_string nom;

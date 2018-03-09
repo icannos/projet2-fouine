@@ -26,6 +26,11 @@ type expr =
   (* Built in *)
   |PrintInt of expr
 
+  (* Impératif *)
+  |Aff of name * expr
+  |Ref of expr
+  |Acc of name
+        
 
   (* Tests Constructor *)
   |Cond of bexpr * expr * expr
@@ -46,7 +51,10 @@ type expr =
 (* Renvoie les variables libres d'une expression *)
 (*type de la fonction : set -> set -> expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
 let rec freevars bindedvars fvars = function
-  |Const k -> fvars
+  |Aff(_, e) |Ref e -> (freevars bindedvars fvars e)
+
+  |Acc (_)
+  |Const (_) -> fvars
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
   |Identifier x -> fvars
   | PrintInt e -> freevars bindedvars fvars e

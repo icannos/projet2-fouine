@@ -3,6 +3,7 @@ open Expr;;
 open Env;;
 open Display;;
 open Safe;;
+open Memory;;
 
 
 
@@ -27,10 +28,13 @@ let rec eval e env  =
 
   match e with
   | Const k -> Int k
-  | Identifier k -> begin  try (Environnement.find k env) with Not_found -> ps "hey: " ;ps k; (Int 0) end
+  | Acc(nom) -> let Reference(addr) = Environnement.find nom env in read_address addr
+  | Aff(nom, e) -> let Reference(addr) = Environnement.find nom env in add_memory addr (eval e env); Unit
+  | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)
+                                                                 
+  | Identifier nom -> begin  try (Environnement.find nom env) with Not_found -> ps "hey: " ;ps nom; (Int 0) end
 
   | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
-  (* | Seq(e1,e2) -> eval e1 env; *)
   | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
   | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
   | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
@@ -46,6 +50,7 @@ let rec eval e env  =
                   |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                   |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)
                   |Int k -> Int k  (*cas des fonctions constantes *)
+                  |Reference(_) -> failwith "cannot apply a ref"
 
 (* evalb de type bexpr -> env -> bool*)         
 and evalb e env = match e with  (*à réécrire bientot*)

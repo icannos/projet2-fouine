@@ -27,14 +27,16 @@ open Errmgr
 %right IN
 %right LET
 
-
 %left EGAL
+
+%left REF
 %left NONEGAL
 %left INF_S
 %left INF_L
 %left SUP_S
 %left SUP_L
-%left SEMICOL
+%right SEMICOL
+%left AFF
 %right IF
 %right THEN
 %right ELSE
@@ -103,7 +105,10 @@ simplexpr:
 
   | listexpr                                    { $1 }
 
-  | simplexpr SEMICOL simplexpr                  { Let(("_",$1),$3) } 
+  | simplexpr SEMICOL simplexpr                  { Let(("_",$1),$3) }
+  | NOM AFF simplexpr 				 { Aff($1, $3) }
+  | REF simplexpr				 { Ref($2)     }
+ 
 
 
 ;
@@ -115,6 +120,7 @@ listexpr:
     
 priexpr:
   | NOM	      	     		       	   	{ Identifier $1 }
+  | BANG NOM					 { Acc($2)     }
   | INT                                         { Const $1 }   
   | LPAREN simplexpr RPAREN                     { $2 }
 ;
