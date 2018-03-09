@@ -64,7 +64,6 @@ toplevel:   /* les let de surface */
   |binding SEMICOL SEMICOL toplevel 		{ Let($1, $4) }   /* let a = 5 ... let b = 8;; expr*/
   |binding SEMICOL SEMICOL simplexpr		{ Let($1, $4) }   /* let a = 5 ... let v = 2;; a*v */
   |binding IN toplevel	   			{ Let($1, $3) }   /* let a = 5 in 2+2 */
- 
   |binding    					{ Let($1, Const 0)  } 
 
   |recursive IN toplevel			{ LetRec($1, $3) }  
@@ -102,6 +101,9 @@ simplexpr:
   | IF bexpr THEN simplexpr ELSE simplexpr      { Cond($2, $4, $6) }
 
   | listexpr                                    { $1 }
+
+  | simplexpr SEMICOL simplexpr                  { Let(("_",$1),$3) } 
+
 
 ;
   
