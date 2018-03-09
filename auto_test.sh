@@ -4,11 +4,11 @@
 # Ce script exécute parallèlement les scripts .ml avec fouine et ocaml puis effectue un diff des sorties
 #
 
-tests_dir="tests"
+tests_dir="tests/"
 fouinepath=./bin/fouine
 
 echo -e "\n **************** Starting Tests *****************"
-for test in $(ls -p $tests_dir | grep -v /)
+for test in $(ls -p $tests_dir | grep -v / )
 do
 	printf "Testing %-10s : %10s" $test
 	printf "%10s \n"
