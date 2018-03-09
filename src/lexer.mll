@@ -43,6 +43,11 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "fun"           { FUN }
   | "->"            { DONNE }
 
+  (*aspects impératifs*)
+  | "ref"           { REF }
+  | ":="            { AFF }
+  | '!'             { BANG }
+
   (*opérateurs logiques*)
   | '<'             { INF_S }
   | '>'             { SUP_S }

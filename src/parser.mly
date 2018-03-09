@@ -19,6 +19,7 @@ open Errmgr
 %token IF THEN ELSE 
 %token <string> NOM
 %token PRINT
+%token REF BANG AFF
 
 %token TEST
 
