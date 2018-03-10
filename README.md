@@ -97,6 +97,10 @@ Le truc chelou avec une struct dans Memory ça permet de définir un type init e
 Il y a un truc que je ne comprends pas: c'est la question du () qui est mentionné dans l'énoncé je ne comprends pas trop ce que l'on doit en faire: si ça permet de renvoyer des trucs de type unit dans le programme ou alors faire des fonctions qui ne prennent pas d'arguments... je veux bien ton avis là dessus.
 
 
+#### Gestion des erreurs
+
+J'ai implémenté un putain de système du turfu pour gérer les erreurs, c'est très moche et je suis persuadé qu'Hirshkoff nous donnera une meilleure solution mais actuellement je suis content de ma construction alors je laisse ça comme ça parce que ça marche assez bien. C'est pas encore fini mais j'ai construit le socle pour l'avenir !
+
 
 
 
