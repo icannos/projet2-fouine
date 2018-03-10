@@ -1,8 +1,28 @@
 
+(* Structure pour conserver les metadata des noeuds de l'ast *)
+module IntHash =
+        struct
+          type t = int
+          let equal i j = i=j
+          let hash i = i land max_int
+        end
+;;
 
-(* Will store the current line for error reports *)
-let line_number = ref 1;;
+module AstMetaData  = Hashtbl.Make(IntHash);;
 
-(* increment line number  *)
-let incr_line () = line_number := !line_number + 1;;
+let metadata = (AstMetaData.create 100);;
 
+exception UnknownIdentifier of string;;
+exception DivisionByZero;;
+exception CannotApply of string;;
+exception BadArgument of string;;
+
+
+let error_handler start_pos end_pos =
+  let data : Lexing.position * Lexing.position = (start_pos, end_pos)
+  and node_id = (AstMetaData.length metadata) in
+  AstMetaData.add metadata node_id data; node_id
+;;
+  
+
+(* let error_display node_id = function *)

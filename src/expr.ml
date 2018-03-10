@@ -8,41 +8,44 @@ type expr =
 
   (* Arith Constr *)
   | Const of int
-  | Add of expr*expr
-  | Mul of expr*expr
-  | Sou of expr*expr
-  | Div of expr*expr
+  | Add of extexpr*extexpr
+  | Mul of extexpr*extexpr
+  | Sou of extexpr*extexpr
+  | Div of extexpr*extexpr
 
   (* Seq *)
-  (* |Seq of expr*expr*)
+  (* |Seq of extexpr*extexpr*)
 
   (* Binding constr  *)
-  | Let of (name * expr) * expr
-  | LetRec of (name *expr) * expr
+  | Let of (name * extexpr) * extexpr
+  | LetRec of (name *extexpr) * extexpr
   | Identifier of name
-  | Fun of name * expr
-  | App of expr * expr
+  | Fun of name * extexpr
+  | App of extexpr * extexpr
 
   (* Built in *)
-  |PrintInt of expr
+  |PrintInt of extexpr
 
   (* Impératif *)
-  |Aff of name * expr
-  |Ref of expr
+  |Aff of name * extexpr
+  |Ref of extexpr
   |Acc of name
         
 
   (* Tests Constructor *)
-  |Cond of bexpr * expr * expr
+  |Cond of bextexpr * extexpr * extexpr
 
  and bexpr =
 
-  | Testeq of expr * expr
-  | Testneq of expr * expr
-  | Testlt of expr * expr
-  | Testgt of expr * expr
-  | Testlet of expr * expr
-  | Testget of expr * expr
+  | Testeq of extexpr * extexpr
+  | Testneq of extexpr * extexpr
+  | Testlt of extexpr * extexpr
+  | Testgt of extexpr * extexpr
+  | Testlet of extexpr * extexpr
+  | Testget of extexpr * extexpr
+
+ and extexpr = int * expr
+ and bextexpr = int * bexpr
 ;;
 
                  
@@ -50,19 +53,16 @@ type expr =
 
 (* Renvoie les variables libres d'une expression *)
 (*type de la fonction : set -> set -> expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
-let rec freevars bindedvars fvars = function
+let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
+  match e with
   |Aff(_, e) |Ref e -> (freevars bindedvars fvars e)
-
   |Acc (_)
   |Const (_) -> fvars
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
   |Identifier x -> fvars
   | PrintInt e -> freevars bindedvars fvars e
-  (* | Seq(e1,e2) -> eval e1 env; *)
-
   | Let((nom, e1), e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
   | LetRec((nom, e1), e2) -> VarsSet.union (freevars (VarsSet.add nom bindedvars) fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
-
   | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen) 
 
   |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr 
@@ -72,7 +72,9 @@ let rec freevars bindedvars fvars = function
   | Sou(e1,e2) 
   | Div(e1,e2) 
   | App(e1, e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
-and freevarsb bindedvars fvars = function
+and freevarsb bindedvars fvars ee =
+  let (_, e) = ee in
+  match e with    
   | Testeq(e1,e2) 
   | Testneq(e1,e2)
   | Testlt(e1,e2) 

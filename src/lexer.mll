@@ -15,7 +15,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
 
   (* File/errors management  *)
   | eof             { EOF }
-  | '\n'            { incr_line (); token lexbuf }
+  | '\n'            { Lexing.new_line lexbuf; token lexbuf }
   | "test"	    { TEST }
   
   (* Built in *)
@@ -36,6 +36,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "rec"	    { REC }
   | "in"            { IN }
   | ';'		    { SEMICOL }
+  | ";;"	    { DOUBLESEMICOL }
   | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }

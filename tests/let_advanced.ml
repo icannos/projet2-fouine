@@ -1,4 +1,2 @@
-let a = 5
-let b = 6
-let c = 3+8;;
-prInt c
+let a = 5 ;;
+let d = 5 in prInt d
