@@ -18,7 +18,7 @@ module Mem  = Hashtbl.Make(IntHash);;
 
 type memoire_t = value Mem.t;; (*définitions analogues aux environnements*)
 
-let memoire = (Mem.create 100);;(*initialisation de la mémoire, ce n'est pas un peu sale d'en faire une ref ?*)
+let memoire = (Mem.create 100);;(*initialisation de la mémoire*)
 
 (*A priori temporaire c'est juste pour permettre au compilateur d'inférer les types, je ne sais pas faire autrement: il faudra demander. *)
 Mem.add memoire 0 (Int 0);;

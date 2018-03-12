@@ -3,7 +3,53 @@ open Env;;
 open Expr;;
 open Arguments;;
 
+(*nouvelle fonction d'affichage, le but est de sortir un code executable *)
+let rec aff_expr ee =
+  let (node_id, e) = ee in
+  match e with
+  | Identifier s -> ps s
+  | Const k -> print_int k
+  | Add(e1,e2) -> aff_bin "+" e1 e2
+  | Mul(e1,e2) -> aff_bin "*" e1 e2
+  | Sou(e1,e2) -> aff_bin "-" e1 e2
+  | Div(e1,e2) -> aff_bin "/" e1 e2
+  | Aff(nom,e1) -> ps nom; ps " := "; aff_expr e1
+  | Ref(e) -> ps " ref " ; aff_expr e
+  | Acc(nom) -> ps " !"; ps nom
+  | PrintInt(e) -> ps "printInt (" ; aff_expr e ; ps ")"
+  | Let((nom,e1),e2) ->
+        ps "let "; ps nom; ps " = ";
+	aff_expr e1;
+	ps " in  "; aff_expr e2;
+  | LetRec((nom,e1),e2) ->
+        ps "let rec "; ps nom; ps " = ";
+	aff_expr e1;
+	ps " in  "; aff_expr e2;
+  | Fun(nom,e1) -> ps  "( fun "; aff_expr (node_id, Identifier nom) ; ps " -> "; aff_expr e1 ; ps " )"
+  | App(e1,e2) -> aff_expr e1;ps " " ; aff_expr e2
+  | Cond(b,e1,e2) -> ps "if "; aff_bexpr b; ps " then ( ";aff_expr e1;ps ") else (" ; aff_expr e2; ps ")"
+and aff_bexpr bb=
+  let (node_id, b) = bb in
+  match b with
+  | Testeq(e1,e2)-> aff_bin "=" e1 e2
+  | Testneq(e1,e2) -> aff_bin "<>" e1 e2
+  | Testlt(e1,e2) -> aff_bin "<" e1 e2
+  | Testgt(e1,e2) -> aff_bin ">" e1 e2
+  | Testlet(e1,e2) -> aff_bin "<=" e1 e2
+  | Testget(e1,e2) -> aff_bin ">=" e1 e2
 
+and aff_bin op a b =
+  begin
+    ps "(";
+    aff_expr a;
+    ps " ";
+    ps op;
+    ps " ";
+    aff_expr b;
+    ps ")"
+  end ;;
+    
+  
 (* fonction d'affichage des expressions *)
 let rec affiche_expr ee =
 let (node_id, e) = ee in
@@ -18,19 +64,19 @@ let (node_id, e) = ee in
   | Ref(e) -> ps "ref " ; affiche_expr e
   | Acc(nom) -> ps "!"; ps nom
   | Let((nom,e1),e2) ->
-        print_string "Let(";
-        print_string nom;
-	print_string ", ";
+        ps "Let(";
+        ps nom;
+	ps ", ";
 	affiche_expr e1;
-	print_string ", ";
+	ps ", ";
 	affiche_expr e2;
-	print_string ")"
+	ps ")"
   | LetRec((nom,e1),e2) ->
         print_string "LetRec(";
         print_string nom;
 	print_string ", ";
 	affiche_expr e1;
-	print_string ", ";
+	print_string ", "; 
 	affiche_expr e2;
 	print_string ")"
   | Fun(nom,e1) -> aff_aux "Fun(" (node_id, Identifier nom)  e1
