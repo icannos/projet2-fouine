@@ -26,7 +26,7 @@ let rec aff_expr ee =
 	aff_expr e1;
 	ps " in  "; aff_expr e2;
   | Fun(nom,e1) -> ps  "( fun "; aff_expr (node_id, Identifier nom) ; ps " -> "; aff_expr e1 ; ps " )"
-  | App(e1,e2) -> aff_expr e1;ps " " ; aff_expr e2
+  | App(e1,e2) -> ps "("; aff_expr e1;ps " " ; aff_expr e2; ps ")"
   | Cond(b,e1,e2) -> ps "if "; aff_bexpr b; ps " then ( ";aff_expr e1;ps ") else (" ; aff_expr e2; ps ")"
 and aff_bexpr bb=
   let (node_id, b) = bb in
@@ -137,4 +137,4 @@ let print_env env = ps "{"; Environnement.iter penv_item env; ps "} \n";;
 
 
 let debug e env =
-  if !debugmode then (print_env env);; 
+  if !verbosemode then (print_env env);; 
