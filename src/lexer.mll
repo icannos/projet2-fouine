@@ -40,6 +40,8 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
+  
+  | ','             { COMMA }
 
   | "fun"           { FUN }
   | "->"            { DONNE }
@@ -56,6 +58,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | ">="            { SUP_L }
   | '='             { EGAL }
   | "<>"            { NONEGAL }
+
+  (*strings and litterals*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z' '_']+ as s { NOM (s) }
+  | ['A'-'Z']['a'-'z' '_']+ as s { CONSTR (s) }
   

@@ -20,6 +20,7 @@ open Errmgr
 %token <string> NOM
 %token PRINT
 %token REF BANG AFF
+%token COMMA
 
 %token TEST
 
@@ -28,7 +29,7 @@ open Errmgr
 %right LET
 
 %left EGAL
-
+%left COMMA
 %left REF
 %left NONEGAL
 %left INF_S
@@ -81,8 +82,14 @@ toplevel:   /* les let de surface */
 ;
 
 binding:
-  |LET NOM functexpr				{($2, $3)} /*on renvoie un couple (identifier, expression)*/
+  |LET pattern functexpr				{($2, $3)} /*on renvoie un couple (identifier, expression)*/
 ;
+
+pattern:
+  | LPAREN pattern RPAREN                     	{  (error_handler  (), $2 ) }
+  | NOM COMMA pattern                   	{  (error_handler  (), Couple($1, $3) }
+  | CONSTR LPAREN pattern RPAREN                {  (error_handler  (), Constr($1, $3) }
+  | NOM                                      	{  (error_handler  (), $1 ) }
 
 recursive:
   |LET REC NOM functexpr			{($3, $4)}
@@ -105,7 +112,7 @@ simplexpr:
   | binding IN simplexpr			{  (error_handler  (),Let($1, $3)) }
   | recursive IN simplexpr			{  (error_handler  (), LetRec($1, $3)) }
   | IF bexpr THEN simplexpr ELSE simplexpr      {  (error_handler  (),Cond($2, $4, $6)) }
-
+  | 
   | listexpr                                    { $1 }
 
   | simplexpr SEMICOL simplexpr                 {  (error_handler  (),Let(("_",$1),$3)) }
