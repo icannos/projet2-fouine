@@ -1,4 +1,5 @@
 
+
 (* Structure pour conserver les metadata des noeuds de l'ast *)
 module IntHash =
         struct
@@ -23,6 +24,7 @@ exception DivisionByZero;;
 exception CannotApply of string;;
 exception NotFunction of string;;
 exception BadArgument of string;;
+exception UnificationFails of string * string
 
 (* Cette fonction est appelée à la création de chaque noeud de l'AST elle renvoie un entier qui permet de récupérer les metadata associées au noeud dans la table de hash et ajoute dans ladite table
 les infos que l'on souhaite conserver, pour l'instant on garde uniquement les informations de position du début de l'erreur et de la fin: Voir Lexing.position *)

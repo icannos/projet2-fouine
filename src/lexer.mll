@@ -41,10 +41,16 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "then"          { THEN }
   | "else"          { ELSE }
   
+  | "match" 	    { MATCH }
+  | "with" 	    { WITH }
+  | "function"	    { FUNCTION }
+  
   | ','             { COMMA }
 
   | "fun"           { FUN }
   | "->"            { DONNE }
+  | "|"		    { CASE }
+  
 
   (*aspects impératifs*)
   | "ref"           { REF }

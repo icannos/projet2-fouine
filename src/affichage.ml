@@ -17,8 +17,8 @@ let rec aff_expr ee =
   | Ref(e) -> ps " ref " ; aff_expr e
   | Acc(nom) -> ps " !"; ps nom
   | PrintInt(e) -> ps "printInt (" ; aff_expr e ; ps ")"
-  | Let((nom,e1),e2) ->
-        ps "let "; ps nom; ps " = ";
+  | Let((patt,e1),e2) ->
+        ps "let "; aff_expr patt; ps " = ";
 	aff_expr e1;
 	ps " in  "; aff_expr e2;
   | LetRec((nom,e1),e2) ->
@@ -63,9 +63,9 @@ let (node_id, e) = ee in
   | Aff(nom, e1) -> ps nom; ps " := "; affiche_expr e1
   | Ref(e) -> ps "ref " ; affiche_expr e
   | Acc(nom) -> ps "!"; ps nom
-  | Let((nom,e1),e2) ->
+  | Let((patt,e1),e2) ->
         ps "Let(";
-        ps nom;
+       affiche_expr patt;
 	ps ", ";
 	affiche_expr e1;
 	ps ", ";
@@ -73,7 +73,7 @@ let (node_id, e) = ee in
 	ps ")"
   | LetRec((nom,e1),e2) ->
         print_string "LetRec(";
-        print_string nom;
+        ps nom;
 	print_string ", ";
 	affiche_expr e1;
 	print_string ", "; 

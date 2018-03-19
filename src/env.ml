@@ -12,7 +12,8 @@ type value = Int of int
            |Reference of int
            |Fonction of name * extexpr * env
            |Rec of   name * name *  extexpr * env (*le premier name garde le nom de la fonction*)
-          (* |Fonction of (value -> value)  Je laisse ça là parce que je trouvais ça élégant *)
+           |TSum of name * value list (* Les types sommes *)
+           |Cartesian of value list (* les n-uplets *)
 
 and
 env = value Environnement.t;; (*ces environnements contiennent des value*)

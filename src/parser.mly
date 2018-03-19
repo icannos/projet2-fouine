@@ -15,7 +15,8 @@ open Errmgr
 %token EGAL  NONEGAL INF_S INF_L SUP_S SUP_L
 %token LPAREN RPAREN SEMICOL DOUBLESEMICOL
 %token LET IN REC
-%token FUN DONNE
+%token FUN DONNE CASE MATCH WITH FUNCTION
+%token <string> CONSTR
 %token IF THEN ELSE
 %token <string> NOM
 %token PRINT
@@ -24,12 +25,18 @@ open Errmgr
 
 %token TEST
 
+%nonassoc LPAREN
+%nonassoc RPAREN
 
 %right IN
 %right LET
+%right CONSTR
+%right COMMA
 
 %left EGAL
-%left COMMA
+%left CASE
+
+
 %left REF
 %left NONEGAL
 %left INF_S
@@ -37,11 +44,14 @@ open Errmgr
 %left SUP_S
 %left SUP_L
 %right SEMICOL
+
+
 %left AFF
 %right IF
 %right THEN
 %right ELSE
 %right DONNE
+
 %left PLUS   /* associativit� gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
 %left PRINT
@@ -86,11 +96,29 @@ binding:
 ;
 
 pattern:
-  | LPAREN pattern RPAREN                     	{  (error_handler  (), $2 ) }
-  | NOM COMMA pattern                   	{  (error_handler  (), Couple($1, $3) }
-  | CONSTR LPAREN pattern RPAREN                {  (error_handler  (), Constr($1, $3) }
-  | NOM                                      	{  (error_handler  (), $1 ) }
+  | LPAREN cartesian_prod RPAREN				{  (error_handler  (), Cart $2)}
+  | CONSTR LPAREN cartesian_prod RPAREN         {  (error_handler  (), Constr($1, $3)) }
+  | NOM                                      	{  (error_handler  (), Identifier $1 ) }
 
+cartesian_prod:
+|pattern					{   [$1] }
+|pattern COMMA cartesian_prod			{   $1::$3 }
+;
+
+pattern_list:
+| pattern					{   [$1] }
+| pattern CASE pattern_list			{   $1::$3 }
+;
+
+pattern_case:
+|pattern_list DONNE simplexpr			{ (error_handler (), PattCase($1, $3)) }
+;
+
+pattern_listcases:
+|CASE pattern_case					{ [$2] }
+|CASE pattern_case pattern_listcases			{ $2::$3 }
+
+;
 recursive:
   |LET REC NOM functexpr			{($3, $4)}
 
@@ -99,6 +127,12 @@ recursive:
 functexpr:
   | EGAL simplexpr				{ $2 }
   | NOM functexpr                       	{  (error_handler  (), Fun($1, $2)) }
+;
+
+cart_expr:
+|simplexpr					{ [$1] }
+|simplexpr COMMA cart_expr  			{ ($1::$3) }
+
 ;
 
 simplexpr:
@@ -115,17 +149,23 @@ simplexpr:
   | 
   | listexpr                                    { $1 }
 
-  | simplexpr SEMICOL simplexpr                 {  (error_handler  (),Let(("_",$1),$3)) }
+  | simplexpr SEMICOL simplexpr
+  {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),$3)) }
   | NOM AFF simplexpr 				{  (error_handler  (),Aff($1, $3)) }
   | REF simplexpr				{  (error_handler  (),Ref($2)) }
 
+  | CONSTR LPAREN cart_expr RPAREN				{  (error_handler  (), Constr($1, $3))}
+  | LPAREN cart_expr RPAREN					{  (error_handler  (), Cart $2 ) }
+  | MATCH simplexpr WITH pattern_listcases			{  (error_handler (), Match($2, $4) )}
 
 
 ;
 
+
 listexpr:
   | priexpr                                     { $1 }
-  | listexpr priexpr                            {  (error_handler  (),App($1, $2)) }
+  | listexpr priexpr                            {  (error_handler  (), App($1, $2)) }
+;
 
 
 priexpr:
@@ -142,3 +182,5 @@ bexpr:
   | simplexpr SUP_S simplexpr                   {  (error_handler  (),Testgt($1,$3)) }
   | simplexpr INF_L simplexpr                   {  (error_handler  (),Testlet($1,$3)) }
   | simplexpr SUP_L simplexpr                   {  (error_handler  (),Testget($1,$3)) }
+
+;

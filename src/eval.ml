@@ -18,15 +18,29 @@ let buildEnv nom env expr =
 
   VarsSet.iter addVar freeV; !nenv
 ;;
-     
 
+let unification expr v env =
+  let envir = ref env in
+  let rec unif (expr,v) = match expr, v with
+    |(_,Identifier key), x when key <> "_"-> envir := (Environnement.add key x (!envir))
+    |(_,Constr(c1, exprlist)), TSum(c2, vlist)
+         when (c1 = c2) && ((List.length exprlist) = (List.length vlist))
+                                                  -> List.iter unif (List.combine exprlist vlist)
+    |(_,Cart(exprlist)), Cartesian(vlist) when (List.length exprlist)=(List.length vlist)
+                                                  -> List.iter unif (List.combine exprlist vlist)
+    |_ -> raise (UnificationFails ("", ""))
+  in
+  unif (expr,v); !envir
+;;
 
+  
+    
+                                            
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
 
 let rec eval ee env  =
   debug ee env;
-
   let (node_id, e) = ee in
 
   try
@@ -52,7 +66,9 @@ let rec eval ee env  =
        begin
         try (Environnement.find nom env)
         with Not_found -> raise (UnknownIdentifier nom)
-      end
+       end
+
+    |Cart(exprlist) -> Cartesian (List.map (fun x -> eval x env) exprlist) 
                       
     | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
@@ -86,9 +102,7 @@ and evalb ee env =
   | Testlet(e1,e2) -> safe_op (eval e1 env) (<=) (eval e2 env)
   | Testget(e1,e2) -> safe_op (eval e1 env) (>=) (eval e2 env)
                     
-  and evallet nom e1 e2 env = match nom with
-    |"_" -> let _ = eval e1 env in eval e2 env
-    |_ -> let envir = Environnement.add nom (eval e1 env) env in eval e2 envir
+  and evallet patt e1 e2 env = let envir = unification patt (eval e1 env) env in eval e2 envir
 
   and evalletrec  nom ee1 ee2 env = match nom with
     |"_" -> let _ = eval ee1 env in eval ee2 env

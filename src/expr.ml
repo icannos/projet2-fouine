@@ -17,11 +17,17 @@ type expr =
   (* |Seq of extexpr*extexpr*)
 
   (* Binding constr  *)
-  | Let of (name * extexpr) * extexpr
-  | LetRec of (name *extexpr) * extexpr
+  | Let of (extexpr * extexpr) * extexpr
+  | LetRec of  (name* extexpr)* extexpr
   | Identifier of name
   | Fun of name * extexpr
   | App of extexpr * extexpr
+
+  (* Pattern Matching  *)
+  |Cart of extexpr list
+  |Constr of name * extexpr list
+  |Match of extexpr * extexpr list
+  |PattCase of extexpr list * extexpr
 
   (* Built in *)
   |PrintInt of extexpr
@@ -50,6 +56,14 @@ type expr =
 
                  
 
+let rec getIdentifiersInConstr expr =
+  let (_, e) = expr in
+  match e with
+  |Identifier x -> VarsSet.singleton x
+  |Cart listxpr
+   |Constr(_, listxpr) ->  List.fold_right VarsSet.union (List.map getIdentifiersInConstr listxpr) VarsSet.empty
+  |_ -> failwith "Cannot unify"
+;;
 
 (* Renvoie les variables libres d'une expression *)
 (*type de la fonction : set -> set -> expr-> set, donc il faut modifier les tests booléens, dis moi si cette technique te semble correcte*)
@@ -57,15 +71,23 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   match e with
   |Aff(_, e) |Ref e -> (freevars bindedvars fvars e)
   |Acc (_)
-  |Const (_) -> fvars
+   |Const (_) -> fvars
+  |Constr (_, listxpr)
+  |Cart listxpr ->
+    List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) VarsSet.empty
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
   |Identifier x -> fvars
   | PrintInt e -> freevars bindedvars fvars e
-  | Let((nom, e1), e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
-  | LetRec((nom, e1), e2) -> VarsSet.union (freevars (VarsSet.add nom bindedvars) fvars e1) (freevars (VarsSet.add nom bindedvars) fvars e2)
+  | Let((constr_expr, e1), e2) ->
+     VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.union (getIdentifiersInConstr constr_expr) bindedvars) fvars e2)
+  | LetRec((nom, e1), e2) ->
+     VarsSet.union (freevars bindedvars  fvars e1)(freevars (VarsSet.add nom bindedvars) fvars e2)
   | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen) 
 
-  |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr 
+  |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr
+
+  |Match(expr, listxpr) ->  List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) (freevars bindedvars fvars  expr)
+  |PattCase(listxpr, expr) -> freevars (VarsSet.union bindedvars (getIdentifiersInConstr (List.hd listxpr))) fvars expr
 
   | Add(e1,e2) 
   | Mul(e1,e2) 
