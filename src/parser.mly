@@ -179,7 +179,7 @@ listexpr:
 
 priexpr:
   | NOM	      	     		       	   	{  (error_handler  (), Identifier $1) }
-  | BANG NOM					{  (error_handler  (), Acc $2 )    }
+  | BANG priexpr				{  (error_handler  (), Acc $2 )    }
   | INT                                         {  (error_handler  (), Const $1) }
   | LPAREN simplexpr RPAREN                     { $2 }
 ;

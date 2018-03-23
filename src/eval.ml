@@ -56,16 +56,16 @@ let rec eval ee env  =
     | Const k -> Int k
     (* Ici on traite les cas impératifs  *)
     (* Si on tente un accès mémoire, on récupère la référence associée et donc l'adresse en mémoire, puis on lit là où il faut *)
-    | Acc(nom) ->
+    | Acc(e) ->
        begin
-         try let Reference(addr) =  Environnement.find nom env in read_address addr
-         with Not_found -> raise (UnknownReference nom)
+         try let Reference(addr) =  eval e env in read_address addr
+         with Not_found -> raise (UnknownReference)
        end
     (* Pour l'affectation on récupère de même l'adresse associée au nom dans l'environnement, puis on ajoute dans la mémoire l'évaluation de l'expression, on retourne ici un nouveau type Unit qui correspond au unit de caml *)
     | Aff(nom, e) ->
        begin
          try let Reference(addr) = Environnement.find nom env in add_memory addr (eval e env); Unit
-         with Not_found ->  raise (UnknownReference nom)
+         with Not_found ->  raise (UnknownReference)
        end
     (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expressieon puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)

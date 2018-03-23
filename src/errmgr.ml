@@ -18,7 +18,7 @@ let pf = Printf.printf;; (* print format strings *)
 
 (* On définira ici l'ensemble des Exceptions que l'on souhaite gérer dans le parcours d'arbre *)
 exception UnknownIdentifier of string;;
-exception UnknownReference  of string;;
+exception UnknownReference;;
 exception NotReference of string;;
 exception DivisionByZero;;
 exception CannotApply of string;;

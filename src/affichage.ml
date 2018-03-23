@@ -15,7 +15,7 @@ let rec aff_expr ee =
   | Div(e1,e2) -> aff_bin "/" e1 e2
   | Aff(nom,e1) -> ps nom; ps " := "; aff_expr e1
   | Ref(e) -> ps " ref " ; aff_expr e
-  | Acc(nom) -> ps " !"; ps nom
+  | Acc(e) -> ps " !"; aff_expr e
   | PrintInt(e) -> ps "printInt (" ; aff_expr e ; ps ")"
   | Let((patt,e1),e2) ->
         ps "let "; aff_expr patt; ps " = ";
@@ -62,7 +62,7 @@ let (node_id, e) = ee in
   | Div(e1,e2) -> aff_aux "Div(" e1 e2
   | Aff(nom, e1) -> ps nom; ps " := "; affiche_expr e1
   | Ref(e) -> ps "ref " ; affiche_expr e
-  | Acc(nom) -> ps "!"; ps nom
+  | Acc(e) -> ps "!"; affiche_expr e
   | Let((patt,e1),e2) ->
         ps "Let(";
        affiche_expr patt;

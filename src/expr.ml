@@ -32,7 +32,7 @@ type expr =
   (* Impératif *)
   |Aff of name * extexpr
   |Ref of extexpr
-  |Acc of name
+  |Acc of extexpr
 
   |Uni
         
