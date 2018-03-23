@@ -23,6 +23,7 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
   let envir = ref env in
   let rec unif (expr,v) = match expr, v with
     |(_,Identifier key), x when key <> "_"-> envir := (Environnement.add key x (!envir))
+    |(_,Identifier key), x when key = "_"-> ()
     |(_,Constr(c1, exprlist)), TSum(c2, vlist)
          when (c1 = c2) && ((List.length exprlist) = (List.length vlist))
                                                   -> List.iter unif (List.combine exprlist vlist)

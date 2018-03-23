@@ -26,6 +26,7 @@ exception NotFunction of string;;
 exception BadArgument of string;;
 exception UnificationFails of string * string;;
 exception PatternMatchingFails;;
+exception Fail;;
 
 (* Cette fonction est appelée à la création de chaque noeud de l'AST elle renvoie un entier qui permet de récupérer les metadata associées au noeud dans la table de hash et ajoute dans ladite table
 les infos que l'on souhaite conserver, pour l'instant on garde uniquement les informations de position du début de l'erreur et de la fin: Voir Lexing.position *)
@@ -50,4 +51,7 @@ let error_display node_id except =
    | NotFunction s -> pf "%s is not a function \n" s
    | Invalid_argument s -> pf "Bad operation argument \n" 
    | Failure s -> pf "%s" s
+   | x -> raise x
    | _ -> pf "Something goes wrong, sorry we have no idea of what it is ! \n"
+        ;
+          raise Fail;;
