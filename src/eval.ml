@@ -86,12 +86,12 @@ let rec eval ee env  =
     | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
     | Let((pattern, e1), e2) -> evallet pattern e1 e2 env
     | LetRec((nom, e1), e2) -> evalletrec nom e1 e2 env
-    | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) 
-                           
-                           
+    | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env)
+    | Uni -> Unit
                            
     |Fun(argument, expr) -> Fonction(argument, expr, buildEnv argument env expr) (*de type name * expr * env*)
     |App(e1, e2) -> match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
+                    |Fonction("_", expr, fenv) ->  eval expr fenv
                     |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                     |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)
                     |Int k -> raise (CannotApply "integer")

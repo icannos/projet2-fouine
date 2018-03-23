@@ -22,7 +22,7 @@ open Errmgr
 %token PRINT
 %token REF BANG AFF
 %token COMMA
-/* %token UNIT */
+%token UNIT
 
 
 %nonassoc LPAREN
@@ -126,6 +126,7 @@ recursive:
 
 functexpr:
   | EGAL simplexpr				{ $2 }
+  | UNIT functexpr				{  (error_handler  (), Fun("_", $2)) }
   | NOM functexpr                       	{  (error_handler  (), Fun($1, $2)) }
 ;
 
@@ -157,6 +158,8 @@ simplexpr:
   | LPAREN cart_expr RPAREN 					{  (error_handler  (), Cart $2 ) }
   
   | MATCH simplexpr WITH pattern_listcases			{  (error_handler (), Match($2, $4) )}
+
+  |UNIT	  	    	 					{(error_handler (), Uni)}
 
 
 ;

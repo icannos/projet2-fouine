@@ -13,9 +13,6 @@ type expr =
   | Sou of extexpr*extexpr
   | Div of extexpr*extexpr
 
-  (* Seq *)
-  (* |Seq of extexpr*extexpr*)
-
   (* Binding constr  *)
   | Let of (extexpr * extexpr) * extexpr
   | LetRec of  (name* extexpr)* extexpr
@@ -36,6 +33,8 @@ type expr =
   |Aff of name * extexpr
   |Ref of extexpr
   |Acc of name
+
+  |Uni
         
 
   (* Tests Constructor *)
@@ -76,7 +75,8 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   |Cart listxpr ->
     List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) VarsSet.empty
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
-  |Identifier x -> fvars
+  |Uni
+  |Identifier _-> fvars
   | PrintInt e -> freevars bindedvars fvars e
   | Let((constr_expr, e1), e2) ->
      VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.union (getIdentifiersInConstr constr_expr) bindedvars) fvars e2)

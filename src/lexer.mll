@@ -49,7 +49,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "fun"           { FUN }
   | "->"            { DONNE }
   | "|"		    { CASE }
- /* | "()"            { UNIT } */
+  | "()"            { UNIT }
   
 
   (*aspects impératifs*)
