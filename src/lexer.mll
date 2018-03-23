@@ -16,7 +16,6 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   (* File/errors management  *)
   | eof             { EOF }
   | '\n'            { Lexing.new_line lexbuf; token lexbuf }
-  | "test"	    { TEST }
   
   (* Built in *)
   |"prInt"	    { PRINT }

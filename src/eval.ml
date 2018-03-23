@@ -19,7 +19,7 @@ let buildEnv nom env expr =
   VarsSet.iter addVar freeV; !nenv
 ;;
 
-let unification expr v env =
+let unification expr v env = (*fonction de type expr-> value-> env -> env, ajoute dans l'environnement l'unification de expr avec v si c'est possible, si l'unification est impossible on lève l'exception UnificationFails, à remplir un jour*)
   let envir = ref env in
   let rec unif (expr,v) = match expr, v with
     |(_,Identifier key), x when key <> "_"-> envir := (Environnement.add key x (!envir))
@@ -33,7 +33,7 @@ let unification expr v env =
   unif (expr,v); !envir
 ;;
 
-
+(*fonction value -> liste de Patcase -> env -> (expr, env) renvoie l'expression qui correspond au premier matching qui convient, et l'environnement associé. En cas d'aucun matching possible, on lève à nouveau l'expression UnificationFails *)
 let rec trymatch value caselist env = match caselist with
   |[] -> raise (UnificationFails("", ""))
   |[(_, PattCase(patt, x))] -> (x, unification patt value env)
@@ -42,8 +42,8 @@ let rec trymatch value caselist env = match caselist with
   
                                             
 (* sémantique opérationnelle à grands pas *)
-(*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
-
+  
+(* eval -> expr -> env -> value*)
 let rec eval ee env  =
   debug ee env;
   let (node_id, e) = ee in
@@ -83,7 +83,7 @@ let rec eval ee env  =
     | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
     | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
     | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
-    | Let((nom, e1), e2) -> evallet  nom e1 e2 env
+    | Let((pattern, e1), e2) -> evallet pattern e1 e2 env
     | LetRec((nom, e1), e2) -> evalletrec nom e1 e2 env
     | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env) 
                            
@@ -109,7 +109,8 @@ and evalb ee env =
   | Testgt(e1,e2) ->  safe_op (eval e1 env) (>) (eval e2 env)
   | Testlet(e1,e2) -> safe_op (eval e1 env) (<=) (eval e2 env)
   | Testget(e1,e2) -> safe_op (eval e1 env) (>=) (eval e2 env)
-                    
+
+(*on unifie le pattern avec e1*)
   and evallet patt e1 e2 env = let envir = unification patt (eval e1 env) env in eval e2 envir
 
   and evalletrec  nom ee1 ee2 env = match nom with

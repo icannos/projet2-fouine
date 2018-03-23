@@ -23,7 +23,7 @@ open Errmgr
 %token REF BANG AFF
 %token COMMA
 
-%token TEST
+
 
 %nonassoc LPAREN
 %nonassoc RPAREN
@@ -94,27 +94,27 @@ toplevel:   /* les let de surface */
 ;
 
 binding:
-  |LET pattern functexpr				{($2, $3)} /*on renvoie un couple (identifier, expression)*/
+  |LET pattern functexpr                	{($2, $3)} /*on renvoie un couple (identifier, expression)*/
 ;
 
-pattern:
-  | LPAREN cartesian_prod RPAREN				{  (error_handler  (), Cart $2)}
+pattern: /* c'est les différentes choses qu'on peut matcher */
+  | LPAREN cartesian_prod RPAREN	      	{  (error_handler  (), Cart $2)}
   | CONSTR LPAREN cartesian_prod RPAREN         {  (error_handler  (), Constr($1, $3)) }
   | NOM                                      	{  (error_handler  (), Identifier $1 ) }
   | INT 					{  (error_handler (),  Const $1 ) }
 
 ;
 
-cartesian_prod:
+cartesian_prod:   /*les n uplet, rangés dans une liste dans un Cart*/
 |pattern					{   [$1] }
 |pattern COMMA cartesian_prod			{   $1::$3 }
 ;
 
-pattern_case:
+pattern_case:     /*dans une fonction les differents cas possibles  */ 
 |CASE pattern  DONNE simplexpr			{ (error_handler (), PattCase($2, $4)) }
 ;
 
-pattern_listcases:
+pattern_listcases: /*les différents matching sont rangés dans une liste : l'ordre importe  */
 | pattern_case					{ [$1] }
 | pattern_case pattern_listcases			{ $1::$2 }
 
@@ -130,7 +130,7 @@ functexpr:
 ;
 
 cart_expr:
-|simplexpr					{ [$1] }
+|simplexpr COMMA simplexpr		       	{ [$1;$3] }
 |simplexpr COMMA cart_expr  			{ ($1::$3) }
 
 ;
@@ -149,8 +149,7 @@ simplexpr:
   | 
   | listexpr                                    { $1 }
 
-  | simplexpr SEMICOL simplexpr
-  {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),$3)) }
+  | simplexpr SEMICOL simplexpr                 {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),$3)) }
   | NOM AFF simplexpr 				{  (error_handler  (),Aff($1, $3)) }
   | REF simplexpr				{  (error_handler  (),Ref($2)) }
 
