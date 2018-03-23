@@ -111,12 +111,12 @@ cartesian_prod:   /*les n uplet, rangés dans une liste dans un Cart*/
 ;
 
 pattern_case:     /*dans une fonction les differents cas possibles  */ 
-|CASE pattern  DONNE simplexpr			{ (error_handler (), PattCase($2, $4)) }
+|pattern  DONNE simplexpr			{ (error_handler (), PattCase($1, $3)) }
 ;
 
 pattern_listcases: /*les différents matching sont rangés dans une liste : l'ordre importe  */
-| pattern_case					{ [$1] }
-| pattern_case pattern_listcases			{ $1::$2 }
+| CASE pattern_case					{ [$2] }
+| CASE pattern_case pattern_listcases			{ $2::$3 }
 
 ;
 recursive:
@@ -132,6 +132,12 @@ functexpr:
 
 cart_expr:
 |simplexpr COMMA simplexpr		       	{ [$1;$3] }
+|simplexpr COMMA cart_expr  			{ ($1::$3) }
+
+;
+
+constr_expr:
+|simplexpr		       	{ [$1] }
 |simplexpr COMMA cart_expr  			{ ($1::$3) }
 
 ;
@@ -154,7 +160,7 @@ simplexpr:
   | NOM AFF simplexpr 				{  (error_handler  (),Aff($1, $3)) }
   | REF simplexpr				{  (error_handler  (),Ref($2)) }
 
-  | CONSTR LPAREN cart_expr RPAREN				{  (error_handler  (), Constr($1, $3))}
+  | CONSTR LPAREN constr_expr RPAREN				{  (error_handler  (), Constr($1, $3))}
   | LPAREN cart_expr RPAREN 					{  (error_handler  (), Cart $2 ) }
   
   | MATCH simplexpr WITH pattern_listcases			{  (error_handler (), Match($2, $4) )}
