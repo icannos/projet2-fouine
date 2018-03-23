@@ -24,6 +24,8 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
   let rec unif (expr,v) = match expr, v with
     |(_,Identifier key), x when key <> "_"-> envir := (Environnement.add key x (!envir))
     |(_,Identifier key), x when key = "_"-> ()
+    |(_, Const x), Int y when x = y -> ()
+                                          
     |(_,Constr(c1, exprlist)), TSum(c2, vlist)
          when (c1 = c2) && ((List.length exprlist) = (List.length vlist))
                                                   -> List.iter unif (List.combine exprlist vlist)
@@ -76,6 +78,7 @@ let rec eval ee env  =
 
     |Cart(exprlist) -> Cartesian (List.map (fun x -> eval x env) exprlist)
     |Constr(cons, exprlist) -> TSum(cons, (List.map (fun x -> eval x env) exprlist))
+                             
     |Match(expr, exprlist) -> let e, envir = trymatch (eval expr env) exprlist env in
                               eval e envir
                       

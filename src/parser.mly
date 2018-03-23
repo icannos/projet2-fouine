@@ -98,10 +98,10 @@ binding:
 ;
 
 pattern: /* c'est les différentes choses qu'on peut matcher */
+  | INT 					{  (error_handler (),  Const $1 ) }
   | LPAREN cartesian_prod RPAREN	      	{  (error_handler  (), Cart $2)}
   | CONSTR LPAREN cartesian_prod RPAREN         {  (error_handler  (), Constr($1, $3)) }
   | NOM                                      	{  (error_handler  (), Identifier $1 ) }
-  | INT 					{  (error_handler (),  Const $1 ) }
 
 ;
 
@@ -111,7 +111,7 @@ cartesian_prod:   /*les n uplet, rangés dans une liste dans un Cart*/
 ;
 
 pattern_case:     /*dans une fonction les differents cas possibles  */ 
-|pattern  DONNE simplexpr			{ (error_handler (), PattCase($1, $3)) }
+|pattern DONNE simplexpr			{ (error_handler (), PattCase($1, $3)) }
 ;
 
 pattern_listcases: /*les différents matching sont rangés dans une liste : l'ordre importe  */

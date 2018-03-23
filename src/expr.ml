@@ -61,6 +61,7 @@ let rec getIdentifiersInConstr expr =
   |Identifier x -> VarsSet.singleton x
   |Cart listxpr
    |Constr(_, listxpr) ->  List.fold_right VarsSet.union (List.map getIdentifiersInConstr listxpr) VarsSet.empty
+  |Const _ -> VarsSet.empty
   |_ -> failwith "Cannot unify"
 ;;
 
