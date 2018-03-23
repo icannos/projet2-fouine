@@ -30,11 +30,13 @@ open Errmgr
 
 %right IN
 %right LET
+%right CASE
+
 %right CONSTR
 %right COMMA
 
 %left EGAL
-%left CASE
+
 
 
 %left REF
@@ -99,15 +101,13 @@ pattern:
   | LPAREN cartesian_prod RPAREN				{  (error_handler  (), Cart $2)}
   | CONSTR LPAREN cartesian_prod RPAREN         {  (error_handler  (), Constr($1, $3)) }
   | NOM                                      	{  (error_handler  (), Identifier $1 ) }
+  | INT 					{  (error_handler (),  Const $1 ) }
+
+;
 
 cartesian_prod:
 |pattern					{   [$1] }
 |pattern COMMA cartesian_prod			{   $1::$3 }
-;
-
-pattern_list:
-| pattern					{   [$1] }
-| pattern CASE pattern_list			{   $1::$3 }
 ;
 
 pattern_case:
@@ -155,7 +155,8 @@ simplexpr:
   | REF simplexpr				{  (error_handler  (),Ref($2)) }
 
   | CONSTR LPAREN cart_expr RPAREN				{  (error_handler  (), Constr($1, $3))}
-  | LPAREN cart_expr RPAREN					{  (error_handler  (), Cart $2 ) }
+  | LPAREN cart_expr RPAREN 					{  (error_handler  (), Cart $2 ) }
+  
   | MATCH simplexpr WITH pattern_listcases			{  (error_handler (), Match($2, $4) )}
 
 
