@@ -1,2 +1,4 @@
- 
-let (x,y) = (5,3) in prInt y
+
+match Maxime(5+5) with
+|Maxime(x) -> prInt x
+|(x,y) -> prInt x

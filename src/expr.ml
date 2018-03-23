@@ -27,7 +27,7 @@ type expr =
   |Cart of extexpr list
   |Constr of name * extexpr list
   |Match of extexpr * extexpr list
-  |PattCase of extexpr list * extexpr
+  |PattCase of extexpr * extexpr
 
   (* Built in *)
   |PrintInt of extexpr
@@ -87,7 +87,7 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr
 
   |Match(expr, listxpr) ->  List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) (freevars bindedvars fvars  expr)
-  |PattCase(listxpr, expr) -> freevars (VarsSet.union bindedvars (getIdentifiersInConstr (List.hd listxpr))) fvars expr
+  |PattCase(casexpr, expr) -> freevars (VarsSet.union bindedvars (getIdentifiersInConstr casexpr)) fvars expr
 
   | Add(e1,e2) 
   | Mul(e1,e2) 

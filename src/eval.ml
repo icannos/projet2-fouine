@@ -33,8 +33,13 @@ let unification expr v env =
   unif (expr,v); !envir
 ;;
 
+
+let rec trymatch value caselist env = match caselist with
+  |[] -> raise (UnificationFails("", ""))
+  |[(_, PattCase(patt, x))] -> (x, unification patt value env)
+  |(_, PattCase(patt, x))::q -> begin try (x,unification patt value env) with UnificationFails(_, _) -> trymatch value q env end
+;;
   
-    
                                             
 (* sémantique opérationnelle à grands pas *)
 (*modifions le type de cette fonction, désormais eval -> expr -> env -> value*)
@@ -68,7 +73,10 @@ let rec eval ee env  =
         with Not_found -> raise (UnknownIdentifier nom)
        end
 
-    |Cart(exprlist) -> Cartesian (List.map (fun x -> eval x env) exprlist) 
+    |Cart(exprlist) -> Cartesian (List.map (fun x -> eval x env) exprlist)
+    |Constr(cons, exprlist) -> TSum(cons, (List.map (fun x -> eval x env) exprlist))
+    |Match(expr, exprlist) -> let e, envir = trymatch (eval expr env) exprlist env in
+                              eval e envir
                       
     | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)

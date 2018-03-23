@@ -111,12 +111,12 @@ pattern_list:
 ;
 
 pattern_case:
-|pattern_list DONNE simplexpr			{ (error_handler (), PattCase($1, $3)) }
+|CASE pattern  DONNE simplexpr			{ (error_handler (), PattCase($2, $4)) }
 ;
 
 pattern_listcases:
-|CASE pattern_case					{ [$2] }
-|CASE pattern_case pattern_listcases			{ $2::$3 }
+| pattern_case					{ [$1] }
+| pattern_case pattern_listcases			{ $1::$2 }
 
 ;
 recursive:
