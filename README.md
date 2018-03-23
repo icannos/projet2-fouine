@@ -9,6 +9,9 @@
                        |___/
 ```
 
+
+"Mal nommer un objet c'est ajouter au malheur de ce monde, car le mensonge est justement la grande misère humaine, c'est pourquoi la grande tâche humaine correspondante sera de ne pas servir le mensonge" Albert Camus
+
 #### Pour Edwige
 
 Tu trouveras dans le dossier `src/` les sources de notre programme ainsi qu'un makefile tuné. Lorsque tu lances make, il te crée un dossier `bin/` à la racine du projet dans lequel sont transférés les exécutables en adoptant la convention de nommage demandée dans le sujet (`main.native` --> `fouine`).
@@ -102,6 +105,8 @@ Il y a un truc que je ne comprends pas: c'est la question du () qui est mentionn
 J'ai implémenté un putain de système du turfu pour gérer les erreurs, c'est très moche et je suis persuadé qu'Hirshkoff nous donnera une meilleure solution mais actuellement je suis content de ma construction alors je laisse ça comme ça parce que ça marche assez bien. C'est pas encore fini mais j'ai construit le socle pour l'avenir !
 
 
+
+Il faut faire les fonctions f() : j'ai ajouté unit, et c'est la bonnefaçon de faire, mais j'ai commenté car je n'avais pas le temps de voir exactement comment on le parsait. Si tu as du temps ce weekend, fais le, je ferais du nettoyage à partir de lundi matin
 
 
 
