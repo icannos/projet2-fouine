@@ -1,0 +1,8 @@
+
+
+1. écrire une copie des fonctions d'affichage pour pas qu'elles affichent mais renvoient du texte, s'assurer qu'elles matchent bien tous les cas (genre les derniers trucs ajoutés: pattCase, Match, Constr etc..)
+2. Eventuellement renomer les règles de la grammaire en qqchose de plus compréhensible
+3. Ecrire des tests pour vérifier tous les trucs de syntaxes chelous: des fonctions qui retournes des références auxquelles on essaie d'accéder, des références sur des références sur des références, Des imbrications chelous en tous genres: si t'as idées essaie !
+4. Tester les unit let f () = ... et let f = () 
+5. Rattrapper correctement toutes les erreurs et utilier le point 1 pour donner des infos utiles via les arguments des constructeurs
+6. ???

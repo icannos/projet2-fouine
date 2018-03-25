@@ -48,8 +48,8 @@ and aff_bin op a b =
     aff_expr b;
     ps ")"
   end ;;
-    
-  
+
+
 (* fonction d'affichage des expressions *)
 let rec affiche_expr ee =
 let (node_id, e) = ee in
@@ -76,14 +76,14 @@ let (node_id, e) = ee in
         ps nom;
 	print_string ", ";
 	affiche_expr e1;
-	print_string ", "; 
+	print_string ", ";
 	affiche_expr e2;
 	print_string ")"
   | Fun(nom,e1) -> aff_aux "Fun(" (node_id, Identifier nom)  e1
   | App(e1, e2) -> ps "App("; affiche_expr e1;ps ", "; affiche_expr e2; ps ")"
   | PrintInt(e) -> ps "prInt("; affiche_expr e; ps ")"
 
-        
+
   | Cond(b,e1,e2) ->
         print_string "Cond(";
         affiche_bexpr b;
@@ -93,7 +93,7 @@ let (node_id, e) = ee in
 	affiche_expr e2;
 	print_string ")"
 
-      
+
 and affiche_bexpr bb =
 let (node_id, b) = bb in
   match b with
@@ -103,7 +103,7 @@ let (node_id, b) = bb in
    | Testgt(e1,e2) -> aff_aux "Testgt(" e1 e2
    | Testlet(e1,e2) -> aff_aux "Testlet(" e1 e2
    | Testget(e1,e2) -> aff_aux "Testget(" e1 e2
-and  aff_aux s a b = 
+and  aff_aux s a b =
       begin
 	print_string s;
 	affiche_expr a;
@@ -137,4 +137,4 @@ let print_env env = ps "{"; Environnement.iter penv_item env; ps "} \n";;
 
 
 let debug e env =
-  if !verbosemode then (print_env env);; 
+  if !verbosemode then (print_env env);;
