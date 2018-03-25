@@ -93,14 +93,7 @@ let rec eval ee env  =
     | Uni -> Unit
                            
     |Fun(argument, expr) -> Fonction(argument, expr, buildEnv argument env expr) (*de type name * expr * env*)
-    |App(e1, e2) -> match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
-                    |Fonction("_", expr, fenv) ->  eval expr fenv
-                    |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
-                    |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)
-                    |Int k -> raise (CannotApply "integer")
-                    |Reference(_) -> raise (CannotApply "a reference") (* On râle si on essaie d'appliquer une référence *)
-                    |Unit -> raise (CannotApply "unit")
-
+    |App(e1, e2) -> evalapp e1 e2 env
   with x -> error_display node_id x; Int 0
 (* evalb de type bexpr -> env -> bool*)
           
@@ -127,6 +120,12 @@ and evalb ee env =
         |_ -> raise (NotFunction "this")
       end
                                          
-
+and evalapp e1 e2  env =  match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
+                    |Fonction("_", expr, fenv) ->  eval expr fenv
+                    |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
+                    |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)
+                    |Int k -> raise (CannotApply "integer")
+                    |Reference(_) -> raise (CannotApply "a reference") (* On râle si on essaie d'appliquer une référence *)
+                    |Unit -> raise (CannotApply "unit")
 
 ;;
