@@ -36,7 +36,7 @@ open Errmgr
 %right CASE
 
 %right CONSTR
-%left COMMA 
+%right COMMA 
 %right COLONCOLON
 
 %left EGAL
@@ -47,14 +47,17 @@ open Errmgr
 %left INF_L
 %left SUP_S
 %left SUP_L
-%right SEMICOL
 
 
-%left AFF
+
+
 %right IF
 %right THEN
 %right ELSE
 %right DONNE
+
+%left SEMICOL
+%left AFF
 
 %left PLUS   /* associativit� gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
