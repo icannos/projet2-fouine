@@ -170,7 +170,7 @@ n_uplets:  /*on a au moins deux éléments*/
 liste_pattern:
   |LBRACKET RBRACKET                             {(error_handler (),  Vide ) }
   |LBRACKET interior_liste RBRACKET              { $2 }
-  |pattern COLONCOLON liste_pattern               { (error_handler (), Liste($1,$3)) }
+  |pattern COLONCOLON liste_pattern               { (error_handler (), Liste($1,$3)) } /* Ici on ne match jamais x::q il faudrait ajouter un nom ou pattern lui même de sorte à matcher 1::x::q */	   	      				  
 ;
 
 liste:
