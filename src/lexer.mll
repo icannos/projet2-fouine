@@ -46,6 +46,10 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   
   | ','             { COMMA }
 
+  | '['             { LBRACKET }
+  | ']'             { RBRACKET }
+  | "::"            { COLONCOLON }
+
   | "fun"           { FUN }
   | "->"            { DONNE }
   | "|"		    { CASE }

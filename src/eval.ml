@@ -30,7 +30,9 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
          when (c1 = c2) && ((List.length exprlist) = (List.length vlist))
                                                   -> List.iter unif (List.combine exprlist vlist)
     |(_,Cart(exprlist)), Cartesian(vlist) when (List.length exprlist)=(List.length vlist)
-                                                  -> List.iter unif (List.combine exprlist vlist)
+     -> List.iter unif (List.combine exprlist vlist)
+    |(_,Vide), Vide -> ()
+    |(_,Liste(t,q)), Listing(a,b) -> unif (t,a); unif (q,b)
     |_ -> raise (UnificationFails ("", ""))
   in
   unif (expr,v); !envir
@@ -78,6 +80,8 @@ let rec eval ee env  =
 
     |Cart(exprlist) -> Cartesian (List.map (fun x -> eval x env) exprlist)
     |Constr(cons, exprlist) -> TSum(cons, (List.map (fun x -> eval x env) exprlist))
+    |Vide -> Vide
+    |Liste(t,q)-> Listing(eval t env, eval q env)
                              
     |Match(expr, exprlist) -> let e, envir = trymatch (eval expr env) exprlist env in
                               eval e envir

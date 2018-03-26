@@ -23,6 +23,7 @@ open Errmgr
 %token REF BANG AFF
 %token COMMA
 %token UNIT
+%token LBRACKET RBRACKET COLONCOLON
 
 
 %nonassoc LPAREN
@@ -33,7 +34,8 @@ open Errmgr
 %right CASE
 
 %right CONSTR
-%right COMMA
+%right COMMA 
+%right COLONCOLON
 
 %left EGAL
 
@@ -112,6 +114,7 @@ simplexpr:
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
  | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) }
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
+ | liste                                       { $1 }
 ;
 
 
@@ -134,13 +137,11 @@ pattern: /* c'est les différentes choses qu'on peut matcher */
  | LPAREN uplet_pattern RPAREN	        	{  (error_handler  (), Cart $2)}
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
  | NOM                                      	{  (error_handler  (), Identifier $1 ) }
-
+ | liste_pattern                                {  $1 }
+ | priexpr
 ;
 
-uplet_pattern:   /*les n uplet, rangés dans une liste dans un Cart*/
- |pattern					{   [$1] }
- |pattern COMMA uplet_pattern			{   $1::$3 }
-;
+
 
 pattern_case:     /*dans une fonction les differents cas possibles  */
  |pattern DONNE simplexpr			{ (error_handler (), PattCase($1, $3)) }
@@ -152,10 +153,9 @@ list_pattern_case: /*les différents matching sont rangés dans une liste : l'or
 
 ;
 
-
-n_uplets:  /*on a au moins deux éléments*/
- |simplexpr COMMA simplexpr		       	{ [$1;$3] }
- |simplexpr COMMA n_uplets  			{ ($1::$3) }
+uplet_pattern:   /*les n uplet, rangés dans une liste dans un Cart*/
+ |pattern					{   [$1] }
+ |pattern COMMA uplet_pattern			{   $1::$3 }
 ;
 
 uplet_simplexpr:
@@ -163,6 +163,26 @@ uplet_simplexpr:
  |simplexpr COMMA n_uplets  			{ ($1::$3) }
 ;
 
+n_uplets:  /*on a au moins deux éléments*/
+ |simplexpr COMMA simplexpr		       	{ [$1;$3] }
+ |simplexpr COMMA n_uplets  			{ ($1::$3) }
+;
+
+liste_pattern:
+  |LBRACKET RBRACKET                             { Vide }
+  |LBRACKET interior_liste RBRACKET              { $1 }
+  |pattern COLONCOLON list_pattern               { (error_handler (), Liste($1,$3)) }
+;
+
+liste:
+  |LBRACKET RBRACKET                             { Vide }
+  |LBRACKET interior_liste RBRACKET              { $1 }
+;
+  
+interior_liste:
+  |simplexpr                                     { (error_handler (), Liste($1,Vide)) }
+  |simplexpr SEMICOL interior_liste              { (error_handler (), Liste($1;$3)) }
+;
 
 listexpr:
  | priexpr                                     { $1 }

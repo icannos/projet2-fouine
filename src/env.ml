@@ -12,6 +12,7 @@ type value = Int of int
            |Rec of   name * name *  extexpr * env (*le premier name garde le nom de la fonction*)
            |TSum of name * value list (* Les types sommes *)
            |Cartesian of value list (* les n-uplets *)
+           |Listing of value list (*les listes*)
 
 and
 
