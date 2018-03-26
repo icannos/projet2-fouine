@@ -168,7 +168,7 @@ n_uplets:  /*on a au moins deux éléments*/
 ;
 
 liste_pattern:
-  |LBRACKET RBRACKET                             { Vide }
+  |LBRACKET RBRACKET                             {(error_handler (),  Vide ) }
   |LBRACKET interior_liste RBRACKET              { $2 }
   |pattern COLONCOLON liste_pattern               { (error_handler (), Liste($1,$3)) }
 ;
@@ -179,8 +179,8 @@ liste:
 ;
   
 interior_liste:
-  |simplexpr                                     { (error_handler (), Liste($1,Vide)) }
-  |simplexpr SEMICOL interior_liste              { (error_handler (), Liste($1;$3)) }
+  |simplexpr                                     { (error_handler (), Liste($1,(error_handler (),Vide))) }
+  |simplexpr SEMICOL interior_liste              { (error_handler (), Liste($1,$3)) }
 ;
 
 listexpr:
