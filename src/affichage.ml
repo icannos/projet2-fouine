@@ -3,7 +3,7 @@ open Env;;
 open Expr;;
 open Arguments;;
 
-(*nouvelle fonction d'affichage, le but est de sortir un code executable *)
+(*aff_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec aff_expr ee =
   let (node_id, e) = ee in
   match e with
@@ -29,9 +29,9 @@ let rec aff_expr ee =
   | App(e1,e2) -> ps "("; aff_expr e1;ps " " ; aff_expr e2; ps ")"
   | Cond(b,e1,e2) -> ps "if "; aff_bexpr b; ps " then ( ";aff_expr e1;ps ") else (" ; aff_expr e2; ps ")"
   | Uni -> ps "()"
-  | Cart up -> ps "(" ; ps ")"
-  | Constr (construct, up) ->  ps  "("; ps ")"
-  | Match(x,image) -> ps "match " ; aff_expr x ; ps " with " ; ps "aff_expr image"
+  | Cart up -> ps "(" ;List.iter  aff_expr up;  ps ")"
+  | Constr (construct, up) ->  ps  "constr("; List.iter aff_expr up; ps ")"
+  | Match(x,image) -> ps "match " ; aff_expr x ; ps " with " ; ps"List.iter aff_expr image" (* je n'arrive pas à faire ce cas*)
   | PattCase(pattern, expr) -> ps "| " ; aff_expr pattern ; ps " -> "; aff_expr expr
 and aff_bexpr bb=
   let (node_id, b) = bb in
@@ -98,9 +98,9 @@ let (node_id, e) = ee in
 	affiche_expr e2;
 	print_string ")"
   | Uni -> ps "Uni"
-  | Cart up -> ps "Cart("; ps "affiche_expr up" ; ps ")"
-  | Constr(nomcons, up) -> ps "non fait"
-  | PattCase(pattern, expr) -> ps "non fait"
+  | Cart up -> ps "Cart("; List.iter affiche_expr up ; ps ")"
+  | Constr(nomcons, up) -> ps "Const("; List.iter affiche_expr up; ps ")"
+  | PattCase(pattern, expr) -> aff_aux "Pattcase(" pattern expr
   | Match(x,expr)-> ps "non fait"
 
 and affiche_bexpr bb =
