@@ -31,7 +31,7 @@ let rec aff_expr ee =
   | Uni -> ps "()"
   | Cart up -> ps "(" ;List.iter  aff_expr up;  ps ")"
   | Constr (construct, up) ->  ps  "constr("; List.iter aff_expr up; ps ")"
-  | Match(x,image) -> ps "match " ; aff_expr x ; ps " with " ; ps"List.iter aff_expr image" (* je n'arrive pas à faire ce cas*)
+  | Match(x,listcases) -> ps "match " ; aff_expr x ; ps " with " ; List.iter aff_expr listcases (* je n'arrive pas à faire ce cas*)
   | PattCase(pattern, expr) -> ps "| " ; aff_expr pattern ; ps " -> "; aff_expr expr
 and aff_bexpr bb=
   let (node_id, b) = bb in
