@@ -29,6 +29,8 @@ let rec aff_expr ee =
   | App(e1,e2) -> ps "("; aff_expr e1;ps " " ; aff_expr e2; ps ")"
   | Cond(b,e1,e2) -> ps "if "; aff_bexpr b; ps " then ( ";aff_expr e1;ps ") else (" ; aff_expr e2; ps ")"
   | Uni -> ps "()"
+  | Vide -> ps "[]"
+  | Liste(t,q)-> aff_expr t ; ps "::" ; aff_expr q
   | Cart up -> ps "(" ;List.iter  aff_expr up;  ps ")"
   | Constr (construct, up) ->  ps  "constr("; List.iter aff_expr up; ps ")"
   | Match(x,listcases) -> ps "match " ; aff_expr x ; ps " with " ; List.iter aff_expr listcases (* je n'arrive pas à faire ce cas*)
@@ -98,6 +100,8 @@ let (node_id, e) = ee in
 	affiche_expr e2;
 	print_string ")"
   | Uni -> ps "Uni"
+  | Vide -> ps "Vide"
+  | Liste(t,q)-> aff_aux "Liste(" t q
   | Cart up -> ps "Cart("; List.iter affiche_expr up ; ps ")"
   | Constr(nomcons, up) -> ps "Const("; List.iter affiche_expr up; ps ")"
   | PattCase(pattern, expr) -> aff_aux "Pattcase(" pattern expr
@@ -136,6 +140,10 @@ let print_value = function
   |Reference k -> ps "Reference"
   |Rec(nom, arg, expr, env) -> ps ("Recursive function " ^ nom)
   |Fonction(name, expr, env) -> ps ("Function " ^ name)
+  |LVide -> ps "[]"
+  |TSum(a,b) -> ps "Type Somme"
+  |Cartesian _-> ps "Ulpet"
+  |Listing(a,b)-> ps "Liste"
 ;;
 
 let penv_item identifier v =
