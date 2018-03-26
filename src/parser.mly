@@ -28,6 +28,8 @@ open Errmgr
 
 %nonassoc LPAREN
 %nonassoc RPAREN
+%nonassoc LBRACKET
+%left RBRACKET
 
 %right IN
 %right LET
@@ -170,17 +172,19 @@ n_uplets:  /*on a au moins deux éléments*/
 liste_pattern:
   |LBRACKET RBRACKET                             {(error_handler (),  Vide ) }
   |LBRACKET interior_liste RBRACKET              { $2 }
-  |pattern COLONCOLON liste_pattern               { (error_handler (), Liste($1,$3)) } /* Ici on ne match jamais x::q il faudrait ajouter un nom ou pattern lui même de sorte à matcher 1::x::q */	   	      				  
+  |pattern COLONCOLON pattern              { (error_handler (), Liste($1,$3)) } 
 ;
 
+
+  
 liste:
   |LBRACKET RBRACKET                             { (error_handler (), Vide) }
   |LBRACKET interior_liste RBRACKET              { $2 }
 ;
   
 interior_liste:
-  |simplexpr                                     { (error_handler (), Liste($1,(error_handler (),Vide))) }
-  |simplexpr SEMICOL interior_liste              { (error_handler (), Liste($1,$3)) }
+  |priexpr                                     { (error_handler (), Liste($1,(error_handler (),Vide))) }
+  |priexpr  SEMICOL interior_liste              { (error_handler (), Liste($1,$3)) }
 ;
 
 listexpr:
