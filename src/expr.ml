@@ -35,7 +35,10 @@ type expr =
   |Acc of extexpr
 
   |Uni
-        
+
+  (*Liste*)
+  |Vide
+  |Liste of extexpr * extexpr
 
   (* Tests Constructor *)
   |Cond of bextexpr * extexpr * extexpr
@@ -77,7 +80,9 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
     List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) VarsSet.empty
   |Identifier x when (VarsSet.mem x bindedvars == false) -> VarsSet.add x fvars
   |Uni
+  |Vide
   |Identifier _-> fvars
+  |Liste(t,q)-> VarsSet.union (freevars bindedvars fvars t) (freevars bindedvars fvars q)
   | PrintInt e -> freevars bindedvars fvars e
   | Let((constr_expr, e1), e2) ->
      VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.union (getIdentifiersInConstr constr_expr) bindedvars) fvars e2)
