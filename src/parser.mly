@@ -138,7 +138,6 @@ pattern: /* c'est les différentes choses qu'on peut matcher */
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
  | NOM                                      	{  (error_handler  (), Identifier $1 ) }
  | liste_pattern                                {  $1 }
- | priexpr
 ;
 
 
@@ -170,13 +169,13 @@ n_uplets:  /*on a au moins deux éléments*/
 
 liste_pattern:
   |LBRACKET RBRACKET                             { Vide }
-  |LBRACKET interior_liste RBRACKET              { $1 }
-  |pattern COLONCOLON list_pattern               { (error_handler (), Liste($1,$3)) }
+  |LBRACKET interior_liste RBRACKET              { $2 }
+  |pattern COLONCOLON liste_pattern               { (error_handler (), Liste($1,$3)) }
 ;
 
 liste:
-  |LBRACKET RBRACKET                             { Vide }
-  |LBRACKET interior_liste RBRACKET              { $1 }
+  |LBRACKET RBRACKET                             { (error_handler (), Vide) }
+  |LBRACKET interior_liste RBRACKET              { $2 }
 ;
   
 interior_liste:
