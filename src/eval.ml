@@ -67,7 +67,7 @@ let rec eval ee env  =
          try let Reference(addr) = Environnement.find nom env in add_memory addr (eval e env); Unit
          with Not_found ->  raise (UnknownReference)
        end
-    (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expressieon puis renvoyer un truc  Reference(addr)  *)
+    (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)
                                              
     | Identifier nom ->
