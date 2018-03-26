@@ -61,10 +61,13 @@ type expr =
 let rec getIdentifiersInConstr expr =
   let (_, e) = expr in
   match e with
-  |Identifier x -> VarsSet.singleton x
+  |Identifier x ->VarsSet.singleton x
   |Cart listxpr
    |Constr(_, listxpr) ->  List.fold_right VarsSet.union (List.map getIdentifiersInConstr listxpr) VarsSet.empty
   |Const _ -> VarsSet.empty
+  |Vide -> VarsSet.empty
+  |Liste(ex, (_,Identifier x)) -> VarsSet.union (getIdentifiersInConstr ex) (VarsSet.singleton x)
+  |Liste(ex, l) -> VarsSet.union (getIdentifiersInConstr ex) (getIdentifiersInConstr l)
   |_ -> failwith "Cannot unify"
 ;;
 
@@ -93,7 +96,7 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr
 
   |Match(expr, listxpr) ->  List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) (freevars bindedvars fvars  expr)
-  |PattCase(casexpr, expr) -> freevars (VarsSet.union bindedvars (getIdentifiersInConstr casexpr)) fvars expr
+  |PattCase(casexpr, expr) ->freevars (VarsSet.union bindedvars (getIdentifiersInConstr casexpr)) fvars expr
 
   | Add(e1,e2) 
   | Mul(e1,e2) 

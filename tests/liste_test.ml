@@ -1,4 +1,5 @@
-let f n = match n with
+let rec f n = match n with
   |[] -> 0
-  |[x] -> x
-in prInt (f ([2]))
+  |x::q -> prInt x; f q
+         
+in (f ([3;2;1;5;4]))

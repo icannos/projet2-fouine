@@ -21,7 +21,7 @@ let interpreter () =
   let parse () = Parser.main Lexer.token lexbuf in
 
   let ast = parse () in
-  if(!debugmode) then (aff_expr ast; print_newline());
+  if(!debugmode) then (affiche_expr ast; print_newline());
   let _ = eval ast ( Environnement.empty) in
 
   flush stdout; 

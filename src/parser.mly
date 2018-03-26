@@ -36,12 +36,10 @@ open Errmgr
 %right CASE
 
 %right CONSTR
-%right COMMA 
+%left COMMA 
 %right COLONCOLON
 
 %left EGAL
-
-
 
 %left REF
 %left NONEGAL
@@ -63,6 +61,7 @@ open Errmgr
 %left PRINT
 %left TIMES
 %left DIV
+
 
 
 

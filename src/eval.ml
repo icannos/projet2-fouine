@@ -13,6 +13,7 @@ let buildEnv nom env expr =
   let addVar key  =
     nenv := Environnement.add key (Environnement.find key env) (!nenv)
   in
+  
 
   let freeV = freevars (VarsSet.singleton nom) (VarsSet.empty) expr in
 
@@ -83,8 +84,8 @@ let rec eval ee env  =
     |Vide -> LVide
     |Liste(t,q)-> Listing(eval t env, eval q env)
                              
-    |Match(expr, exprlist) -> let e, envir = trymatch (eval expr env) exprlist env in
-                              eval e envir
+    |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
+                              eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
                       
     | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
@@ -98,7 +99,7 @@ let rec eval ee env  =
                            
     |Fun(argument, expr) -> Fonction(argument, expr, buildEnv argument env expr) (*de type name * expr * env*)
     |App(e1, e2) -> evalapp e1 e2 env
-  with x -> error_display node_id x; Int 0
+  with x -> error_display node_id x; raise Fail
 (* evalb de type bexpr -> env -> bool*)
           
 and evalb ee env =
@@ -124,7 +125,7 @@ and evalb ee env =
         |_ -> raise (NotFunction "this")
       end
                                          
-and evalapp e1 e2  env =  match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
+  and evalapp e1 e2  env =  match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
                     |Fonction("_", expr, fenv) ->  eval expr fenv
                     |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                     |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)

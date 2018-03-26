@@ -49,6 +49,7 @@ let error_display node_id except =
    | DivisionByZero |Division_by_zero -> pf "Division by zero \n"
    | CannotApply s -> pf "%s is not appliable \n" s
    | NotFunction s -> pf "%s is not a function \n" s
+   | PatternMatchingFails -> pf "Pattern Matching failed"
    | Invalid_argument s -> pf "Bad operation argument \n" 
    | Failure s -> pf "%s" s
    | x -> raise x
