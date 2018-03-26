@@ -1,1 +1,4 @@
-let a = [1;2;3] in let b::q = a in prInt b 
+let f n = match n with
+  |[] -> 0
+  |[x] -> x
+in prInt (f ([2]))
