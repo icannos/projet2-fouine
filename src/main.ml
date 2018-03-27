@@ -10,7 +10,7 @@ open Eval;;
 
 (* Fonction principale  *)
 let interpreter () =
-  
+
   (* On parse les arguments passés en CLI *)
   (* Arg.parse List -> (anon_arg string -> ()) -> in_channel*)
   Arg.parse optlist getsrcfile usage;
@@ -21,10 +21,10 @@ let interpreter () =
   let parse () = Parser.main Lexer.token lexbuf in
 
   let ast = parse () in
-  if(!debugmode) then (affiche_expr ast; print_newline());
+  if(!debugmode) then (aff_expr ast; print_newline());
   let _ = eval ast ( Environnement.empty) in
 
-  flush stdout; 
+  flush stdout;
 ;;
 
 

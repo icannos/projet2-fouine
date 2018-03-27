@@ -13,7 +13,7 @@ let buildEnv nom env expr =
   let addVar key  =
     nenv := Environnement.add key (Environnement.find key env) (!nenv)
   in
-  
+
 
   let freeV = freevars (VarsSet.singleton nom) (VarsSet.empty) expr in
 
@@ -26,7 +26,7 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
     |(_,Identifier key), x when key <> "_"-> envir := (Environnement.add key x (!envir))
     |(_,Identifier key), x when key = "_"-> ()
     |(_, Const x), Int y when x = y -> ()
-                                          
+
     |(_,Constr(c1, exprlist)), TSum(c2, vlist)
          when (c1 = c2) && ((List.length exprlist) = (List.length vlist))
                                                   -> List.iter unif (List.combine exprlist vlist)
@@ -45,10 +45,10 @@ let rec trymatch value caselist env = match caselist with
   |[(_, PattCase(patt, x))] -> (x, unification patt value env)
   |(_, PattCase(patt, x))::q -> begin try (x,unification patt value env) with UnificationFails(_, _) -> trymatch value q env end
 ;;
-  
-                                            
+
+
 (* sémantique opérationnelle à grands pas *)
-  
+
 (* eval -> expr -> env -> value*)
 let rec eval ee env  =
   debug ee env;
@@ -72,7 +72,7 @@ let rec eval ee env  =
        end
     (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)
-                                             
+
     | Identifier nom ->
        begin
         try (Environnement.find nom env)
@@ -83,29 +83,29 @@ let rec eval ee env  =
     |Constr(cons, exprlist) -> TSum(cons, (List.map (fun x -> eval x env) exprlist))
     |Vide -> LVide
     |Liste(t,q)-> Listing(eval t env, eval q env)
-                             
+
     |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
                               eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
-                      
+
     | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
     | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
     | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
-    | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)  
+    | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)
     | Let((pattern, e1), e2) -> evallet pattern e1 e2 env
     | LetRec((nom, e1), e2) -> evalletrec nom e1 e2 env
     | Cond(booleen,e1,e2) -> if (evalb booleen env) then (eval e1 env) else (eval e2 env)
     | Uni -> Unit
-                           
+
     |Fun(argument, expr) -> Fonction(argument, expr, buildEnv argument env expr) (*de type name * expr * env*)
     |App(e1, e2) -> evalapp e1 e2 env
   with x -> error_display node_id x; raise Fail
 (* evalb de type bexpr -> env -> bool*)
-          
+
 and evalb ee env =
   let node_id, e = ee in
   match e with  (*à réécrire bientot*)
-  | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)  
+  | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)
   | Testneq(e1,e2) -> safe_op (eval e1 env) (<>) (eval e2 env)
   | Testlt(e1,e2) ->  safe_op (eval e1 env) (<) (eval e2 env)
   | Testgt(e1,e2) ->  safe_op (eval e1 env) (>) (eval e2 env)
@@ -124,7 +124,7 @@ and evalb ee env =
         |Fun(arg, fexpr) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  eval ee2 envir
         |_ -> raise (NotFunction "this")
       end
-                                         
+
   and evalapp e1 e2  env =  match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
                     |Fonction("_", expr, fenv) ->  eval expr fenv
                     |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)

@@ -36,7 +36,7 @@ open Errmgr
 %right CASE
 
 %right CONSTR
-%right COMMA 
+%right COMMA
 %right COLONCOLON
 
 %left EGAL
@@ -174,16 +174,16 @@ n_uplets:  /*on a au moins deux éléments*/
 liste_pattern:
   |LBRACKET RBRACKET                             {(error_handler (),  Vide ) }
   |LBRACKET interior_liste RBRACKET              { $2 }
-  |pattern COLONCOLON pattern              { (error_handler (), Liste($1,$3)) } 
+  |pattern COLONCOLON pattern              { (error_handler (), Liste($1,$3)) }
 ;
 
 
-  
+
 liste:
   |LBRACKET RBRACKET                             { (error_handler (), Vide) }
   |LBRACKET interior_liste RBRACKET              { $2 }
 ;
-  
+
 interior_liste:
   |priexpr                                     { (error_handler (), Liste($1,(error_handler (),Vide))) }
   |priexpr  SEMICOL interior_liste              { (error_handler (), Liste($1,$3)) }
@@ -199,6 +199,7 @@ priexpr:
  | NOM	      	     		       	   	{  (error_handler  (), Identifier $1) }
  | BANG priexpr			        	{  (error_handler  (), Acc $2 )    }
  | INT                                          {  (error_handler  (), Const $1) }
+ | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) }
  | LPAREN simplexpr RPAREN                      { $2 }
 ;
 
@@ -211,4 +212,3 @@ boolexpr:
  | simplexpr SUP_L simplexpr                   {  (error_handler  (),Testget($1,$3)) }
 
 ;
-
