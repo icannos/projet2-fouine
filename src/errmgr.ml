@@ -46,6 +46,7 @@ l'affichage des erreurs *)
 let error_display node_id except =
   let (start_pos, end_pos): Lexing.position * Lexing.position = getdata node_id in
    pf "An error occured between line %d, character %d and line %d, character %d: \n" start_pos.pos_lnum (getcolumn start_pos) end_pos.pos_lnum (getcolumn end_pos);
+   begin
    match except with
    | UnknownIdentifier x -> pf "Identifier %s is unknown in this scope \n" x
    | UnknownReference x -> pf "Reference %s is unknown in this scope \n" x
@@ -57,4 +58,7 @@ let error_display node_id except =
    | UnificationFails (se, sv) -> pf "Unable to unify %s with %s\n" se sv
    | BadArgument s -> pf "%s is a bad argument" s
    | x -> raise x
+   end
+   raise Fail
+
         ;;
