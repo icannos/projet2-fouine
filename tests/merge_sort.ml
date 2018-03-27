@@ -8,7 +8,7 @@ let rec fusion la lb =
   |(x::q, []) -> x::q
   |([], x::q) -> x::q
   |(x::q, y::t) -> if x < y then x::(fusion q lb) else y::(fusion la t)
-  ;;
+;;
 
 let rec split l = match l with
 |[] -> ([],[])

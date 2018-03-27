@@ -28,8 +28,8 @@ let rec string_of_expr ee =
   | Uni ->  "()"
   | Vide ->  "[]"
   | Liste(t,q)-> (string_of_expr t)^ "::" ^ (string_of_expr q)
-  | Cart up -> "(" ^ (List.fold_right (^) (List.map string_of_expr up) "")  ^ ")"
-  | Constr (construct, up) ->  "constr(" ^ construct ^ "," ^ (List.fold_right (^) (List.map string_of_expr up) "") ^ ")"
+  | Cart up -> "(" ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "")  ^ ")"
+  | Constr (construct, up) ->  "constr(" ^ construct ^ "," ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "") ^ ")"
   | Match(x,listcases) -> "match " ^ (string_of_expr x)  ^ " with " ^ (List.fold_right (^) (List.map string_of_expr listcases) "")
   | PattCase(pattern, expr) -> "| " ^ (string_of_expr pattern) ^ " -> " ^ (string_of_expr expr)
 and aff_bexpr bb=

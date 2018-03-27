@@ -31,8 +31,10 @@ open Errmgr
 %nonassoc LBRACKET
 %left RBRACKET
 
+%left DOUBLESEMICOL
 %right IN
 %right LET
+%right REC
 %right CASE
 
 %right CONSTR
@@ -48,15 +50,13 @@ open Errmgr
 %left SUP_S
 %left SUP_L
 
-
-
-
 %right IF
 %right THEN
 %right ELSE
 %right DONNE
 
 %left SEMICOL
+
 %left AFF
 
 %left PLUS   /* associativit� gauche: a+b+c, c'est (a+b)+c */
@@ -88,6 +88,8 @@ toplevel:   /* les let de surface */
  |binding IN toplevel	   			{  (error_handler  (), Let($1, $3)) }   /* let a = 5 in 2+2 */
  |binding    					{  (error_handler  (),
         Let($1, (error_handler  (), Const 0)))  }  /*le cas let a = 2 traduit en let a = 2 in 0*/
+ |binding DOUBLESEMICOL					{  (error_handler  (),
+               Let($1, (error_handler  (), Const 0)))  }
 
  |rec_binding IN toplevel			{  (error_handler  (), LetRec($1, $3)) } /*idem avec les let rec */
  |rec_binding DOUBLESEMICOL toplevel		{  (error_handler  (), LetRec($1, $3)) }
@@ -110,6 +112,7 @@ simplexpr:
  | listexpr                                    { $1 }
 
  | simplexpr SEMICOL simplexpr                 {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),$3)) }
+ | simplexpr DOUBLESEMICOL                  {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),(error_handler  (),Const 0))) }
  | NOM AFF simplexpr 			       {  (error_handler  (),Aff($1, $3)) }
  | REF simplexpr			       {  (error_handler  (),Ref($2)) }
  | UNIT	  	    	 		       {(error_handler (), Uni)}
