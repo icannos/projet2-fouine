@@ -52,7 +52,7 @@ let error_display node_id except =
    | NotFunction s -> pf "%s is not a function \n" s
    | PatternMatchingFails -> pf "Pattern Matching failed"
    | Invalid_argument s -> pf "Bad operation argument \n"
-   | UnificationFails (se, sv) -> pf "Unable to unify %s with %s" se sv
+   | UnificationFails (se, sv) -> pf "Unable to unify %s with %s\n" se sv
    | Failure s -> pf "%s" s
    | x -> raise x
         ;

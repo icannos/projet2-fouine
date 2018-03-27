@@ -1,25 +1,25 @@
 {
   open Errmgr
-  open Parser;;     (* le type "token" est défini dans parser.mli *)
-(* ce n'est pas à vous d'écrire ce fichier, il est engendré automatiquement *)
+  open Parser;;     (* le type "token" est dï¿½fini dans parser.mli *)
+(* ce n'est pas ï¿½ vous d'ï¿½crire ce fichier, il est engendrï¿½ automatiquement *)
 (* exception Eof;; *)
 }
 
 rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | [' ' '\t']     { token lexbuf }    (* on saute les blancs et les tabulations *)
- 	     	   	           (* token: appel récursif *)
+ 	     	   	           (* token: appel rï¿½cursif *)
                                    (* lexbuf: argument implicite
-                                      associé au tampon où sont
-                                      lus les caractères *)
+                                      associï¿½ au tampon oï¿½ sont
+                                      lus les caractï¿½res *)
 
 
   (* File/errors management  *)
   | eof             { EOF }
   | '\n'            { Lexing.new_line lexbuf; token lexbuf }
-  
+
   (* Built in *)
   |"prInt"	    { PRINT }
-  
+
 
   (* Arith *)
 
@@ -30,7 +30,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '('             { LPAREN }
   | ')'             { RPAREN }
 
-    (*mots-clés*)
+    (*mots-clï¿½s*)
   | "let"           { LET }
   | "rec"	    { REC }
   | "in"            { IN }
@@ -39,11 +39,11 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "if"            { IF }
   | "then"          { THEN }
   | "else"          { ELSE }
-  
+
   | "match" 	    { MATCH }
   | "with" 	    { WITH }
   | "function"	    { FUNCTION }
-  
+
   | ','             { COMMA }
 
   | '['             { LBRACKET }
@@ -54,14 +54,14 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "->"            { DONNE }
   | "|"		    { CASE }
   | "()"            { UNIT }
-  
 
-  (*aspects impératifs*)
+
+  (*aspects impï¿½ratifs*)
   | "ref"           { REF }
   | ":="            { AFF }
   | '!'             { BANG }
 
-  (*opérateurs logiques*)
+  (*opï¿½rateurs logiques*)
   | '<'             { INF_S }
   | '>'             { SUP_S }
   | "<="            { INF_L }
@@ -72,5 +72,4 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   (*strings and litterals*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z' '_']+ as s { NOM (s) }
-  | ['A'-'Z']['a'-'z' '_']+ as s { CONSTR (s) }
-  
+  | ['A'-'Z']['a'-'z' '_']* as s { CONSTR (s) }

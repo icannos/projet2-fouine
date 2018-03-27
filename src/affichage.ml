@@ -108,7 +108,7 @@ let rec string_of_value = function
   |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
   |Fonction(name, expr, env) -> ("Function " ^ name)
   |LVide -> "[]"
-  |TSum(a,b) -> "Type Somme"
+  |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
   |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
   |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
   |LVide -> "[]"
