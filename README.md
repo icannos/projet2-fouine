@@ -13,29 +13,27 @@
 
 ## Projet 2 - fouine
 
-Bien que justement mis en intermédiaire par le classement initial ous avons été déplacé dans le groupe avancé après le premier rendu. Nous avons donc essayer de remplir les exigences attendues.
+Bien que justement mis en intermédiaire par le classement initial nous avons été déplacé dans le groupe avancé après le premier rendu. Nous avons donc essayer de remplir les exigences attendues.
 
-D'après les tests que nous avons pu faire, tout ce que nous avons implémenté fonctionne correctement. Notre rendu contient ce qui était attendu, ainsi que le matching, les types sommes et les listes.
-
-
+D'après les tests que nous avons pus faire, tout ce que nous avons implémenté fonctionne correctement. Notre rendu contient ce qui était attendu, ainsi que le matching, les types sommes et les listes.
 
 
-### Répartition du travail
+## Pour tester le code
 
-Fait par Maxime
-- Apprendre le Caml à Edwige
-- Dire ça marche alors que ça marche presque
+Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le résultat est identique à celui de Caml. Le fichier comp affiche la sortie Fouine et en dessous la sortie Caml.
 
+## Remarques
 
-Fait par Edwige
-- Supporter Maxime
-- Le contenu du rendu débutant
-- Le parser et le lexer
-- Le readme
-- Apporter une touche de sérieux au projet
+- Sur les aspects impératifs :
+- Sur la gestion des erreurs : 
+- Sur les couples : nous avons implémenter directement des n-uplets, en imposant n au moins égal à 2.
+- Sur les types sommes :
+- Sur les listes : nous avons implémenté les listes comme un peigne. Cependant, sans typage, les listes semblent perdre une grande partie de leur intérêt. L'avantage le plus notable a été de rajouter de nouveaux tests, notamment pour le pattern matching.
 
-Fait par Alain
-- Thérapie de couple
+## Quelques détails sur les fichiers
+
+- Dans affichage.ml : la fonction string_of_expr retourne la sortie exécutable en Caml. La fonction istring_of_expr est conçue pour faire apparaître plus explicitement le parsing.
+- Dans safe.ml : on limite une partie des risques d'explosion lors de l'exécution en vérifiant les types pour les opérations arithmétiques.
 
 ```
 ├── auto_test.sh
@@ -53,12 +51,12 @@ Fait par Alain
 │   ├── expr.ml
 │   ├── lexer.mll
 │   ├── main.ml
-│   ├── main.native -> /run/media/maxime/Documents/_ENS/Projet2/projet2-fouine/src/_build/main.native
+│   ├── main.native
 │   ├── Makefile
 │   ├── memory.ml
 │   ├── parser.mly
 │   └── safe.ml
-├── t
+|
 └── tests
     ├── ackermann2.ml
     ├── ackermann.ml
@@ -95,7 +93,32 @@ Fait par Alain
 
 
 
+### Répartition du travail
 
+Conformément à votre demande, nous vous fournissons une répartition du travail. Cependant, nous avion juste envie de mettre « tout/2 » pour chacun. En effet, chaque partie à fait l’objet de débat entre nous, le code de l’un a été relu et débuggé par l’autre, les tests ont été écrit pendant que l’autre  finissait d’implémenter, ou à la relecture du code… Bref, plutôt qu’un simple découpage qui diviserait le travail par deux, nous pensons que travailler ensemble nous permet de réussir à faire ce qu’on ne réussirait pas seul avec deux fois plus de temps, grâce à nos deux approches, très différentes et terriblement complémentaires.
+
+Fait par Maxime
+- La gestion des erreurs
+- Les aspects impératifs
+- Les types sommes et matching
+- Les fonctions
+- La moitié des tests
+- Apprendre le Caml à Edwige
+- Dire ça marche alors que ça marche presque
+
+Fait par Edwige
+- Le contenu du rendu débutant
+- La découpe du projet
+- Le parser et le lexer
+- Les listes
+- L'affichage
+- Le readme
+- L’autre moitié des tests
+- Supporter Maxime, détecter les "presque" et les supprimer
+- Apporter une touche de sérieux au projet
+
+Fait par Alain
+- Thérapie de couple
 
 
 
