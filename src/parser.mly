@@ -116,9 +116,7 @@ simplexpr:
 
 
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
-/* | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) }*/
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
- | liste                                       { $1 }
 ;
 
 
@@ -201,6 +199,8 @@ priexpr:
  | INT                                          {  (error_handler  (), Const $1) }
  | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) } 
  | LPAREN simplexpr RPAREN                      { $2 }
+ | liste                                       { $1 }
+
 ;
 
 boolexpr:
