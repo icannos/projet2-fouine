@@ -37,6 +37,7 @@ let error_handler ()  =
   AstMetaData.add metadata node_id data; node_id
 ;;
 
+
 let getdata node_id : Lexing.position * Lexing.position = AstMetaData.find metadata node_id;;
 let getcolumn (pos: Lexing.position) = pos.pos_cnum - pos.pos_bol;;
 
@@ -47,13 +48,13 @@ let error_display node_id except =
    pf "An error occured between line %d, character %d and line %d, character %d: \n" start_pos.pos_lnum (getcolumn start_pos) end_pos.pos_lnum (getcolumn end_pos);
    match except with
    | UnknownIdentifier x -> pf "Identifier %s is unknown in this scope \n" x
+   | UnknownReference x -> pf "Reference %s is unknown in this scope \n" x
    | DivisionByZero |Division_by_zero -> pf "Division by zero \n"
    | CannotApply s -> pf "%s is not appliable \n" s
    | NotFunction s -> pf "%s is not a function \n" s
    | PatternMatchingFails -> pf "Pattern Matching failed"
    | Invalid_argument s -> pf "Bad operation argument \n"
    | UnificationFails (se, sv) -> pf "Unable to unify %s with %s\n" se sv
-   | Failure s -> pf "%s" s
+   | BadArgument s -> pf "%s is a bad argument" s
    | x -> raise x
-        ;
-          raise Fail;;
+        ;;

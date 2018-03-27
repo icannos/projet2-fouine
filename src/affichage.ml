@@ -111,7 +111,6 @@ let rec string_of_value = function
   |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
   |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
   |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
-  |LVide -> "[]"
 ;;
 
 let print_value v = ps (string_of_value v);;
