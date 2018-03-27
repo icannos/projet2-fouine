@@ -68,7 +68,7 @@ let rec getIdentifiersInConstr expr =
   |Vide -> VarsSet.empty
   |Liste(ex, (_,Identifier x)) -> VarsSet.union (getIdentifiersInConstr ex) (VarsSet.singleton x)
   |Liste(ex, l) -> VarsSet.union (getIdentifiersInConstr ex) (getIdentifiersInConstr l)
-  |_ -> failwith "Cannot unify"
+  |_ -> raise Errmgr.FindingIdentifierFailed
 ;;
 
 (* Renvoie les variables libres d'une expression *)

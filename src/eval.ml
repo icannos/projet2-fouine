@@ -34,7 +34,7 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
      -> List.iter unif (List.combine exprlist vlist)
     |(_,Vide), LVide -> ()
     |(_,Liste(t,q)), Listing(a,b) -> unif (t,a); unif (q,b)
-    |_ -> raise (UnificationFails ("", ""))
+    |_ -> raise (UnificationFails (string_of_expr expr, string_of_value v))
   in
   unif (expr,v); !envir
 ;;
@@ -62,13 +62,13 @@ let rec eval ee env  =
     | Acc(e) ->
        begin
          try let Reference(addr) =  eval e env in read_address addr
-         with Not_found -> raise (UnknownReference)
+         with Not_found -> raise (UnknownReference (string_of_expr e))
        end
     (* Pour l'affectation on récupère de même l'adresse associée au nom dans l'environnement, puis on ajoute dans la mémoire l'évaluation de l'expression, on retourne ici un nouveau type Unit qui correspond au unit de caml *)
     | Aff(nom, e) ->
        begin
          try let Reference(addr) = Environnement.find nom env in add_memory addr (eval e env); Unit
-         with Not_found ->  raise (UnknownReference)
+         with Not_found ->  raise (UnknownReference (string_of_expr e))
        end
     (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)
@@ -122,7 +122,7 @@ and evalb ee env =
        match e1 with
        (* J'ajoute un Int 0 à la place de f histoire q'il connaisse f dans l'environnement lorsqu'il construit la cloture, mais de toutes façons f est remplacée dans l'environnement lors de l'application *)
         |Fun(arg, fexpr) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  eval ee2 envir
-        |_ -> raise (NotFunction "this")
+        |_ -> raise (NotFunction (string_of_expr ee1))
       end
 
   and evalapp e1 e2  env =  match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)

@@ -18,13 +18,14 @@ let pf = Printf.printf;; (* print format strings *)
 
 (* On définira ici l'ensemble des Exceptions que l'on souhaite gérer dans le parcours d'arbre *)
 exception UnknownIdentifier of string;;
-exception UnknownReference;;
+exception UnknownReference of string;;
 exception NotReference of string;;
 exception DivisionByZero;;
 exception CannotApply of string;;
 exception NotFunction of string;;
 exception BadArgument of string;;
 exception UnificationFails of string * string;;
+exception FindingIdentifierFailed;;
 exception PatternMatchingFails;;
 exception Fail;;
 
@@ -50,9 +51,9 @@ let error_display node_id except =
    | CannotApply s -> pf "%s is not appliable \n" s
    | NotFunction s -> pf "%s is not a function \n" s
    | PatternMatchingFails -> pf "Pattern Matching failed"
-   | Invalid_argument s -> pf "Bad operation argument \n" 
+   | Invalid_argument s -> pf "Bad operation argument \n"
+   | UnificationFails (se, sv) -> pf "Unable to unify %s with %s" se sv
    | Failure s -> pf "%s" s
    | x -> raise x
-   | _ -> pf "Something goes wrong, sorry we have no idea of what it is ! \n"
         ;
           raise Fail;;
