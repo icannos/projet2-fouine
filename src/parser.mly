@@ -114,6 +114,9 @@ simplexpr:
  | REF simplexpr			       {  (error_handler  (),Ref($2)) }
  | UNIT	  	    	 		       {(error_handler (), Uni)}
 
+  | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) }
+  | liste                                       { $1 }
+
 
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
@@ -180,6 +183,7 @@ liste_pattern:
 liste:
   |LBRACKET RBRACKET                             { (error_handler (), Vide) }
   |LBRACKET interior_liste RBRACKET              { $2 }
+  |priexpr COLONCOLON priexpr                               { (error_handler (), Liste($1, $3)) }
 ;
 
 interior_liste:
@@ -189,6 +193,8 @@ interior_liste:
 
 listexpr:
  | priexpr                                     { $1 }
+ | listexpr LPAREN n_uplets RPAREN 		       {  (error_handler  (), App($1,(error_handler  (),Cart $3))) }
+ | listexpr liste		       {  (error_handler  (), App($1,$2)) }
  | listexpr priexpr                            {  (error_handler  (), App($1, $2)) }
 ;
 
@@ -197,9 +203,7 @@ priexpr:
  | NOM	      	     		       	   	{  (error_handler  (), Identifier $1) }
  | BANG priexpr			        	{  (error_handler  (), Acc $2 )    }
  | INT                                          {  (error_handler  (), Const $1) }
- | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) } 
  | LPAREN simplexpr RPAREN                      { $2 }
- | liste                                       { $1 }
 
 ;
 
