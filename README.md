@@ -23,12 +23,16 @@ D'après les tests que nous avons pus faire, tout ce que nous avons implémenté
 Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le résultat est identique à celui de Caml. Le fichier comp affiche la sortie Fouine et en dessous la sortie Caml. Ces deux fichiers ajoutent la fonciton `prInt` à la volée pour l'exécution avec OCaml.
 
 ## Remarques
-
-- Sur les aspects impératifs : Le fichier memory.ml rassemble une implémentation naïve de la mémoire avec une table hashage qui relie les références à leur valeur.
-- Sur la gestion des erreurs : Pour a gestion des erreurs on a étiqueté l'AST avec des entiers qui sont en fait une case d'une table hashage, la fonction `error_handler ()` ajoute une entrée dans la table de hashage, y stocke les informations sur la position du noeud dans le fichier source et renvoie le numéro du noeud. Lorsque l'on rattrappe une erreur dans `eval` on l'envoie dans `error_display` qui s'occupe d'afficher toutes les informations nécessaires.
-- Sur les couples : nous avons implémenter directement des n-uplets, en imposant n au moins égal à 2.
-- Sur les types sommes : Les types sommes fonctionnent correctement et peuvent être matchés dans un `match .. with` ou dans un `let pattern = .. `, toujours sans typage.
+- Les rendus intermédiaires et débutants fonctionnent.
+- Sur les aspects impératifs : Le fichier memory.ml rassemble une implémentation naïve de la mémoire avec une table hashage qui relie les références à leur valeur. Nous notons que nous autorisons en fouine pour une référence de référence l'utilisation de !!x pour obtenir la valeur. Ce qui n'est pas autorisé en OCaml qui impose un espace entre les bangs.
+- Sur la gestion des erreurs : Pour a gestion des erreurs on a étiqueté l'AST avec des entiers qui sont en fait un index dans table hashage, la fonction `error_handler ()` ajoute une entrée dans la table de hashage, y stocke les informations sur la position du noeud dans le fichier source et renvoie le numéro du noeud. Lorsque l'on rattrappe une erreur dans `eval` on l'envoie dans `error_display` qui s'occupe d'afficher toutes les informations nécessaires.
+- Sur les couples : nous avons implémenter directement des n-uplets, en imposant n au moins égal à 2. Par ailleurs on impose aussi la présence de parenthèses autours de ceux-ci, contrairement à OCaml.
+- Sur les types sommes : Les types sommes fonctionnent correctement et peuvent être matchés dans un `match .. with` ou dans un `let pattern = .. `, toujours sans typage. De même que pour les n-uplets, on impose des parenthèses pour les arguments passés aux constructeurs. Même s'il n'y en a qu'un.
 - Sur les listes : nous avons implémenté les listes comme un peigne. Cependant, sans typage, les listes semblent perdre une grande partie de leur intérêt. L'avantage le plus notable a été de rajouter de nouveaux tests, notamment pour le pattern matching.
+
+## A propos des tests
+
+La plupart de nos tests fonctionnennt normalemnt (un ok est bien renvoyé etc...) mais dans certains cas puisque fouine n'est pas typé ocaml plante et donc nécessairement le diff des deux sorties n'est pas identique. Il y a quelques tests qui testent explicitement des erreurs. 
 
 ## Quelques détails sur les fichiers
 
@@ -36,9 +40,8 @@ Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le ré
 - Dans safe.ml : on limite une partie des risques d'explosion lors de l'exécution en vérifiant les types pour les opérations arithmétiques.
 
 ```
+.
 ├── auto_test.sh
-├── bin
-│   └── fouine
 ├── comp.sh
 ├── README.md
 ├── src
@@ -51,29 +54,32 @@ Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le ré
 │   ├── expr.ml
 │   ├── lexer.mll
 │   ├── main.ml
-│   ├── main.native
 │   ├── Makefile
 │   ├── memory.ml
 │   ├── parser.mly
 │   └── safe.ml
-|
 └── tests
     ├── ackermann2.ml
     ├── ackermann.ml
+    ├── arbre.ml
     ├── arith.ml
-    ├── comments.ml
     ├── comparaisons.ml
     ├── couples.ml
+    ├── debug_test1.ml
     ├── error_pattern.ml
     ├── errors.ml
     ├── euclide.ml
     ├── facto.ml
+    ├── fibo_prof.ml
     ├── functions2.ml
     ├── functions3.ml
     ├── functions_easy.ml
     ├── functions.ml
     ├── funrec.ml
+    ├── fun_unit.ml
     ├── ifthenelse.ml
+    ├── let3.ml
+    ├── let4.ml
     ├── let_advanced.ml
     ├── let_var.ml
     ├── list_at.ml
@@ -83,14 +89,18 @@ Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le ré
     ├── liste_test.ml
     ├── list_last.ml
     ├── merge_sort.ml
+    ├── notype.ml
+    ├── nuplets.ml
     ├── pattern_easy.ml
     ├── pattern_facto.ml
     ├── pgcd.ml
+    ├── refernces_hard.ml
     ├── reffun.ml
     ├── ref_hard.ml
-    └── ref.ml
-```
+    ├── ref.ml
+    └── unit.ml
 
+```
 
 
 ### Répartition du travail

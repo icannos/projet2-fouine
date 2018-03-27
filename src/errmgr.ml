@@ -23,7 +23,7 @@ exception NotReference of string;;
 exception DivisionByZero;;
 exception CannotApply of string;;
 exception NotFunction of string;;
-exception BadArgument of string;;
+exception BadArgument of string*string;;
 exception UnificationFails of string * string;;
 exception FindingIdentifierFailed;;
 exception PatternMatchingFails;;
@@ -46,7 +46,6 @@ l'affichage des erreurs *)
 let error_display node_id except =
   let (start_pos, end_pos): Lexing.position * Lexing.position = getdata node_id in
    pf "An error occured between line %d, character %d and line %d, character %d: \n" start_pos.pos_lnum (getcolumn start_pos) end_pos.pos_lnum (getcolumn end_pos);
-   begin
    match except with
    | UnknownIdentifier x -> pf "Identifier %s is unknown in this scope \n" x
    | UnknownReference x -> pf "Reference %s is unknown in this scope \n" x
@@ -56,9 +55,6 @@ let error_display node_id except =
    | PatternMatchingFails -> pf "Pattern Matching failed"
    | Invalid_argument s -> pf "Bad operation argument \n"
    | UnificationFails (se, sv) -> pf "Unable to unify %s with %s\n" se sv
-   | BadArgument s -> pf "%s is a bad argument" s
+   | BadArgument (s1,s2) -> pf "%s is a bad argument for %s \n" s1 s2
    | x -> raise x
-   end
-   raise Fail
-
         ;;

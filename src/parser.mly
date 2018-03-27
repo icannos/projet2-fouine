@@ -167,7 +167,7 @@ uplet_pattern:   /*les n uplet, rangés dans une liste dans un Cart*/
 
 uplet_simplexpr:
  |simplexpr		                	{ [$1] }
- |simplexpr COMMA n_uplets  			{ ($1::$3) }
+ |simplexpr COMMA uplet_simplexpr  			{ ($1::$3) }
 ;
 
 n_uplets:  /*on a au moins deux éléments*/
@@ -187,6 +187,7 @@ liste:
   |LBRACKET RBRACKET                             { (error_handler (), Vide) }
   |LBRACKET interior_liste RBRACKET              { $2 }
   |priexpr COLONCOLON priexpr                               { (error_handler (), Liste($1, $3)) }
+  |priexpr COLONCOLON liste                               { (error_handler (), Liste($1, $3)) }
 ;
 
 interior_liste:

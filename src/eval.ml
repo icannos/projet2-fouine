@@ -91,7 +91,7 @@ let rec eval ee env  =
 
     | PrintInt e -> begin match eval e env with
                     | Int x -> Int (prInt x)
-                    | _ -> failwith "Not a int"
+                    | _ -> raise (BadArgument(string_of_value (eval e env), "prInt"))
                     end
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
     | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
