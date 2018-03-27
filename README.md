@@ -9,7 +9,7 @@
                        |___/
 ```
 
-> Mal nommer un objet c'est ajouter au malheur de ce monde, car le mensonge est justement la grande misère humaine, c'est pourquoi la grande tâche humaine correspondante sera de ne pas servir le mensonge" -- Albert Camus
+> Mal nommer un objet c'est ajouter au malheur de ce monde, car le mensonge est justement la grande misère humaine, c'est pourquoi la grande tâche humaine correspondante sera de ne pas servir le mensonge" -- __Albert Camus__
 
 ## Projet 2 - fouine
 
