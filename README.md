@@ -37,6 +37,62 @@ Fait par Edwige
 Fait par Alain
 - Thérapie de couple
 
+```
+├── auto_test.sh
+├── bin
+│   └── fouine
+├── comp.sh
+├── README.md
+├── src
+│   ├── affichage.ml
+│   ├── arguments.ml
+│   ├── display.ml
+│   ├── env.ml
+│   ├── errmgr.ml
+│   ├── eval.ml
+│   ├── expr.ml
+│   ├── lexer.mll
+│   ├── main.ml
+│   ├── main.native -> /run/media/maxime/Documents/_ENS/Projet2/projet2-fouine/src/_build/main.native
+│   ├── Makefile
+│   ├── memory.ml
+│   ├── parser.mly
+│   └── safe.ml
+├── t
+└── tests
+    ├── ackermann2.ml
+    ├── ackermann.ml
+    ├── arith.ml
+    ├── comments.ml
+    ├── comparaisons.ml
+    ├── couples.ml
+    ├── error_pattern.ml
+    ├── errors.ml
+    ├── euclide.ml
+    ├── facto.ml
+    ├── functions2.ml
+    ├── functions3.ml
+    ├── functions_easy.ml
+    ├── functions.ml
+    ├── funrec.ml
+    ├── ifthenelse.ml
+    ├── let_advanced.ml
+    ├── let_var.ml
+    ├── list_at.ml
+    ├── liste-lasttwo.ml
+    ├── liste_map.ml
+    ├── liste_rev.ml
+    ├── liste_test.ml
+    ├── list_last.ml
+    ├── merge_sort.ml
+    ├── pattern_easy.ml
+    ├── pattern_facto.ml
+    ├── pgcd.ml
+    ├── reffun.ml
+    ├── ref_hard.ml
+    └── ref.ml
+```
+
 
 
 
