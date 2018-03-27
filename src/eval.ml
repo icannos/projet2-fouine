@@ -44,6 +44,7 @@ let rec trymatch value caselist env = match caselist with
   |[] -> raise (UnificationFails("", ""))
   |[(_, PattCase(patt, x))] -> (x, unification patt value env)
   |(_, PattCase(patt, x))::q -> begin try (x,unification patt value env) with UnificationFails(_, _) -> trymatch value q env end
+  | _ -> raise (UnificationFails("",""))
 ;;
 
 
@@ -60,15 +61,16 @@ let rec eval ee env  =
     (* Ici on traite les cas impératifs  *)
     (* Si on tente un accès mémoire, on récupère la référence associée et donc l'adresse en mémoire, puis on lit là où il faut *)
     | Acc(e) ->
-       begin
-         try let Reference(addr) =  eval e env in read_address addr
-         with Not_found -> raise (UnknownReference (string_of_expr e))
+       begin  match eval e env with
+            |Reference(addr)->(try read_address addr with Not_found -> raise (UnknownReference (string_of_expr e)))
+            | _ -> failwith "Not a reference"
        end
     (* Pour l'affectation on récupère de même l'adresse associée au nom dans l'environnement, puis on ajoute dans la mémoire l'évaluation de l'expression, on retourne ici un nouveau type Unit qui correspond au unit de caml *)
     | Aff(nom, e) ->
-       begin
-         try let Reference(addr) = Environnement.find nom env in add_memory addr (eval e env); Unit
-         with Not_found ->  raise (UnknownReference (string_of_expr e))
+       begin match Environnement.find nom env with
+            |Reference(addr)->(try add_memory addr (eval e env); Unit
+                                                     with Not_found ->  raise (UnknownReference (string_of_expr e)))
+            |_ -> failwith "Not a reference"
        end
     (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in add_memory addr (eval e env); Reference(addr)
@@ -87,7 +89,10 @@ let rec eval ee env  =
     |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
                               eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
 
-    | PrintInt e -> let Int x = (eval e env) in Int (prInt x)
+    | PrintInt e -> begin match eval e env with
+                    | Int x -> Int (prInt x)
+                    | _ -> failwith "Not a int"
+                    end
     | Add(e1,e2) -> safe_add (eval e1 env) (eval e2 env)
     | Mul(e1,e2) -> safe_mult (eval e1 env) (eval e2 env)
     | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
@@ -99,6 +104,8 @@ let rec eval ee env  =
 
     |Fun(argument, expr) -> Fonction(argument, expr, buildEnv argument env expr) (*de type name * expr * env*)
     |App(e1, e2) -> evalapp e1 e2 env
+
+    |PattCase(_,_)-> failwith "Pattcase without match"
   with x -> error_display node_id x; raise Fail
 (* evalb de type bexpr -> env -> bool*)
 
@@ -132,5 +139,9 @@ and evalb ee env =
                     |Int k -> raise (CannotApply "integer")
                     |Reference(_) -> raise (CannotApply "a reference") (* On râle si on essaie d'appliquer une référence *)
                     |Unit -> raise (CannotApply "unit")
+                    |LVide -> raise (CannotApply "lvide")
+                    |TSum(_,_) -> raise (CannotApply "tsum")
+                    |Cartesian _ -> raise (CannotApply "cartesian")
+                    |Listing(_,_) -> raise (CannotApply "a list")
 
 ;;
