@@ -105,7 +105,7 @@ La plupart de nos tests fonctionnennt normalemnt (un ok est bien renvoyé etc...
 
 ### Répartition du travail
 
-Conformément à votre demande, nous vous fournissons une répartition du travail. Cependant, nous avion juste envie de mettre « tout/2 » pour chacun. En effet, chaque partie à fait l’objet de débats entre nous, le code de l’un a été relu et débuggé par l’autre, les tests ont été écrits pendant que l’autre  finissait d’implémenter, ou à la relecture du code… Bref, plutôt qu’un simple découpage qui diviserait le travail par deux, nous pensons que travailler ensemble nous permet de réussir à faire ce qu’on ne réussirait pas seul avec deux fois plus de temps, grâce à nos deux approches, très différentes et terriblement complémentaires.
+Conformément à votre demande, nous vous fournissons une répartition du travail. Cependant, nous avions juste envie de mettre « tout/2 » pour chacun. En effet, chaque partie a fait l’objet de débats entre nous, le code de l’un a été relu et débuggé par l’autre, les tests ont été écrits pendant que l’autre  finissait d’implémenter, ou à la relecture du code… Bref, plutôt qu’un simple découpage qui diviserait le travail par deux, nous pensons que travailler ensemble nous permet de réussir à faire ce qu’on ne réussirait pas seul avec deux fois plus de temps, grâce à nos deux approches, très différentes et terriblement complémentaires.
 
 Fait par Maxime
 - La gestion des erreurs
