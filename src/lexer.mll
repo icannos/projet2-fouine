@@ -69,6 +69,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '='             { EGAL }
   | "<>"            { NONEGAL }
 
+  (*gestion des exceptions*)
+  | "try"           { TRY }
+
   (*strings and litterals*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z' '_']+ as s { NOM (s) }

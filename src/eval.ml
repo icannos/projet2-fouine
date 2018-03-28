@@ -87,7 +87,9 @@ let rec eval ee env  =
     |Liste(t,q)-> Listing(eval t env, eval q env)
 
     |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
-                              eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
+                                   eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
+    |Try(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
+                                   eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
 
     | PrintInt e -> begin match eval e env with
                     | Int x -> Int (prInt x)

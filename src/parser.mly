@@ -24,6 +24,7 @@ open Errmgr
 %token COMMA
 %token UNIT
 %token LBRACKET RBRACKET COLONCOLON
+%token TRY
 
 
 %nonassoc LPAREN
@@ -96,6 +97,7 @@ toplevel:   /* les let de surface */
  |rec_binding DOUBLESEMICOL simplexpr		{  (error_handler  (), LetRec($1, $3)) }
  |rec_binding toplevel	     			{  (error_handler  (), LetRec($1, $2)) }
  |rec_binding 					{  (error_handler  (), LetRec($1, (error_handler  (),Const 0)))}
+ |rec_binding DOUBLESEMICOL			{  (error_handler  (), LetRec($1, (error_handler  (), Const 0)))  }
  ;
 
 simplexpr:
@@ -123,6 +125,7 @@ simplexpr:
 
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
+ | TRY simplexpr WITH list_pattern_case        {  (error_handler (), Try($2, $4)) }
 ;
 
 

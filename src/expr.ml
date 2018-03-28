@@ -26,6 +26,9 @@ type expr =
   |Match of extexpr * extexpr list
   |PattCase of extexpr * extexpr
 
+  (*Exceptions*)
+  | Try of extexpr * extexpr list
+
   (* Built in *)
   |PrintInt of extexpr
 
@@ -59,6 +62,7 @@ type expr =
 
 
 let rec getIdentifiersInConstr expr =
+  (*pattern -> VarsSet name qui correspond à l'ensemble des variables utilisées dans le pattern*)
   let (_, e) = expr in
   match e with
   |Identifier x ->VarsSet.singleton x
@@ -77,7 +81,7 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   match e with
   |Aff(_, e) |Ref e -> (freevars bindedvars fvars e)
   |Acc (_)
-   |Const (_) -> fvars
+  |Const (_) -> fvars
   |Constr (_, listxpr)
   |Cart listxpr ->
     List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) VarsSet.empty
@@ -97,6 +101,8 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
 
   |Match(expr, listxpr) ->  List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) (freevars bindedvars fvars  expr)
   |PattCase(casexpr, expr) ->freevars (VarsSet.union bindedvars (getIdentifiersInConstr casexpr)) fvars expr
+
+  |Try(expr, listxpr) ->  List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) (freevars bindedvars fvars  expr)
 
   | Add(e1,e2)
   | Mul(e1,e2)
