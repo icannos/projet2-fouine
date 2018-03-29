@@ -28,6 +28,7 @@ type expr =
 
   (*Exceptions*)
   | Try of extexpr * extexpr list
+  | Raise of extexpr
 
   (* Built in *)
   |PrintInt of extexpr
@@ -90,6 +91,8 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   |Vide
   |Identifier _-> fvars
   |Liste(t,q)-> VarsSet.union (freevars bindedvars fvars t) (freevars bindedvars fvars q)
+
+  | Raise e
   | PrintInt e -> freevars bindedvars fvars e
   | Let((constr_expr, e1), e2) ->
      VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.union (getIdentifiersInConstr constr_expr) bindedvars) fvars e2)

@@ -30,8 +30,10 @@ let rec string_of_expr ee =
   | Liste(t,q)-> (string_of_expr t)^ "::" ^ (string_of_expr q)
   | Cart up -> "(" ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "")  ^ ")"
   | Constr (construct, up) ->  "constr(" ^ construct ^ "," ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "") ^ ")"
-  | Match(x,listcases) -> "match " ^ (string_of_expr x)  ^ " with " ^ (List.fold_right (^) (List.map string_of_expr listcases) "")
+  | Match(x,listcases) -> "(match " ^ (string_of_expr x)  ^ " with " ^ (List.fold_right (^) (List.map string_of_expr listcases) "") ^ ")"
+  | Try(x,listcases) -> "(try " ^ (string_of_expr x)  ^ " with " ^ (List.fold_right (^) (List.map string_of_expr listcases) "")^")"
   | PattCase(pattern, expr) -> "| " ^ (string_of_expr pattern) ^ " -> " ^ (string_of_expr expr)
+  | Raise x -> "raise (" ^ (string_of_expr x) ^") "
 and aff_bexpr bb=
   let (node_id, b) = bb in
   match b with
@@ -80,6 +82,7 @@ let (node_id, e) = ee in
   | Constr(nomcons, up) ->  "Const("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ ")"
   | PattCase(pattern, expr) -> istring_aux "Pattcase(" pattern expr
   | Match(x,expr)->  "non fait"
+  | _ -> "non fait"
 
 and istring_of_bexpr bb =
 let (node_id, b) = bb in
@@ -111,6 +114,9 @@ let rec string_of_value = function
   |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
   |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
   |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
+  |Bool true -> "true"
+  |Bool false -> "false"
+  |Exn x -> "Exception"
 ;;
 
 let print_value v = ps (string_of_value v);;
