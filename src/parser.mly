@@ -24,7 +24,7 @@ open Errmgr
 %token COMMA
 %token UNIT
 %token LBRACKET RBRACKET COLONCOLON
-%token TRY
+%token TRY RAISE
 
 
 %nonassoc LPAREN
@@ -57,7 +57,7 @@ open Errmgr
 %right DONNE
 
 %left SEMICOL
-
+%left RAISE
 %left AFF
 
 %left PLUS   /* associativit� gauche: a+b+c, c'est (a+b)+c */
@@ -124,8 +124,10 @@ simplexpr:
 
 
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
+ | CONSTR                             	       {  (error_handler  (), Constr($1, []))}
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
  | TRY simplexpr WITH list_pattern_case        {  (error_handler (), Try($2, $4)) }
+ | RAISE simplexpr                             {  (error_handler (), Raise($2)) }
 ;
 
 
@@ -147,6 +149,7 @@ pattern: /* c'est les différentes choses qu'on peut matcher */
  | INT 					        {  (error_handler (),  Const $1 ) }
  | LPAREN uplet_pattern RPAREN	        	{  (error_handler  (), Cart $2)}
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
+ | CONSTR                                      {  (error_handler  (), Constr($1, [])) }
  | NOM                                      	{  (error_handler  (), Identifier $1 ) }
  | liste_pattern                                {  $1 }
 ;
