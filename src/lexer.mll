@@ -71,8 +71,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
 
   (*gestion des exceptions*)
   | "try"           { TRY }
+  | "raise"         { RAISE }
 
   (*strings and litterals*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
   | ['a'-'z' '_']+ as s { NOM (s) }
-  | ['A'-'Z']['a'-'z' '_']* as s { CONSTR (s) }
+  | ['A'-'Z']['a'-'z' 'A'-'Z' '_']* as s { CONSTR (s) }
