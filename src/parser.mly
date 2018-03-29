@@ -127,6 +127,8 @@ simplexpr:
  | CONSTR                             	       {  (error_handler  (), Constr($1, []))}
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
  | TRY simplexpr WITH list_pattern_case        {  (error_handler (), Try($2, $4)) }
+ | MATCH simplexpr WITH lonely_pattern      {  (error_handler (), Match($2, $4) )}
+ | TRY simplexpr WITH lonely_pattern        {  (error_handler (), Try($2, $4)) }
  | RAISE simplexpr                             {  (error_handler (), Raise($2)) }
 ;
 
@@ -163,7 +165,10 @@ pattern_case:     /*dans une fonction les differents cas possibles  */
 list_pattern_case: /*les différents matching sont rangés dans une liste : l'ordre importe  */
  | CASE pattern_case					{ [$2] }
  | CASE pattern_case list_pattern_case			{ $2::$3 }
+;
 
+lonely_pattern:
+| pattern_case					{ [$1] }
 ;
 
 uplet_pattern:   /*les n uplet, rangés dans une liste dans un Cart*/
