@@ -75,5 +75,5 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
 
   (*strings and litterals*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
-  | ['a'-'z' '_']+ as s { NOM (s) }
-  | ['A'-'Z']['a'-'z' 'A'-'Z' '_']* as s { CONSTR (s) }
+  | ['a'-'z' '_'] ['a'-'z' '0'-'9' 'A'-'Z' '_']* as s { NOM (s) }
+  | ['A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as s { CONSTR (s) }

@@ -1,6 +1,6 @@
 let div a b = match b with
-|0 -> raise DivisionZero(0)
+|0 -> raise DivisionZero
 |x -> a / b
 ;;
 
-try prInt (div 5 0) with |DivisionZero(0) -> prInt 88888
+try prInt (div 5 0) with DivisionZero -> prInt 88888
