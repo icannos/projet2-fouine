@@ -48,6 +48,26 @@ let rec trymatch value caselist env = match caselist with
 
 (* sémantique opérationnelle à grands pas *)
 
+(*
+Pour gérer les exceptions, il y a les cas try...with et raise à traier mais pas
+seulement. Pour chaque autre cas si on effectue 2 eval typiquement:
+
+let a = eval ... in eval bidule env<x/a>
+
+Il faut exécuter le 1er eval, vérifier qu'il n'a pas levé d'exception et s'il
+n'a rien levé on peut exécuter le second. Sinon on fait remonter l'exception.
+
+C'est pour cette raison qu'il y a plein de nouveaux pattern matching dans le
+code: ça évite les warning pour les trucs pas matchés
+
+Il y a un nouveau type dans Value. Un type Exn of value (Exn c'est pour avoir
+le même type d'exception que Ocaml) Ce ça qu'on renvoie quand on lève une
+exception.
+
+
+
+*)
+
 (* eval -> expr -> env -> value*)
 let rec eval ee env  =
   debug ee env;
@@ -59,6 +79,12 @@ let rec eval ee env  =
     (* Ici on traite les cas impératifs  *)
     (* Si on tente un accès mémoire, on récupère la référence associée et donc l'adresse en mémoire, puis on lit là où il faut *)
     | Acc(e) ->
+    (*
+        On effectue d'abord l'évaluation de l'expression après le bang, si on
+        récupère un exception et bien on s'arrète et on renvoie la même.
+        Sinon si c'est une référence on fait ce que l'on a l'habitude de faire
+        Sinon on râle.
+    *)
        begin  match eval e env with
             |Exn x -> Exn x
             |Reference(addr)->(try read_address addr with Not_found -> raise (UnknownReference (string_of_expr e)))
@@ -80,6 +106,15 @@ let rec eval ee env  =
         with Not_found -> raise (UnknownIdentifier nom)
        end
 
+
+     (*
+      A cause de la gestion des exceptions je ne pouvais plus utiliser de jolies
+      fonctionnelles à cet endroit et je dois donc traiter les listes
+      récursivement. D'où la présence des cas avec Cart[] et Constr[].
+
+      A l'avenir il sera à mon avis une bonne idée de mettre ça dans une
+      fonction pour pas que ça fasse une ligne aussi longue.
+     *)
     (* |Cart(exprlist) -> Cartesian (List.map (fun x -> eval x env) exprlist) *)
     |Cart([]) -> Cartesian([])
     |Cart(exprlist) -> begin match eval (List.hd exprlist) env with |Exn x -> Exn x |v -> begin match eval (node_id, Cart(List.tl exprlist)) env with |Exn x -> Exn x |Cartesian(t) -> Cartesian(v::t) | _ -> failwith "Not a cart" end end
@@ -87,21 +122,36 @@ let rec eval ee env  =
     (* |Constr(cons, exprlist) -> TSum(cons, (List.map (fun x -> eval x env) exprlist)) *)
     |Constr(c, []) -> TSum(c, [])
     |Constr(cons, exprlist) -> begin match eval (List.hd exprlist) env with |Exn x -> Exn x |v -> begin match eval (node_id, Constr(cons, List.tl exprlist)) env with |Exn x -> Exn x |TSum(c, t) -> TSum(c, v::t) | _ -> failwith "Not a constr" end end
+
+
     |Vide -> LVide
     |Liste(t,q)-> (match eval t env with
                   |Exn x -> Exn x
                   |x -> (match eval q env with Exn x -> Exn x |y -> Listing(x, y))
                   )
 
+
     |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
                                    eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
 
+
+    (*
+    On évalue le contenu du try, si on récupère une exception on la passe dans
+    le pattern matching, si on arrive à la rattraper c'est cool, sinon on la
+    remonte.
+    Si rien n'a merdé on renvoie juste le résultat de l'évalation.
+    *)
     |Try(expr, exprlist) -> begin match (eval expr env) with
                             |Exn x  -> (try let e, envir = trymatch x exprlist env in
                               eval e envir with UnificationFails (_,_) -> Exn x)
                             |x -> x
                             end
 
+    (*
+    Même dans le cas de la levée d'une exception, on évalue d'abord ce que
+    l'on veut lever, si ça lève une exception alors on remonte cette expression
+    et non celle que l'on est en train de créer.
+    *)
     |Raise(expr) -> begin match eval expr env with |Exn x -> Exn x |v -> Exn v end
 
 
@@ -129,6 +179,12 @@ let rec eval ee env  =
 and evalb ee env =
   let node_id, e = ee in
   match e with
+  (*
+  Pour gérer plus aisément les types en ocaml, ces fonctions renvoient
+  maintenant des values et donc il y a un nouveau type Bool dans les values.
+
+  Ces fonctions gèrent elles même les exceptions. Voir safe.ml
+  *)
   | Testeq(e1,e2) ->  safe_op (eval e1 env) (=) (eval e2 env)
   | Testneq(e1,e2) -> safe_op (eval e1 env) (<>) (eval e2 env)
   | Testlt(e1,e2) ->  safe_op (eval e1 env) (<) (eval e2 env)

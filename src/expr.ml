@@ -27,8 +27,8 @@ type expr =
   |PattCase of extexpr * extexpr
 
   (*Exceptions*)
-  | Try of extexpr * extexpr list
-  | Raise of extexpr
+  | Try of extexpr * extexpr list (* Rattrapage des exceptions *)
+  | Raise of extexpr (* Expression de levage d'exception *)
 
   (* Built in *)
   |PrintInt of extexpr
