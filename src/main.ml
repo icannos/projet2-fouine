@@ -22,6 +22,10 @@ let interpreter () =
   let parse () = Parser.main Lexer.token lexbuf in
 
   let ast = parse () in
+
+  (*ajout de la possibilité de traduction avant l'affichage*)
+  (*On applique la traduction à une mémoire vide*)
+  (*if(!tradimp) then let ast = App(trad_expr ast,  []) else () in*)
   if(!debugmode) then (aff_expr ast; print_newline());
   let _ = eval ast ( Environnement.empty) in
 

@@ -7,6 +7,11 @@ open Printf
 let debugmode = ref false;;
 let verbosemode = ref false;;
 
+(*Modes de traduction*)
+let tradimp = ref false;;
+let tradexcep = ref false;;
+  
+
 
 (* Par défaut on initialise sur le flux standard, on le remplacera ensuite par le fichier que l'on aura ouvert *)
 let srcfile = ref stdin;; (* Type in_channel *)
@@ -24,6 +29,7 @@ let optlist =
     ("-d", Arg.Set debugmode, "Active le mode de debuggage" );
     ("--verbose", Arg.Set verbosemode, "Active le mode verbose" );
     ("-v", Arg.Set verbosemode, "Active le mode verbose" );
+    ("-R", Arg.Set tradimp, "Active la traduction des aspects imperatif");
   ]
 ;;
 

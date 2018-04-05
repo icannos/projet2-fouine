@@ -1,0 +1,32 @@
+Comment utiliser ce script:
+
+1) Ajoutez vos tests qui sont acceptés par Ocaml et fouine dans Beginners/ avec
+  l'extension .ml
+   On inclue le fichier prelude.ml avant de lancer Ocaml pour définir prInt
+  
+2) Ajoutez des tests qui sont refusés par fouine dans Beginners/ShouldFail avec
+  l'extension .ml
+   Votre programme est censé afficher au moins "Error" sur de tels fichiers
+  
+3) Ajoutez des tests qui sont acceptés par fouine et refusés par Ocaml dans
+  Beginners/ManualOutput avec l'extension .ml (ex: ex.ml)
+   Ajoutez la sortie prévue par fouine pour chaque test dans un fichier du même
+  nom avec l'extension .out (ex: ex.out)
+
+4) Lancez la commande:
+   $ ./autotest B path
+   où 'path' est le chemin vers votre exectuble (ex: ../monjoliprojet/fouine)
+   
+5) S'il y a une erreur dans votre programme, les fichiers problématiques sont
+  affichés et stockés dans "failures.txt"
+
+6) Vous pouvez ajouter l'option -v pour voir les sorties de votre programme et
+les sorties attendues
+
+7) Vous pouvez créer des dossiers Intermediate/ et Advanced/ et les tester avec:
+  $ ./autotest I path
+  $ ./autotest A path
+  
+  
+
+

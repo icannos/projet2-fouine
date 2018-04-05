@@ -48,7 +48,7 @@ and string_of_expr_bin op a b =
   begin "("^ (string_of_expr a)^  " "^  op^  " "^  (string_of_expr b)^   ")"  end ;;
 
 
-let aff_expr e = ps (string_of_expr e);;
+
 
 
 (* fonction d'affichage des expressions *)
@@ -130,3 +130,6 @@ let print_env env = ps"{"; Environnement.iter penv_item env; ps "} \n";;
 
 let debug e env =
   if !verbosemode then (print_env env);;
+
+
+  let aff_expr e = ps (istring_of_expr e);;
