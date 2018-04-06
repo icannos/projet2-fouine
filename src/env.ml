@@ -1,5 +1,5 @@
 open Expr;;
-open Display;;
+
 
 
 module Environnement = Map.Make(String);;

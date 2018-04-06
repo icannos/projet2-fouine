@@ -32,7 +32,6 @@ let add_memory addr v  =  Mem.replace memoire addr v;;
 let read_address addr =  Mem.find memoire addr;; 
  
   
- (*en fait je n'arrive pas à voir comment on fait*)
 let new_address ()  = Mem.length memoire;;
   
  

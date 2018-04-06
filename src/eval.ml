@@ -207,7 +207,7 @@ and evalb ee env =
         |_ -> raise (NotFunction (string_of_expr ee1))
       end
 
-  and evalapp e1 e2  env =  match  eval e1 env with (* On ajoute à chaque application dans l'environnement d'éxécution de la fonction récursive, elle même pour qu'elle puisse se trouver elle même lors de l'exécution*)
+  and evalapp e1 e2  env =  match  eval e1 env with 
                     |Exn x -> Exn x
                     |Fonction("_", expr, fenv) ->  eval expr fenv
                     |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)

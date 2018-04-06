@@ -1,5 +1,7 @@
 let e1 x= x in
 let e2 x= x in
-let b x= x in
-       (fun s0 -> let (b1, s1) = b s0 in
-               if b1=0 then e1 s1 else e2 s1);;
+let e3 x= x in
+let e4 x= x in
+(fun s0 -> let (b1, s1) = e1 s1 in
+           let (b2, s2) = e2 s2 in
+               if b1 = b2 then e3 s2 else e4 s2);;
