@@ -81,7 +81,7 @@ let (node_id, e) = ee in
   | Cart up -> "Cart("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ ")"
   | Constr(nomcons, up) ->  "Const("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ ")"
   | PattCase(pattern, expr) -> istring_aux "Pattcase(" pattern expr
-  | Match(x,expr)->  "non fait"
+  | Match(x,listcases)->  "Match(" ^ istring_of_expr x ^ (List.fold_right (^) (List.map string_of_expr listcases) "")
   | _ -> "non fait"
 
 and istring_of_bexpr bb =

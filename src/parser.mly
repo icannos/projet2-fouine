@@ -62,10 +62,9 @@ open Errmgr
 
 %left PLUS   /* associativit� gauche: a+b+c, c'est (a+b)+c */
 %left MOINS
-%left PRINT
 %left TIMES
 %left DIV
-
+%left PRINT
 
 
 

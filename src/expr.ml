@@ -81,7 +81,7 @@ let rec getIdentifiersInConstr expr =
 let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   match e with
   |Aff(_, e) |Ref e -> (freevars bindedvars fvars e)
-  |Acc (_)
+  |Acc (e) -> (freevars bindedvars fvars e)
   |Const (_) -> fvars
   |Constr (_, listxpr)
   |Cart listxpr ->
