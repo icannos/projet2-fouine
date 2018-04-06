@@ -12,11 +12,11 @@ let alloc valeur memoire = match memoire with
   
 (*read de type loc -> value*)
 let rec read num memoire = match memoire with
-  | (n,v)::q -> if n = num then v else read nom q
+  | (n,v)::q -> if n = num then v else read num q
   | [] -> raise Notfound;;
 
   
 (*modify de type loc -> value -> unit*)
-let rec write memoire (num, newval) = match memoire with
-  | (n,v)::q -> if n = num then (num, newval)::q else (n,v)::(write memoire (num, newval))
+let rec write memoire couple = match memoire with
+  | (n,v)::q -> let (num, newval)=couple in if n = num then (num, newval)::q else (n,v)::(write memoire couple)
   |[] -> raise Notfound;;

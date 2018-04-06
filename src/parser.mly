@@ -196,13 +196,17 @@ liste_pattern:
 liste:
   |LBRACKET RBRACKET                             { (error_handler (), Vide) }
   |LBRACKET interior_liste RBRACKET              { $2 }
-  |priexpr COLONCOLON priexpr                               { (error_handler (), Liste($1, $3)) }
-  |priexpr COLONCOLON liste                               { (error_handler (), Liste($1, $3)) }
+  |priexpr COLONCOLON priexpr                    { (error_handler (), Liste($1, $3)) }
+  |priexpr COLONCOLON liste                      { (error_handler (), Liste($1, $3)) }
+  |LPAREN n_uplets RPAREN COLONCOLON liste       { (error_handler (), Liste((error_handler  (), Cart $2 ), $5)) }
+  |LPAREN n_uplets RPAREN COLONCOLON priexpr     { (error_handler (), Liste((error_handler  (), Cart $2 ), $5)) }
 ;
 
 interior_liste:
   |priexpr                                     { (error_handler (), Liste($1,(error_handler (),Vide))) }
+  |LPAREN n_uplets RPAREN                      { (error_handler (), Liste((error_handler  (), Cart $2 ), (error_handler (),Vide))) }
   |priexpr  SEMICOL interior_liste              { (error_handler (), Liste($1,$3)) }
+  |LPAREN n_uplets RPAREN COLONCOLON interior_liste       { (error_handler (), Liste((error_handler  (), Cart $2 ), $5)) }
 ;
 
 listexpr:

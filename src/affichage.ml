@@ -3,6 +3,48 @@ open Env;;
 open Expr;;
 open Arguments;;
 
+
+let string_of_identifier = function
+  |s -> s
+;;
+
+let rec string_of_value = function
+  |Int x -> string_of_int x
+  |Unit -> "()"
+  |Reference k -> "Reference"
+  |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
+  |Fonction(name, expr, env) -> ("Function " ^ name)
+  |LVide -> "[]"
+  |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
+  |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
+  |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
+  |Bool true -> "true"
+  |Bool false -> "false"
+  |Exn x -> "Exception"
+;;
+
+let print_value v = ps (string_of_value v);;
+
+let penv_item identifier v =
+  ps ((string_of_identifier identifier) ^ " = " ^ (string_of_value v) ^ "; ");;
+
+
+let print_env env = ps"{"; Environnement.iter penv_item env; ps "} \n";;
+
+
+let debug e env =
+  if !verbosemode then (print_env env);;
+
+
+
+
+  
+(*Ajout d'une fonction pour mettre des virgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
+let rec virgule liste = match liste with
+  | [] -> ""
+  | [a] -> a
+  | a::q -> a ^ "," ^ virgule q;;
+  
 (*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec string_of_expr ee =
   let (node_id, e) = ee in
@@ -76,12 +118,14 @@ let (node_id, e) = ee in
   | Cond(b,e1,e2) ->
         "Cond(" ^ (istring_of_bexpr b) ^ ", " ^(istring_of_expr e1)^", "^	(istring_of_expr e2)^ ")"
   | Uni ->  "Uni"
-  | Vide ->  "[]"
+  | Vide ->  "Vide"
   | Liste(t,q)-> istring_aux "Liste(" t q
-  | Cart up -> "Cart("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ ")"
+  | Cart up -> "Cart("^ (virgule (List.map istring_of_expr up) ) ^ ")"
   | Constr(nomcons, up) ->  "Const("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ ")"
   | PattCase(pattern, expr) -> istring_aux "Pattcase(" pattern expr
-  | Match(x,listcases)->  "Match(" ^ istring_of_expr x ^ (List.fold_right (^) (List.map string_of_expr listcases) "")
+  | Match(x,listcases)->  "Match(" ^ istring_of_expr x ^ "," ^ (List.fold_right (^) (List.map istring_of_expr listcases) "") ^ ")"
+  | Try(x,listcases) -> "Try(" ^ istring_of_expr x ^ ", "^ (virgule ( List.map istring_of_expr listcases)) ^ ")"
+  | Raise x -> "Raise ("^ "Not_found" ^ ")" (*j'ai besoin de toi pour savoir comment y mettre l'erreur de façon générale*)
   | _ -> "non fait"
 
 and istring_of_bexpr bb =
@@ -98,38 +142,5 @@ and  istring_aux s a b =
 
 ;;
 
-let string_of_identifier = function
-  |s -> s
-;;
 
-let affiche_expr e = ps (istring_of_expr e);;
-
-let rec string_of_value = function
-  |Int x -> string_of_int x
-  |Unit -> "()"
-  |Reference k -> "Reference"
-  |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
-  |Fonction(name, expr, env) -> ("Function " ^ name)
-  |LVide -> "[]"
-  |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
-  |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
-  |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
-  |Bool true -> "true"
-  |Bool false -> "false"
-  |Exn x -> "Exception"
-;;
-
-let print_value v = ps (string_of_value v);;
-
-let penv_item identifier v =
-  ps ((string_of_identifier identifier) ^ " = " ^ (string_of_value v) ^ "; ");;
-
-
-let print_env env = ps"{"; Environnement.iter penv_item env; ps "} \n";;
-
-
-let debug e env =
-  if !verbosemode then (print_env env);;
-
-
-  let aff_expr e = ps (istring_of_expr e);;
+let aff_expr e = ps (istring_of_expr e);;
