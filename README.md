@@ -132,4 +132,15 @@ Fait par Alain
 
 
 
+### Pour Maxime :
+- J'ai corrigé a priori toutes les erreurs du rendu 2 qu'on nous a signalées. J'ai fini d'écrire la fonction istring_of_expr, à part pour Raise, où je n'ai pas réussi à voir ce qui se passait.
+- J'ai un peu modifié le parser pour les listes mais c'est du détail
+- Il serait peut-être judicieux de changer nos booléens (regarde le cas Cond de trad_expr et tu comprendras)
+- Le fichier traduction.ml transforme l'arbre sortant du parseur en l'arbre traduit sans faire appel aux aspects impératifs. C'est illisible et infaisable à la main, d'où l'apparition dans le dossier test de fichiers traducmachin qui correspondent à peu près à ce que j'ai mis.
+Cependant et pour mon plus grand malheur, cette fonction ne compile pas : Manifestement, ma traduction de l'arbre n'est pas bonne (je me concentre sur le premier cas de matching pour l'instant) : J'ai un Identifier s0 qui lui deplaît, et sans identifier il est triste aussi : je ne comprends pas ce que doit être x dans Fun(x, expr) du coup...
+- Cette traduction fait appel à trois fonctions qui agissent sur la mémoire. Celle-ci est une liste de couple (numéro, élément) pour avoir une implémentation fonctionnelle. Les trois fonctions sont dans memfonc.ml.
+- Il est possible que je ne comprenne pas les apects impératifs : il faudra gérer ce problème apcr.
+- Pour utiliser la traduction, ilfaut passer l'argument -R lors de l'exécution, que j'ai donc rajouté dans arguments.ml. Dans ce cas, il faudrait ajouter le chapeau memfonc.ml au code, et au lieu de passer le ast du parsing à eval, il faut le passer à trad_expr avec pour argument de l'immonde fonction résultante la liste vide et passer ensuite le tout à eval. (c'est ce que j'ai commencé à écrire dans le main, mais j'ai tout laissé en commentaire pour avoir un truc qui compile)
+
+
 

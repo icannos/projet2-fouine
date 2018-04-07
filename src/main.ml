@@ -1,4 +1,4 @@
-
+(*open Traduction;;*)
 open Arguments;;
 open Expr;;
 open Env;;
@@ -19,13 +19,22 @@ let interpreter () =
    flux entrant. Voir Arguments.ml pour les déclarations
  *)
   let lexbuf = Lexing.from_channel (!srcfile) in
-  let parse () = Parser.main Lexer.token lexbuf in
+(*  if (!tradimp) then
+    (*à faire : ajouter la traduction des fonctions de la mémoire en haut du code à traduire*)
+   
+   (* let parse () = Parser.main Lexer.token lexbuf in
+    let ast = parse () in
+    let ast = App(trad_expr ast, Vide)*)
+       
 
-  let ast = parse () in
+  else
+ *)     
+   let parse () = Parser.main Lexer.token lexbuf in
+    let ast = parse ()
 
-  (*ajout de la possibilité de traduction avant l'affichage*)
-  (*On applique la traduction à une mémoire vide*)
-  (*if(!tradimp) then let ast = App(trad_expr ast,  []) else () in*)
+    in
+
+
   if(!debugmode) then (aff_expr ast; print_newline());
   let _ = eval ast ( Environnement.empty) in
 

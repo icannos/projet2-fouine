@@ -97,15 +97,15 @@ and string_of_expr_bin op a b =
 let rec istring_of_expr ee =
 let (node_id, e) = ee in
   match e with
-  | Identifier s -> s
-  | Const k -> string_of_int k
+  | Identifier s -> "Identifier "^ s
+  | Const k -> "Const " ^ (string_of_int k)
   | Add(e1,e2) -> istring_aux "Add(" e1 e2
   | Mul(e1,e2) -> istring_aux "Mul(" e1 e2
   | Sou(e1,e2) -> istring_aux "Sou(" e1 e2
   | Div(e1,e2) -> istring_aux "Div(" e1 e2
-  | Aff(nom, e1) -> nom^ " := "^ istring_of_expr e1
-  | Ref(e) -> "ref " ^ (istring_of_expr e)
-  | Acc(e) -> "!"^ (istring_of_expr e)
+  | Aff(nom, e1) -> istring_aux "Aff(" e1 e2 
+  | Ref(e) -> "Ref " ^ (istring_of_expr e)
+  | Acc(e) -> "Acc"^ (istring_of_expr e)
   | Let((patt,e1),e2) -> "Let("^ istring_of_expr patt	^ ", "^ (istring_of_expr e1)
 	^ ", "^ (istring_of_expr e2) 	^ ")"
   | LetRec((nom,e1),e2) -> "LetRec("^ nom^ ", "^(istring_of_expr e1)^

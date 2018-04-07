@@ -1,7 +1,3 @@
-(*open Expr;;
-open Env;;
-open Errmgr;; *)
-
 
   (*les trois fonctions de gestion mémoire à inclure au début de la traduction*)
 
