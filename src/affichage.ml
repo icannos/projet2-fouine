@@ -38,13 +38,13 @@ let debug e env =
 
 
 
-  
+
 (*Ajout d'une fonction pour mettre des virgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
 let rec virgule liste = match liste with
   | [] -> ""
   | [a] -> a
   | a::q -> a ^ "," ^ virgule q;;
-  
+
 (*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec string_of_expr ee =
   let (node_id, e) = ee in
@@ -103,7 +103,7 @@ let (node_id, e) = ee in
   | Mul(e1,e2) -> istring_aux "Mul(" e1 e2
   | Sou(e1,e2) -> istring_aux "Sou(" e1 e2
   | Div(e1,e2) -> istring_aux "Div(" e1 e2
-  | Aff(nom, e1) -> istring_aux "Aff(" e1 e2 
+  | Aff(nom, e1) ->  "Aff(" ^ nom ^ ", " ^(istring_of_expr e1) ^ " )"
   | Ref(e) -> "Ref " ^ (istring_of_expr e)
   | Acc(e) -> "Acc"^ (istring_of_expr e)
   | Let((patt,e1),e2) -> "Let("^ istring_of_expr patt	^ ", "^ (istring_of_expr e1)
