@@ -39,11 +39,11 @@ let debug e env =
 
 
 
-(*Ajout d'une fonction pour mettre des virgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
-let rec virgule liste = match liste with
+(*Ajout d'une fonction pour mettre des pointvirgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
+let rec pointvirgule liste = match liste with
   | [] -> ""
   | [a] -> a
-  | a::q -> a ^ "," ^ virgule q;;
+  | a::q -> a ^ ";" ^ pointvirgule q;;
 
 (*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec string_of_expr ee =
@@ -106,7 +106,7 @@ let (node_id, e) = ee in
   | Aff(nom, e1) ->  "(0,Aff(" ^ nom ^ ", " ^(istring_of_expr e1) ^ " ))"
   | Ref(e) -> "(0,Ref " ^ (istring_of_expr e)^")"
   | Acc(e) -> "(0,Acc"^ (istring_of_expr e)^")"
-  | Let((patt,e1),e2) -> "(0,Let( ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) ^ "), ("^ (istring_of_expr e2) 	^ "))"
+  | Let((patt,e1),e2) -> "(0,Let( ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) ^ "), ("^ (istring_of_expr e2) 	^ ")))"
   | LetRec((nom,e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
 	( ", ")^ (istring_of_expr e2)^ "))"
   | Fun(nom,e1) ->  "(0, Fun(\"" ^ nom ^ "\"," ^ (istring_of_expr  e1) ^ "))"
@@ -119,11 +119,11 @@ let (node_id, e) = ee in
   | Uni ->  "(0,Uni)"
   | Vide ->  "(0,Vide)"
   | Liste(t,q)-> istring_aux "Liste(" t q
-  | Cart up -> "(0,Cart("^ (virgule (List.map istring_of_expr up) ) ^ "))"
-  | Constr(nomcons, up) ->  "(0,Const("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ "))"
+  | Cart up -> "(0,Cart([" ^ (pointvirgule (List.map istring_of_expr up) ) ^ "]))"
+  | Constr(nomcons, up) ->  "(0,Const(^ nomcons ^, ["^ (pointvirgule (List.map istring_of_expr up)) ^ "]))"
   | PattCase(pattern, expr) -> istring_aux "Pattcase(" pattern expr
   | Match(x,listcases)->  "(0,Match(" ^ istring_of_expr x ^ "," ^ (List.fold_right (^) (List.map istring_of_expr listcases) "") ^ "))"
-  | Try(x,listcases) -> "(0,Try(" ^ istring_of_expr x ^ ", "^ (virgule ( List.map istring_of_expr listcases)) ^ "))"
+  | Try(x,listcases) -> "(0,Try(" ^ istring_of_expr x ^ ", "^ (pointvirgule ( List.map istring_of_expr listcases)) ^ "))"
   | Raise x ->"(0, Raise (" ^ (istring_of_expr x) ^ "))"
   | _ -> "non fait"
 
