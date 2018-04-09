@@ -97,7 +97,7 @@ and string_of_expr_bin op a b =
 let rec istring_of_expr ee =
 let (node_id, e) = ee in
   match e with
-  | Identifier s -> "(0," ^ "Identifier "^ s ^ ")"
+  | Identifier s -> "(0," ^ "Identifier \""^ s ^ "\")"
   | Const k -> "(0, Const " ^ (string_of_int k) ^")"
   | Add(e1,e2) -> istring_aux "Add(" e1 e2
   | Mul(e1,e2) -> istring_aux "Mul(" e1 e2
@@ -106,8 +106,8 @@ let (node_id, e) = ee in
   | Aff(nom, e1) ->  "(0,Aff(" ^ nom ^ ", " ^(istring_of_expr e1) ^ " ))"
   | Ref(e) -> "(0,Ref " ^ (istring_of_expr e)^")"
   | Acc(e) -> "(0,Acc"^ (istring_of_expr e)^")"
-  | Let((patt,e1),e2) -> "(0,Let("^ istring_of_expr patt	^ ", "^ (istring_of_expr e1) 
-	^ ", "^ (istring_of_expr e2) 	^ "))"
+  | Let((patt,e1),e2) -> "(0,Let(          ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) 
+	^ ")        ,           "^ (istring_of_expr e2) 	^ "))"
   | LetRec((nom,e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
 	( ", ")^ (istring_of_expr e2)^ "))"
   | Fun(nom,e1) ->  "(0, Fun(\"" ^ nom ^ "\"," ^ (istring_of_expr  e1) ^ "))"
