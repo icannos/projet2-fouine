@@ -97,35 +97,35 @@ and string_of_expr_bin op a b =
 let rec istring_of_expr ee =
 let (node_id, e) = ee in
   match e with
-  | Identifier s -> "Identifier "^ s
-  | Const k -> "Const " ^ (string_of_int k)
+  | Identifier s -> "(0," ^ "Identifier "^ s ^ ")"
+  | Const k -> "(0, Const " ^ (string_of_int k) ^")"
   | Add(e1,e2) -> istring_aux "Add(" e1 e2
   | Mul(e1,e2) -> istring_aux "Mul(" e1 e2
   | Sou(e1,e2) -> istring_aux "Sou(" e1 e2
   | Div(e1,e2) -> istring_aux "Div(" e1 e2
-  | Aff(nom, e1) ->  "Aff(" ^ nom ^ ", " ^(istring_of_expr e1) ^ " )"
-  | Ref(e) -> "Ref " ^ (istring_of_expr e)
-  | Acc(e) -> "Acc"^ (istring_of_expr e)
-  | Let((patt,e1),e2) -> "Let("^ istring_of_expr patt	^ ", "^ (istring_of_expr e1)
-	^ ", "^ (istring_of_expr e2) 	^ ")"
-  | LetRec((nom,e1),e2) -> "LetRec("^ nom^ ", "^(istring_of_expr e1)^
-	( ", ")^ (istring_of_expr e2)^ ")"
-  | Fun(nom,e1) -> istring_aux "Fun(" (node_id, Identifier nom)  e1
-  | App(e1, e2) ->  "App("^ (istring_of_expr e1)^ ", "^ (istring_of_expr e2) ^ ")"
-  | PrintInt(e) ->  "prInt("^ (istring_of_expr e) ^ ")"
+  | Aff(nom, e1) ->  "(0,Aff(" ^ nom ^ ", " ^(istring_of_expr e1) ^ " ))"
+  | Ref(e) -> "(0,Ref " ^ (istring_of_expr e)^")"
+  | Acc(e) -> "(0,Acc"^ (istring_of_expr e)^")"
+  | Let((patt,e1),e2) -> "(0,Let("^ istring_of_expr patt	^ ", "^ (istring_of_expr e1) 
+	^ ", "^ (istring_of_expr e2) 	^ "))"
+  | LetRec((nom,e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
+	( ", ")^ (istring_of_expr e2)^ "))"
+  | Fun(nom,e1) ->  "(0, Fun(\"" ^ nom ^ "\"," ^ (istring_of_expr  e1) ^ "))"
+  | App(e1, e2) ->  "(0,App("^ (istring_of_expr e1)^ ", "^ (istring_of_expr e2) ^ "))"
+  | PrintInt(e) ->  "(0,prInt("^ (istring_of_expr e) ^ "))"
 
 
   | Cond(b,e1,e2) ->
-        "Cond(" ^ (istring_of_bexpr b) ^ ", " ^(istring_of_expr e1)^", "^	(istring_of_expr e2)^ ")"
-  | Uni ->  "Uni"
-  | Vide ->  "Vide"
+        "(0,Cond(" ^ (istring_of_bexpr b) ^ ", " ^(istring_of_expr e1)^", "^	(istring_of_expr e2)^ "))"
+  | Uni ->  "(0,Uni)"
+  | Vide ->  "(0,Vide)"
   | Liste(t,q)-> istring_aux "Liste(" t q
-  | Cart up -> "Cart("^ (virgule (List.map istring_of_expr up) ) ^ ")"
-  | Constr(nomcons, up) ->  "Const("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ ")"
+  | Cart up -> "(0,Cart("^ (virgule (List.map istring_of_expr up) ) ^ "))"
+  | Constr(nomcons, up) ->  "(0,Const("^ (List.fold_right (^) (List.map istring_of_expr up) "") ^ "))"
   | PattCase(pattern, expr) -> istring_aux "Pattcase(" pattern expr
-  | Match(x,listcases)->  "Match(" ^ istring_of_expr x ^ "," ^ (List.fold_right (^) (List.map istring_of_expr listcases) "") ^ ")"
-  | Try(x,listcases) -> "Try(" ^ istring_of_expr x ^ ", "^ (virgule ( List.map istring_of_expr listcases)) ^ ")"
-  | Raise x -> "Raise ("^ "Not_found" ^ ")" (*j'ai besoin de toi pour savoir comment y mettre l'erreur de façon générale*)
+  | Match(x,listcases)->  "(0,Match(" ^ istring_of_expr x ^ "," ^ (List.fold_right (^) (List.map istring_of_expr listcases) "") ^ "))"
+  | Try(x,listcases) -> "(0,Try(" ^ istring_of_expr x ^ ", "^ (virgule ( List.map istring_of_expr listcases)) ^ "))"
+  | Raise x ->"(0, Raise (" ^ (istring_of_expr x) ^ "))"
   | _ -> "non fait"
 
 and istring_of_bexpr bb =
@@ -138,7 +138,7 @@ let (node_id, b) = bb in
    | Testlet(e1,e2) -> istring_aux "Testlet(" e1 e2
    | Testget(e1,e2) -> istring_aux "Testget(" e1 e2
 and  istring_aux s a b =
-      begin s ^ (istring_of_expr a) ^ ", " ^	(istring_of_expr b)^	 ")"   end
+      begin"(0,"^ s ^ (istring_of_expr a) ^ ", " ^	(istring_of_expr b)^	 "))"   end
 
 ;;
 
