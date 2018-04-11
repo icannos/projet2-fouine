@@ -10,7 +10,7 @@ let rec trad_expr ee env =
   let (node_id, e) = ee in
 
   try match e with
-      | Add(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Add((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
+      | Add(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,e1), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Add((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
 
       | Mul(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Mul((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
 
@@ -39,8 +39,8 @@ let rec trad_expr ee env =
       | Ref(e) ->let e = trad_expr e in (0, Fun("s",(0,Let( ((0,Cart([(0,Identifier "v");(0,Identifier "s1")])), (0,App((0,Identifier "e"), (0,Identifier "s")))), ((0,Let( ((0,Cart([(0,Identifier "l");(0,Identifier "s2")])), (0,App((0,App((0,Identifier "allocate"), (0,Identifier "v"))), (0,Identifier "s1")))), ((0,Cart([(0,Identifier "l");(0,Identifier "s2")]))))))))))
 
 
-      | LetRec((x, e1), e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in
-      (0, Fun("s",(0,LetRec( ((0,Cart([(0,Identifier "x");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s")))), ((0,App((0,Identifier "e2"), (0,Identifier "s1"))))))))
+   (*   | LetRec((x, e1), e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in
+      (0, Fun("s",(0,LetRec( ((0,Cart([(0,Identifier "x");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s")))), ((0,App((0,Identifier "e2"), (0,Identifier "s1"))))))))     *)
 
       | x -> (0, Fun("s",(0,Cart([(0,x);(0,Identifier "s")]))))
 
