@@ -143,4 +143,21 @@ Cependant et pour mon plus grand malheur, cette fonction ne compile pas : Manife
 - Pour utiliser la traduction, ilfaut passer l'argument -R lors de l'exécution, que j'ai donc rajouté dans arguments.ml. Dans ce cas, il faudrait ajouter le chapeau memfonc.ml au code, et au lieu de passer le ast du parsing à eval, il faut le passer à trad_expr avec pour argument de l'immonde fonction résultante la liste vide et passer ensuite le tout à eval. (c'est ce que j'ai commencé à écrire dans le main, mais j'ai tout laissé en commentaire pour avoir un truc qui compile)
 
 
+### Etat des lieux sur la traduction des aspects impératifs.
+
+- L'idée de départ est de gentiment transformer l'arbre fait  par le parseur en un autre arbre correspondant à la traduction. Pour faire ceci, on a utilisé une fonction d'affichage pour créer l'arbre correspondant à la transformation voulue.
+- Cependant, cet essai infructueux met en avant de multiples problèmes via cette approche.
+	* Le code n'est pas lisible : il faut clairement garder du code Caml (qui pour l'nstant n'est que dans les fichiers traducmachin) Déjà illisble, ce sera tout bonnement impossible à faire pour les continuations
+	* Notre système d'erreur n'est pas du tout adapté à cette transformation, car les noeuds son doublement étiquetés : on perd lors de la traduction l'emplacement de l'erreur, et générer un arbre adéquat est folklorique.
+	* Il serait judicieux de faire un renommage des variables pour ne pas avoir d'ambiguités avec alloc,... PAr exemple en ajoutant un underscore au debut des noms des variables mais ce n'est pas le plus urgent.
+- Ces remarques nous indiquent la nécessité de faire :
+	* Des couples qui peuvent être passés en argument
+	* Des booléens moins stupides, qui regroupent les quatre opérateurs
+	* Une fonction d'affichage du debug plus lisible
+	* Une fonction qui concatène deux codes caml au début
+	* Une fonction qui remplace un code caml par l'arbre correspondant
+	* Une fonction qui remplace un Identifier (e1 pour ne pas le nommer) par l'arbre correspondant
+	* 
+
+
 
