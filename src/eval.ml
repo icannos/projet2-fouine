@@ -6,14 +6,14 @@ open Safe;;
 open Memory;;
 open Errmgr;;
 
-let buildEnv nom env expr =
+let buildEnv pattern env expr =
   let nenv = ref (Environnement.empty) in
   let addVar key  =
     nenv := Environnement.add key (Environnement.find key env) (!nenv)
   in
 
 
-  let freeV = freevars (VarsSet.singleton nom) (VarsSet.empty) expr in
+  let freeV = freevars (getIdentifiersInConstr pattern) (VarsSet.empty) expr in
 
   VarsSet.iter addVar freeV; !nenv
 ;;
@@ -207,11 +207,11 @@ and evalb ee env =
         |_ -> raise (NotFunction (string_of_expr ee1))
       end
 
-  and evalapp e1 e2  env =  match  eval e1 env with 
+  and evalapp e1 e2  env =  match  eval e1 env with
                     |Exn x -> Exn x
-                    |Fonction("_", expr, fenv) ->  eval expr fenv
-                    |Fonction(argument, expr, fenv) ->  eval expr (Environnement.add argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
-                    |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (Environnement.add arg (eval e2 env) recenv)
+                    |Fonction((_, Identifier "_"), expr, fenv) ->  eval expr fenv
+                    |Fonction(argument, expr, fenv) ->  eval expr (unification argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
+                    |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (unification arg (eval e2 env) recenv)
                     |Int k -> raise (CannotApply "integer")
                     |Reference(_) -> raise (CannotApply "a reference") (* On râle si on essaie d'appliquer une référence *)
                     |Unit -> raise (CannotApply "unit")

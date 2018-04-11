@@ -17,7 +17,7 @@ type expr =
   | Let of (extexpr * extexpr) * extexpr
   | LetRec of  (name* extexpr)* extexpr
   | Identifier of name
-  | Fun of name * extexpr
+  | Fun of extexpr * extexpr
   | App of extexpr * extexpr
 
   (* Pattern Matching  *)
@@ -100,7 +100,7 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
      VarsSet.union (freevars bindedvars  fvars e1)(freevars (VarsSet.add nom bindedvars) fvars e2)
   | Cond(booleen,e1,e2) -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen)
 
-  |Fun(nom, expr) -> freevars (VarsSet.add nom bindedvars) fvars expr
+  |Fun(pattern, expr) -> freevars (VarsSet.union (getIdentifiersInConstr pattern) bindedvars) fvars expr
 
   |Match(expr, listxpr) ->  List.fold_right VarsSet.union (List.map (freevars bindedvars fvars) listxpr) (freevars bindedvars fvars  expr)
   |PattCase(casexpr, expr) ->freevars (VarsSet.union bindedvars (getIdentifiersInConstr casexpr)) fvars expr

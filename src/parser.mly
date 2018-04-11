@@ -101,7 +101,7 @@ toplevel:   /* les let de surface */
 
 simplexpr:
  | PRINT simplexpr			       {  (error_handler  (),PrintInt $2) }
- | FUN NOM DONNE simplexpr                     {  (error_handler  (),Fun($2, $4)) }
+ | FUN pattern DONNE simplexpr                     {  (error_handler  (),Fun($2, $4)) }
  | simplexpr PLUS simplexpr                    {  (error_handler  (),Add($1,$3)) }
  | simplexpr TIMES simplexpr                   {  (error_handler  (),Mul($1,$3)) }
  | simplexpr MOINS simplexpr                   {  (error_handler  (),Sou($1,$3)) }
@@ -142,8 +142,8 @@ rec_binding:
 
 functexpr:
  | EGAL simplexpr				{ $2 }
- | UNIT functexpr				{  (error_handler  (), Fun("_", $2)) }
- | NOM functexpr                        	{  (error_handler  (), Fun($1, $2)) }
+ | UNIT functexpr				{  (error_handler  (), Fun((error_handler () ,Identifier "_"), $2)) }
+ | pattern functexpr                        	{  (error_handler  (), Fun($1, $2)) }
 ;
 
 pattern: /* c'est les différentes choses qu'on peut matcher */

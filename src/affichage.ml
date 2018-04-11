@@ -13,7 +13,7 @@ let rec string_of_value = function
   |Unit -> "()"
   |Reference k -> "Reference"
   |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
-  |Fonction(name, expr, env) -> ("Function " ^ name)
+  |Fonction(pattern, expr, env) -> ("Function ")
   |LVide -> "[]"
   |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
   |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
@@ -64,7 +64,7 @@ let rec string_of_expr ee =
 	" in  "^ string_of_expr e2
   | LetRec((nom,e1),e2) -> "let rec " ^ nom ^ " = "^
 	string_of_expr e1	^ " in  "^ (string_of_expr e2)
-  | Fun(nom,e1) ->   "( fun "^ (string_of_expr (node_id, Identifier nom))  ^ " -> " ^ (string_of_expr e1)  ^ " )"
+  | Fun(pattern,e1) ->   "( fun "^ (string_of_expr pattern)  ^ " -> " ^ (string_of_expr e1)  ^ " )"
   | App(e1,e2) ->  "("^ (string_of_expr e1)^ " " ^ (string_of_expr e2) ^ ")"
   | Cond(b,e1,e2) ->  "if "^ (aff_bexpr b)^  " then ( "^(string_of_expr e1)^ ") else (" ^ (string_of_expr e2)^ ")"
   | Uni ->  "()"
@@ -109,7 +109,7 @@ let (node_id, e) = ee in
   | Let((patt,e1),e2) -> "(0,Let( ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) ^ "), ("^ (istring_of_expr e2) 	^ ")))"
   | LetRec((nom,e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
 	( ", ")^ (istring_of_expr e2)^ "))"
-  | Fun(nom,e1) ->  "(0, Fun(\"" ^ nom ^ "\"," ^ (istring_of_expr  e1) ^ "))"
+  | Fun(pattern,e1) ->  "(0, Fun(\"" ^ (istring_of_expr pattern) ^ "\"," ^ (istring_of_expr  e1) ^ "))"
   | App(e1, e2) ->  "(0,App("^ (istring_of_expr e1)^ ", "^ (istring_of_expr e2) ^ "))"
   | PrintInt(e) ->  "(0,prInt("^ (istring_of_expr e) ^ "))"
 

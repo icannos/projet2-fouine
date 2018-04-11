@@ -8,8 +8,8 @@ module Environnement = Map.Make(String);;
 type value = Int of int
            |Unit
            |Reference of int
-           |Fonction of name * extexpr * env
-           |Rec of   name * name *  extexpr * env (*le premier name garde le nom de la fonction*)
+           |Fonction of extexpr * extexpr * env
+           |Rec of   name * extexpr *  extexpr * env (*le premier name garde le nom de la fonction*)
            |TSum of name * value list (* Les types sommes *)
            |Cartesian of value list (* les n-uplets *)
            |Listing of value * value (*les listes*)
