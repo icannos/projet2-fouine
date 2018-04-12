@@ -22,6 +22,14 @@ D'après les tests que nous avons pus faire, tout ce que nous avons implémenté
 
 Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le résultat est identique à celui de Caml. Le fichier comp affiche la sortie Fouine et en dessous la sortie Caml. Ces deux fichiers ajoutent la fonciton `prInt` à la volée pour l'exécution avec OCaml.
 
+## Remarques -- Rendu intermédiaire
+
+- Nous avons corrigés les erreurs/oublis signalés lors du précédent rendu.
+- Nous avons aussi corrigé un tas d'erreurs non signalées. (Notamment concernant les constructeurs: on peut maintenant utiliser notamment des constructeurs sans argument.)
+- Les exceptions sont terminées et même élargies: on peut lever n'importe quel constructeur via raise et le matcher avec dans le `try .. with` de la même manière que pour le pattern matching. Il est maintenant possible d'omettre le `|` lorsqu'il n'y a qu'un unique cas pour le pattern matching.
+- Pour alléger la syntaxe, notamment pour la gestion des continuations nous avons implémentés la possibilité de définir des fonctions avec des constructeurs/couples en argument: `let f (a,b) = ... in`
+- Les traductions sont en cours.
+
 ## Remarques
 - Les rendus intermédiaires et débutants fonctionnent.
 - Sur les aspects impératifs : Le fichier memory.ml rassemble une implémentation naïve de la mémoire avec une table hashage qui relie les références à leur valeur. Nous notons que nous autorisons en fouine pour une référence de référence l'utilisation de !!x pour obtenir la valeur. Ce qui n'est pas autorisé en OCaml qui impose un espace entre les bangs.
@@ -32,7 +40,7 @@ Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le ré
 
 ## A propos des tests
 
-La plupart de nos tests fonctionnennt normalemnt (un ok est bien renvoyé etc...) mais dans certains cas puisque fouine n'est pas typé ocaml plante et donc nécessairement le diff des deux sorties n'est pas identique. Il y a quelques tests qui testent explicitement des erreurs. 
+La plupart de nos tests fonctionnennt normalemnt (un ok est bien renvoyé etc...) mais dans certains cas puisque fouine n'est pas typé ocaml plante et donc nécessairement le diff des deux sorties n'est pas identique. Il y a quelques tests qui testent explicitement des erreurs.
 
 ## Quelques détails sur les fichiers
 
@@ -157,7 +165,4 @@ Cependant et pour mon plus grand malheur, cette fonction ne compile pas : Manife
 	* Une fonction qui concatène deux codes caml au début
 	* Une fonction qui remplace un code caml par l'arbre correspondant
 	* Une fonction qui remplace un Identifier (e1 pour ne pas le nommer) par l'arbre correspondant
-	* 
-
-
-
+	*

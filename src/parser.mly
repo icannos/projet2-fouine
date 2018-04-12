@@ -66,9 +66,6 @@ open Errmgr
 %left DIV
 %left PRINT
 
-
-
-
 %start main
 
 %type <Expr.extexpr> main
