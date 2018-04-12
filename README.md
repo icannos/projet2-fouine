@@ -27,7 +27,7 @@ Le fichier auto_test effectue l'ensemble des tests et affiche 'Ok.' quand le ré
 - Nous avons corrigés les erreurs/oublis signalés lors du précédent rendu.
 - Nous avons aussi corrigé un tas d'erreurs non signalées. (Notamment concernant les constructeurs: on peut maintenant utiliser notamment des constructeurs sans argument.)
 - Les exceptions sont terminées et même élargies: on peut lever n'importe quel constructeur via raise et le matcher avec dans le `try .. with` de la même manière que pour le pattern matching. Il est maintenant possible d'omettre le `|` lorsqu'il n'y a qu'un unique cas pour le pattern matching.
-- Pour alléger la syntaxe, notamment pour la gestion des continuations nous avons implémentés la possibilité de définir des fonctions avec des constructeurs/couples en argument: `let f (a,b) = ... in`
+- Pour alléger la syntaxe, notamment pour la gestion des continuations nous avons implémentés la possibilité de définir des fonctions avec des constructeurs/couples en argument: `let f (a,b) = ... in` ou `fun (a,b) Constr(c) -> ...`
 - Les traductions sont en cours.
 
 ## Remarques
