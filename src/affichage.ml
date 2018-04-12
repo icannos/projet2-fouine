@@ -40,10 +40,10 @@ let debug e env =
 
 
 (*Ajout d'une fonction pour mettre des pointvirgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
-let rec pointvirgule liste = match liste with
+let rec join sep liste = match liste with
   | [] -> ""
   | [a] -> a
-  | a::q -> a ^ ";" ^ pointvirgule q;;
+  | a::q -> a ^ sep ^ join sep q;;
 
 (*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec string_of_expr ee =
@@ -60,22 +60,22 @@ let rec string_of_expr ee =
   | Acc(e) ->  " !"^ (string_of_expr e)
   | PrintInt(e) -> "prInt (" ^ (string_of_expr e)  ^ ")"
   | Let((patt,e1),e2) ->
-         "let "^ (string_of_expr patt) ^ " = "^ (string_of_expr e1)^
+         "let "^ (string_of_expr patt) ^ " = "^ (string_of_expr e1)^ "\n" ^
 	" in  "^ string_of_expr e2
   | LetRec((nom,e1),e2) -> "let rec " ^ nom ^ " = "^
-	string_of_expr e1	^ " in  "^ (string_of_expr e2)
+	string_of_expr e1	^ "\n" ^ " in  "^ (string_of_expr e2)
   | Fun(pattern,e1) ->   "( fun "^ (string_of_expr pattern)  ^ " -> " ^ (string_of_expr e1)  ^ " )"
   | App(e1,e2) ->  "("^ (string_of_expr e1)^ " " ^ (string_of_expr e2) ^ ")"
-  | Cond(b,e1,e2) ->  "if "^ (aff_bexpr b)^  " then ( "^(string_of_expr e1)^ ") else (" ^ (string_of_expr e2)^ ")"
+  | Cond(b,e1,e2) ->  "if "^ (aff_bexpr b)^"\n" ^  " then \n ( "^(string_of_expr e1)^ ") \n else \n (" ^ (string_of_expr e2)^ ")"
   | Uni ->  "()"
   | Vide ->  "[]"
   | Liste(t,q)-> (string_of_expr t)^ "::" ^ (string_of_expr q)
-  | Cart up -> "(" ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "")  ^ ")"
+  | Cart up -> "(" ^ (join "," (List.map string_of_expr up))  ^ ")"
   | Constr (construct, up) ->  "constr(" ^ construct ^ "," ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "") ^ ")"
-  | Match(x,listcases) -> "(match " ^ (string_of_expr x)  ^ " with " ^ (List.fold_right (^) (List.map string_of_expr listcases) "") ^ ")"
-  | Try(x,listcases) -> "(try " ^ (string_of_expr x)  ^ " with " ^ (List.fold_right (^) (List.map string_of_expr listcases) "")^")"
-  | PattCase(pattern, expr) -> "| " ^ (string_of_expr pattern) ^ " -> " ^ (string_of_expr expr)
-  | Raise x -> "raise (" ^ (string_of_expr x) ^") "
+  | Match(x,listcases) -> "(match " ^ (string_of_expr x)  ^ " with \n" ^ (List.fold_right (^) (List.map string_of_expr listcases) "") ^ ")"
+  | Try(x,listcases) -> "(try " ^ (string_of_expr x)  ^ " with \n" ^ (List.fold_right (^) (List.map string_of_expr listcases) "")^")"
+  | PattCase(pattern, expr) -> "| " ^ (string_of_expr pattern) ^ " -> " ^ (string_of_expr expr) ^"\n"
+  | Raise x -> "raise (" ^ (string_of_expr x) ^") \n "
 and aff_bexpr bb=
   let (node_id, b) = bb in
   match b with
@@ -119,11 +119,11 @@ let (node_id, e) = ee in
   | Uni ->  "(0,Uni)"
   | Vide ->  "(0,Vide)"
   | Liste(t,q)-> istring_aux "Liste(" t q
-  | Cart up -> "(0,Cart([" ^ (pointvirgule (List.map istring_of_expr up) ) ^ "]))"
-  | Constr(nomcons, up) ->  "(0,Const(^ nomcons ^, ["^ (pointvirgule (List.map istring_of_expr up)) ^ "]))"
+  | Cart up -> "(0,Cart([" ^ (join ";" (List.map istring_of_expr up) ) ^ "]))"
+  | Constr(nomcons, up) ->  "(0,Constr("^ nomcons ^", ["^ (join ";" (List.map istring_of_expr up)) ^ "]))"
   | PattCase(pattern, expr) -> istring_aux "Pattcase(" pattern expr
-  | Match(x,listcases)->  "(0,Match(" ^ istring_of_expr x ^ "," ^ (List.fold_right (^) (List.map istring_of_expr listcases) "") ^ "))"
-  | Try(x,listcases) -> "(0,Try(" ^ istring_of_expr x ^ ", "^ (pointvirgule ( List.map istring_of_expr listcases)) ^ "))"
+  | Match(x,listcases)->  "(0,Match(" ^ istring_of_expr x ^ "," ^ (join "" (List.map istring_of_expr listcases)) ^ "))"
+  | Try(x,listcases) -> "(0,Try(" ^ istring_of_expr x ^ ", "^ (join ";" ( List.map istring_of_expr listcases)) ^ "))"
   | Raise x ->"(0, Raise (" ^ (istring_of_expr x) ^ "))"
   | _ -> "non fait"
 
@@ -142,4 +142,4 @@ and  istring_aux s a b =
 ;;
 
 
-let aff_expr e = ps (istring_of_expr e);;
+let aff_expr e = ps (string_of_expr e);;
