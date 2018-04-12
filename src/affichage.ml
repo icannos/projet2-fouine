@@ -109,7 +109,7 @@ let (node_id, e) = ee in
   | Let((patt,e1),e2) -> "(0,Let( ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) ^ "), ("^ (istring_of_expr e2) 	^ ")))"
   | LetRec((nom,e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
 	( ", ")^ (istring_of_expr e2)^ "))"
-  | Fun(pattern,e1) ->  "(0, Fun(\"" ^ (istring_of_expr pattern) ^ "\"," ^ (istring_of_expr  e1) ^ "))"
+  | Fun(pattern,e1) ->  "(0, Fun( "^ (istring_of_expr pattern) ^ "," ^ (istring_of_expr  e1) ^ "))"
   | App(e1, e2) ->  "(0,App("^ (istring_of_expr e1)^ ", "^ (istring_of_expr e2) ^ "))"
   | PrintInt(e) ->  "(0,prInt("^ (istring_of_expr e) ^ "))"
 

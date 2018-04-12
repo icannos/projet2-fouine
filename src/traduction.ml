@@ -5,13 +5,17 @@ open Errmgr;;
 
 
 
-let rec trad_expr ee env =
-  debug ee env;
+let rec trad_expr ee =
   let (node_id, e) = ee in
 
   try match e with
-      | Add(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,e1), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Add((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
+  | Add(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun( (0,Identifier "s0"),(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App(e1, (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App(e2, (0,Identifier "s1")))), ((0,Cart([(0,Add((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
 
+      (*
+      | Add(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,e1), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Add((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
+      *)
+
+      (*
       | Mul(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Mul((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
 
 
@@ -19,10 +23,12 @@ let rec trad_expr ee env =
 
       | Div(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0, Fun("s0",(0,Let( ((0,Cart([(0,Identifier "v1");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s0")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,Cart([(0,Div((0,Identifier "v1"), (0,Identifier "v2")));(0,Identifier "s2")]))))))))))
 
-      | Let((x, e1), e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in
+      (*| Let((x, e1), e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in
       (0, Fun("s",(0,Let( ((0,Cart([(0,Identifier "x");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s")))), ((0,App((0,Identifier "e2"), (0,Identifier "s1"))))))))
 
       | App(e1,e2) -> let e1 = trad_expr e1 and e2 = trad_expr e2 in (0,Let( ((0,Identifier "_"), (0,Let( ((0,Identifier "e1"), (0, Fun("x",(0,Identifier "x")))), ((0,Let( ((0,Identifier "e2"), (0, Fun("x",(0,Identifier "x")))), ((0, Fun("s",(0,Let( ((0,Cart([(0,Identifier "f1");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s")))), ((0,Let( ((0,Cart([(0,Identifier "v2");(0,Identifier "s2")])), (0,App((0,Identifier "e2"), (0,Identifier "s1")))), ((0,App((0,App((0,Identifier "f1"), (0,Identifier "v2"))), (0,Identifier "s2")))))))))))))))))), ((0, Const 0))))
+
+      *)
 
 
 
@@ -43,7 +49,7 @@ let rec trad_expr ee env =
       (0, Fun("s",(0,LetRec( ((0,Cart([(0,Identifier "x");(0,Identifier "s1")])), (0,App((0,Identifier "e1"), (0,Identifier "s")))), ((0,App((0,Identifier "e2"), (0,Identifier "s1"))))))))     *)
 
       | x -> (0, Fun("s",(0,Cart([(0,x);(0,Identifier "s")]))))
-
+      *)
 
 
   with x -> error_display node_id x; raise Fail
