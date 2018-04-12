@@ -1,4 +1,4 @@
-open Traduction;; 
+open Traduction;;
 open Arguments;;
 open Expr;;
 open Env;;
@@ -15,10 +15,14 @@ let interpreter () =
   (* Arg.parse List -> (anon_arg string -> ()) -> in_channel*)
   Arg.parse optlist getsrcfile usage;
 
-  (* On  initialise le parseur et le lexeur en lui donnant notre fichier comme
-   flux entrant. Voir Arguments.ml pour les déclarations
- *)
-  let lexbuf = Lexing.from_channel (!srcfile) in
+
+ (* On  initialise le parseur et le lexeur en lui donnant une string contenant
+ la concaténation de tous les fichiers spécifiés en entrée ainsi que stdin
+
+  Voir Arguments.ml pour les déclarations.
+*)
+
+  let lexbuf = Lexing.from_string (!srcfile) in
 (*  if (!tradimp) then
     (*à faire : ajouter la traduction des fonctions de la mémoire en haut du code à traduire*)
 

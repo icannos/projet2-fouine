@@ -1,5 +1,5 @@
 open Printf
-   
+
 (* Gestion Globale des arguments passés à l'exécutable *)
 
 (* Modes de débuggages *)
@@ -10,16 +10,30 @@ let verbosemode = ref false;;
 (*Modes de traduction*)
 let tradimp = ref false;;
 let tradexcep = ref false;;
-  
 
+(* On a une chaîne vide originnellement *)
+let srcfile = ref "";;
 
-(* Par défaut on initialise sur le flux standard, on le remplacera ensuite par le fichier que l'on aura ouvert *)
-let srcfile = ref stdin;; (* Type in_channel *)
-
-let getsrcfile filename =
-  (* Lis le fichier source passé en argument anonyme et l'ouvre comme flux *)
-  srcfile := open_in filename
+(* Lit un in_channel entier jusqu'à tomber sur End_of_file *)
+let read_all chan =
+try
+  while true; do
+    srcfile := !srcfile ^ input_line chan
+  done;
+  with End_of_file -> close_in chan
 ;;
+
+(* Lit spécifiquement un fichier *)
+
+let read_file filename =
+  let chan = open_in filename in read_all chan
+;;
+
+(* Lis le fichier source passé en argument anonyme et le copie sous forme de string dans srcfile *)
+let getsrcfile filename =
+    read_file filename
+;;
+
 
 
 let optlist =
@@ -35,5 +49,3 @@ let optlist =
 
 (* Message de doc  *)
 let usage = "Interpreter Fouine -- Edwige Cyffers & Maxime Darrin";;
-
-
