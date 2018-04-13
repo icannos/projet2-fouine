@@ -11,4 +11,4 @@ let mkLetPair (a, b) c d = (0, Let(( (0, Cart([a;b])), c), d);;
 (* string -> Identifier string *)
 let mkIdentifier varname = (0, Identifier varname);;
 
-let 
+let mkPair (a,b) = (0, Cart([a;b]));;
