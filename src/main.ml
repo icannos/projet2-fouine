@@ -15,24 +15,18 @@ let interpreter () =
   (* Arg.parse List -> (anon_arg string -> ()) -> in_channel*)
   Arg.parse optlist getsrcfile usage;
 
-
  (* On  initialise le parseur et le lexeur en lui donnant une string contenant
  la concaténation de tous les fichiers spécifiés en entrée ainsi que stdin
 
   Voir Arguments.ml pour les déclarations.
 *)
 
+  if !tradimp then srcfile := (read_file !mem_file) ^ (!srcfile) else (srcfile := !srcfile);
+
   let lexbuf = Lexing.from_string (!srcfile) in
-(*  if (!tradimp) then
-    (*à faire : ajouter la traduction des fonctions de la mémoire en haut du code à traduire*)
-
-   (* let parse () = Parser.main Lexer.token lexbuf in
-    let ast = parse () in
-    let ast = App(trad_expr ast, Vide)*)
 
 
-  else
- *)
+
    let parse () = Parser.main Lexer.token lexbuf in
     let ast = parse ()
 
