@@ -12,7 +12,7 @@ let tradimp = ref false;;
 let tradexcep = ref false;;
 
 (* Fichier contenant les fonctions de mémoire *)
-let mem_file = ref ((Filename.dirname (Sys.argv.(0))) ^ "/memory.ml");;
+let mem_file = ref ((Filename.dirname (Sys.argv.(0))) ^ "/memfonc.ml");;
 
 (* On a une chaîne vide originnellement *)
 let srcfile = ref "";;

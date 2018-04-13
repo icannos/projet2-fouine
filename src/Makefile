@@ -2,6 +2,7 @@ all:
 	ocamlbuild -yaccflag -v -lib unix main.native #on dit de fabriquer main.native
 	mkdir -p ../bin
 	cp -L main.native ../bin/fouine
+	cp -L memfonc.ml ../bin/memfonc.ml
 	chmod +x ../bin/fouine
 
 byte:
