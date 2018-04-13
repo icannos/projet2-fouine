@@ -12,7 +12,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
                                       associ� au tampon o� sont
                                       lus les caract�res *)
 
-
+  |"(*" [^ '*']* "*)" { token lexbuf }
   (* File/errors management  *)
   | eof             { EOF }
   | '\n'            { Lexing.new_line lexbuf; token lexbuf }
