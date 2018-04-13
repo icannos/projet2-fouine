@@ -17,3 +17,13 @@ let mkAdd e1 e2 = (0, Add(e1, e2));;
 let mkMul e1 e2 = (0, Mul(e1, e2));;
 let mkDiv e1 e2 = (0, Div(e1, e2));;
 let mkSou e1 e2 = (0, Sou(e1, e2));;
+let mkConst i = (0, Const i);;
+
+let mkCart l = (0, Cart(l));;
+let mkConstr name l = (0, Constr(name, l));;
+let mkMatch e l = (0, Match(e, l));;
+let mkPattCase e1 e2 = (0, PattCase(e1, e2));;
+
+let mkPrintInt e = (0, PrintInt e);;
+
+let mkCond cond e1 e2 = (0, Cond(cond, e1, e2));;
