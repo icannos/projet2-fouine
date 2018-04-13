@@ -12,11 +12,11 @@ let ref nbs =0;;
 let news () =
   nbs := !nbs + 1;
   "s" ^ string_of_int nbs;;
-  
+
 
 (*des méta-constructeurs qui évitent un code de traduction illisiblesont dans constructeurs*)
 
-  
+
 let rec trad_expr ee =
   let (node_id, e) = ee in
 
