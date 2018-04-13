@@ -11,12 +11,16 @@ let ref nbs =0;;
 (*fonction qui renvoie un sn où n est un numéro par encore utilisé*)
 let news () =
   nbs := !nbs + 1;
-  "s" ^ string_of_int nbs;;
-
-
+ (0,Identifier "s" ^ (string_of_int nbs));;
+  
+let news () =
+  nbv := !nbv + 1;
+ (0,Identifier "v" ^ (string_of_int nbv));;
+  
 (*des méta-constructeurs qui évitent un code de traduction illisiblesont dans constructeurs*)
+  
 
-
+  
 let rec trad_expr ee =
   let (node_id, e) = ee in
 
