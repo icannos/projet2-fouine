@@ -12,15 +12,15 @@ let ref nbs =0;;
 let news () =
   nbs := !nbs + 1;
   "s" ^ string_of_int nbs;;
-  
+
 
 (*des méta-constructeurs qui évitent un code de traduction illisiblesont dans constructeurs*)
 
-  
+
 let rec trad_expr ee =
   let (node_id, e) = ee in
 
   try match e with
-      | Add(e1,e2) -> let  s0 = news () in let s1 = news() in let v1 = newv () in let v2 = newv () in
+      | Add(e1,e2) -> let s0 = news () in let s1 = news() in let v1 = newv () in let v2 = newv () in
                                                                                   let te1 =  trad_expr e1 in let te2 = trad_expr e2 in (*arbre à écrire*)
   with x -> error_display node_id x; raise Fail
