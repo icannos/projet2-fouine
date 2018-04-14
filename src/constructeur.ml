@@ -27,3 +27,6 @@ let mkPattCase e1 e2 = (0, PattCase(e1, e2));;
 let mkPrintInt e = (0, PrintInt e);;
 
 let mkCond cond e1 e2 = (0, Cond(cond, e1, e2));;
+
+let mkLVide () = (0, Vide);;
+let mkListe x q = (0, Liste(x, q));;
