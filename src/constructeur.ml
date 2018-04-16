@@ -5,7 +5,9 @@ let mkApp f e = (0, App(f, e) );;
 (* patt -> e *)
 let mkFun patt e = (0, Fun(patt, e));;
 
-(* let (a,b) = c in d *)
+(*let a = b in c*)
+let mkLet a b c  = (0, Let((a, b), c));;
+(* let (a,b) = c in d, fait car beaucoup utilisé *)
 let mkLetPair (a, b) c d = (0, Let(( (0, Cart([a;b])), c), d));;
 
 (* string -> Identifier string *)
@@ -27,6 +29,7 @@ let mkPattCase e1 e2 = (0, PattCase(e1, e2));;
 let mkPrintInt e = (0, PrintInt e);;
 
 let mkCond cond e1 e2 = (0, Cond(cond, e1, e2));;
+
 
 let mkLVide () = (0, Vide);;
 let mkListe x q = (0, Liste(x, q));;
