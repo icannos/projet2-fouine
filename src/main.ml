@@ -8,6 +8,16 @@ open Affichage;;
 open Eval;;
 
 
+let initialize_envir () =
+  match !tradimp with
+  | true ->
+  let lexbuf = Lexing.from_string (read_file !mem_file) in
+      let parse () = Parser.main Lexer.token lexbuf in
+          eval (parse ()) (Environnement.empty); print_env !toplevel_envir; !toplevel_envir
+  | false -> Environnement.empty
+
+;;
+
 (* Fonction principale  *)
 let interpreter () =
 
@@ -21,16 +31,14 @@ let interpreter () =
   Voir Arguments.ml pour les déclarations.
 *)
 
-  (* if !tradimp then srcfile := (read_file !mem_file) ^ (!srcfile) else (srcfile := !srcfile);*)
 
   let lexbuf = Lexing.from_string (!srcfile) in
 
    let parse () = Parser.main Lexer.token lexbuf in
     let ast = if !tradimp then exec_trad (parse ()) else ( parse () )  in
 
-
   if(!debugmode) then (aff_expr ast; print_newline());
-  let _ = eval ast ( Environnement.empty) in
+  let _ = eval ast (initialize_envir ()) in
 
   flush stdout;
 ;;

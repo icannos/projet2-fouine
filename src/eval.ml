@@ -6,6 +6,8 @@ open Safe;;
 open Memory;;
 open Errmgr;;
 
+let toplevel_envir = ref (Environnement.empty);;
+
 let buildEnv pattern env expr =
   let nenv = ref (Environnement.empty) in
   let addVar key  =
@@ -195,7 +197,7 @@ and evalb ee env =
 (*on unifie le pattern avec e1*)
   and evallet patt e1 e2 env = match eval e1 env with
   |Exn x -> Exn x
-  |v -> let envir = unification patt v  env in eval e2 envir
+  |v -> let envir = unification patt v  env in toplevel_envir := envir; eval e2 envir
 
   and evalletrec  nom ee1 ee2 env = match nom with
     |"_" -> let _ = eval ee1 env in eval ee2 env
@@ -203,7 +205,7 @@ and evalb ee env =
        let _, e1 = ee1 in
        match e1 with
        (* J'ajoute un Int 0 à la place de f histoire q'il connaisse f dans l'environnement lorsqu'il construit la cloture, mais de toutes façons f est remplacée dans l'environnement lors de l'application *)
-        |Fun(arg, fexpr) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  eval ee2 envir
+        |Fun(arg, fexpr) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  toplevel_envir := envir; eval ee2 envir
         |_ -> raise (NotFunction (string_of_expr ee1))
       end
 
