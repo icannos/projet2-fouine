@@ -46,9 +46,16 @@ let rec trad_expr ee =
       |Acc(e) -> let s0 = news() in let s1 = news() in let v = newv() in let te = trad_expr e in
                                                                          mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkLet v (mkApp mkApp read l s1) (mkPair (v,s1)) ))
       |Aff(nom, e)-> let s0 = news() in let s1= news() in let s2 = news() in let s3 =news() in let v1 = newv() in let v2 = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
-   mkFun s0 ( mkLetPair (v1,s1) (mkApp e1 s0)
- (mkLetPair (v2,s2) (mkApp e2 s1)
+   mkFun s0 ( mkLetPair (v1,s1) (mkApp te1 s0)
+ (mkLetPair (v2,s2) (mkApp te2 s1)
   (mkLet s3 (mkApp mkApp s2 (mkPair (v1,v2))) (mkPair(Uni, s3))))) *)
+      |Cond(Testeq(e1,e2), e3, e4)
+       |Cond(Testneq(e1,e2), e3, e4)
+       |Cond(Testlt(e1,e2), e3, e4)
+       |Cond(Testgt(e1,e2), e3, e4)
+       |Cond(Testleq(e1,e2), e3, e4)
+       |Cond(Testgeq(e1,e2), e3, e4) -> let s0 = news() in let s1 = news() in let s2 = news() in let b1 = newv() in let b2 = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in let te3 = trad_expr e3 in let te4 = trad_expr e4 in
+  mkFun s0 (mkLetPair (b1,s1) (mkApp te1 s0)                           (mkLetPair (b2,s2) (mkApp te2 s1)                                    (mkPair (mkCond (mkBool x te1 te2) te3 te4, s2))))                                          (*Il manque la récupération du x*)                                                                   
       |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
   with x -> error_display node_id x; raise Fail

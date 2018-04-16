@@ -29,7 +29,12 @@ let mkPattCase e1 e2 = (0, PattCase(e1, e2));;
 let mkPrintInt e = (0, PrintInt e);;
 
 let mkCond cond e1 e2 = (0, Cond(cond, e1, e2));;
-
-
+let mkBool comp e1 e2 = match comp with
+  | Testeq(_,_) -> (0, Testeq(e1,e2))
+  | Testneq(_,_) -> (0,Testneq(e1,e2))
+  | Testlt(_,_)->(0,Testlt(e1,e2))
+  | Testgt(_,_)->(0,Testgt(e1,e2))
+  | Testlet(_,_)->(0,Testlet(e1,e2))
+  | Testget(_,_)->(0,Testget(e1,e2));;
 let mkLVide () = (0, Vide);;
 let mkListe x q = (0, Liste(x, q));;
