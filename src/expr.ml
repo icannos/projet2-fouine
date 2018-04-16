@@ -48,19 +48,13 @@ type expr =
   |Cond of bextexpr * extexpr * extexpr
 
  and bexpr =
-   | Compop of  extexpr * extexpr
- (* | Testeq of extexpr * extexpr
+  | Testeq of extexpr * extexpr
   | Testneq of extexpr * extexpr
   | Testlt of extexpr * extexpr
   | Testgt of extexpr * extexpr
   | Testlet of extexpr * extexpr
-  | Testget of extexpr * extexpr*)
-   and Compop = 
-     | Testeq
-     | Testneq
-     | Testlt
-     | Testlet
-     | Testget
+  | Testget of extexpr * extexpr
+
  and extexpr = int * expr
  and bextexpr = int * bexpr
 ;;
