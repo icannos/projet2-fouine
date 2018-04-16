@@ -39,8 +39,16 @@ let rec trad_expr ee =
      
       | Let((patt, e1),e2) -> let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
  mkFun s0 (mkLetPair (patt, s1) (mkApp te1 s0) (mkApp te2 s1) )
-      |Fun(patt,e) -> let s0 = news() in let s1 = news() in let te = trad_expr e in
- mkFun s0 (mkPair (mkFun patt te, s0))
+      |Fun(patt,e) -> let s0 = news()  in let te = trad_expr e in
+  mkFun s0 (mkPair (mkFun patt te, s0))
+    (*  |Ref(e) -> let s0 = news() in let s1 = news() in let s2 = news() in let v0 = newv() in let te = trad_expr e in
+    mkFun s0 (mkLetPair (v0,s1) (mkApp te s0) (mkLetPair (l,s2) (mkApp mkApp allocate v0 s1) (mkPair (l,s2)) ) )
+      |Acc(e) -> let s0 = news() in let s1 = news() in let v = newv() in let te = trad_expr e in
+                                                                         mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkLet v (mkApp mkApp read l s1) (mkPair (v,s1)) ))
+      |Aff(nom, e)-> let s0 = news() in let s1= news() in let s2 = news() in let s3 =news() in let v1 = newv() in let v2 = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
+   mkFun s0 ( mkLetPair (v1,s1) (mkApp e1 s0)
+ (mkLetPair (v2,s2) (mkApp e2 s1)
+  (mkLet s3 (mkApp mkApp s2 (mkPair (v1,v2))) (mkPair(Uni, s3))))) *)
       |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
   with x -> error_display node_id x; raise Fail
