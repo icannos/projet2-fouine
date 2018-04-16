@@ -17,14 +17,14 @@ let newv () =
   nbv := !nbv + 1;
  (0,Identifier ("v" ^ (string_of_int !nbv)));;
 
-(*des méta-constructeurs qui évitent un code de traduction illisiblesont dans constructeurs*)
+(*des méta-constructeurs qui évitent un code de traduction illisible sont dans constructeurs*)
 
 let rec trad_expr ee =
   let (node_id, e) = ee in
 
   try match e with
-      | Const x -> let s0 = news () in mkFun s0 (mkPair ((mkConst x), s0))
-      | Identifier x -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0))
+     (* | Const x -> let s0 = news () in mkFun s0 (mkPair ((mkConst x), s0))
+      | Identifier x -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0)) (*j'ai synthétiser les deux cas dans le dernier, on peut  discuter ce choix*)*)
       | PrintInt e -> let s0 = news () and s1 = news () and v1 = newv () and te = trad_expr e in
       mkFun s0 (mkLetPair (v1, s1) (mkApp te s0) (mkPair(mkPrintInt v1, s1)))
 
@@ -35,8 +35,13 @@ let rec trad_expr ee =
       | Sou(e1,e2) -> let  s0 = news () in let s1 = news() in let s2 = news() in  let v1 = newv () in let v2 = newv () in let te1 =  trad_expr e1 in let te2 = trad_expr e2 in
       mkFun s0 ( mkLetPair (v1,s1) (mkApp te1 s0) (mkLetPair (v2,s2) (mkApp te2 s1) (mkPair ((mkSou v1 v2),s2))))
       | Div(e1,e2) -> let  s0 = news () in let s1 = news() in let s2 = news() in  let v1 = newv () in let v2 = newv () in let te1 =  trad_expr e1 in let te2 = trad_expr e2 in
-      mkFun s0 ( mkLetPair (v1,s1) (mkApp te1 s0) (mkLetPair (v2,s2) (mkApp te2 s1) (mkPair ((mkDiv v1 v2),s2))))
-
+ mkFun s0 ( mkLetPair (v1,s1) (mkApp te1 s0) (mkLetPair (v2,s2) (mkApp te2 s1) (mkPair ((mkDiv v1 v2),s2))))
+     
+      | Let((patt, e1),e2) -> let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
+ mkFun s0 (mkLetPair (patt, s1) (mkApp te1 s0) (mkApp te2 s1) )
+      |Fun(patt,e) -> let s0 = news() in let s1 = news() in let te = trad_expr e in
+ mkFun s0 (mkPair (mkFun patt te, s0))
+      |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
   with x -> error_display node_id x; raise Fail
 

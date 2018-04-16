@@ -21,7 +21,7 @@ let interpreter () =
   Voir Arguments.ml pour les déclarations.
 *)
 
-  if !tradimp then srcfile := (read_file !mem_file) ^ (!srcfile) else (srcfile := !srcfile);
+  (* if !tradimp then srcfile := (read_file !mem_file) ^ (!srcfile) else (srcfile := !srcfile);*)
 
   let lexbuf = Lexing.from_string (!srcfile) in
 
@@ -29,7 +29,7 @@ let interpreter () =
     let ast = if !tradimp then exec_trad (parse ()) else ( parse () )  in
 
 
-  if(!debugmode) then (print_string (istring_of_expr ast); print_newline());
+  if(!debugmode) then (aff_expr ast; print_newline());
   let _ = eval ast ( Environnement.empty) in
 
   flush stdout;
