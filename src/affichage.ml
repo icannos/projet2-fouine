@@ -55,7 +55,7 @@ let rec string_of_expr ee =
   | Mul(e1,e2) -> string_of_expr_bin "*" e1 e2
   | Sou(e1,e2) -> string_of_expr_bin "-" e1 e2
   | Div(e1,e2) -> string_of_expr_bin "/" e1 e2
-  | Aff(nom,e1) ->  nom ^ " := " ^ (string_of_expr e1)
+  | Aff(e,e1) ->  (string_of_expr e) ^ " := " ^ (string_of_expr e1)
   | Ref(e) ->  " ref " ^ (string_of_expr e)
   | Acc(e) ->  " !"^ (string_of_expr e)
   | PrintInt(e) -> "prInt (" ^ (string_of_expr e)  ^ ")"
@@ -103,7 +103,7 @@ let (node_id, e) = ee in
   | Mul(e1,e2) -> istring_aux "Mul(" e1 e2
   | Sou(e1,e2) -> istring_aux "Sou(" e1 e2
   | Div(e1,e2) -> istring_aux "Div(" e1 e2
-  | Aff(nom, e1) ->  "(0,Aff(" ^ nom ^ ", " ^(istring_of_expr e1) ^ " ))"
+  | Aff(e, e1) ->  "(0,Aff(" ^ ((istring_of_expr e)) ^ ", " ^(istring_of_expr e1) ^ " ))"
   | Ref(e) -> "(0,Ref " ^ (istring_of_expr e)^")"
   | Acc(e) -> "(0,Acc"^ (istring_of_expr e)^")"
   | Let((patt,e1),e2) -> "(0,Let( ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) ^ "), ("^ (istring_of_expr e2) 	^ ")))"

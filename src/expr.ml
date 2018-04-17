@@ -34,7 +34,7 @@ type expr =
   |PrintInt of extexpr
 
   (* Imp�ratif *)
-  |Aff of name * extexpr
+  |Aff of extexpr * extexpr
   |Ref of extexpr
   |Acc of extexpr
 
@@ -79,7 +79,8 @@ let rec getIdentifiersInConstr expr =
 (*type de la fonction : set -> set -> expr-> set, donc il faut modifier les tests bool�ens, dis moi si cette technique te semble correcte*)
 let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   match e with
-  |Aff(_, e) |Ref e -> (freevars bindedvars fvars e)
+  |Aff(e1, e2) -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
+  |Ref e -> (freevars bindedvars fvars e)
   |Acc (e) -> (freevars bindedvars fvars e)
   |Const (_) -> fvars
   |Constr (_, listxpr)

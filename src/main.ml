@@ -13,7 +13,7 @@ let initialize_envir () =
   | true ->
   let lexbuf = Lexing.from_string (read_file !mem_file) in
       let parse () = Parser.main Lexer.token lexbuf in
-          eval (parse ()) (Environnement.empty); print_env !toplevel_envir; !toplevel_envir
+          eval (parse ()) (Environnement.empty); !toplevel_envir
   | false -> Environnement.empty
 
 ;;

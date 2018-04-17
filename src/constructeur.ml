@@ -38,3 +38,8 @@ let mkBool comp e1 e2 = match comp with
   | Cond((_,Testget(_,_)), _, _) ->(0,Testget(e1,e2));;
 let mkLVide () = (0, Vide);;
 let mkListe x q = (0, Liste(x, q));;
+let mkUnit () = (0, Uni);;
+
+let mkmodify v1 v2 = (mkApp (mkApp (mkIdentifier "modify") v1) v2);;
+let mkallocate v1 v2 = (mkApp (mkApp (mkIdentifier "allocate") v1) v2);;
+let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1)

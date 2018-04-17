@@ -93,12 +93,13 @@ let rec eval ee env  =
             | _ -> failwith "Not a reference"
        end
     (* Pour l'affectation on récupère de même l'adresse associée au nom dans l'environnement, puis on ajoute dans la mémoire l'évaluation de l'expression, on retourne ici un nouveau type Unit qui correspond au unit de caml *)
-    | Aff(nom, e) ->
-       begin match Environnement.find nom env with
+    | Aff(expr_ref, e) ->
+    begin match (eval expr_ref env) with
             |Reference(addr)->(try add_memory addr (eval e env); Unit
                                                      with Not_found ->  raise (UnknownReference (string_of_expr e)))
             |_ -> failwith "Not a reference"
-       end
+    end
+
     (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in begin match eval e env with |Exn x -> Exn x |v -> add_memory addr v; Reference(addr) end
 

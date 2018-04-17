@@ -111,7 +111,7 @@ simplexpr:
 
  | simplexpr SEMICOL simplexpr                 {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),$3)) }
  | simplexpr DOUBLESEMICOL                  {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),(error_handler  (),Const 0))) }
- | NOM AFF simplexpr 			       {  (error_handler  (),Aff($1, $3)) }
+ | priexpr AFF simplexpr 			       {  (error_handler  (), Aff($1, $3)) }
  | REF simplexpr			       {  (error_handler  (),Ref($2)) }
  | UNIT	  	    	 		       {(error_handler (), Uni)}
 
