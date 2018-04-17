@@ -35,9 +35,11 @@ let interpreter () =
   let lexbuf = Lexing.from_string (!srcfile) in
 
    let parse () = Parser.main Lexer.token lexbuf in
-    let ast = if !tradimp then exec_trad (parse ()) else ( parse () )  in
+   let ast = parse () in if !verbosemode then (print_string (istring_of_expr ast));
+    let ast = if !tradimp then exec_trad ast else  ast   in
 
   if(!debugmode) then (aff_expr ast; print_newline());
+
   let _ = eval ast (initialize_envir ()) in
 
   flush stdout;

@@ -29,17 +29,20 @@ let mkPattCase e1 e2 = (0, PattCase(e1, e2));;
 let mkPrintInt e = (0, PrintInt e);;
 
 let mkCond cond e1 e2 = (0, Cond(cond, e1, e2));;
+
 let mkBool comp e1 e2 = match comp with
   | Cond((_,Testeq(_,_) ), _, _) -> (0, Testeq(e1,e2))
   | Cond((_,Testneq(_,_)), _, _) -> (0,Testneq(e1,e2))
   | Cond((_,Testlt(_,_) ), _, _) ->(0,Testlt(e1,e2))
   | Cond((_,Testgt(_,_) ), _, _) ->(0,Testgt(e1,e2))
   | Cond((_,Testlet(_,_)), _, _) ->(0,Testlet(e1,e2))
-  | Cond((_,Testget(_,_)), _, _) ->(0,Testget(e1,e2));;
+  | Cond((_,Testget(_,_)), _, _) ->(0,Testget(e1,e2))
+
+  ;;
 let mkLVide () = (0, Vide);;
 let mkListe x q = (0, Liste(x, q));;
 let mkUnit () = (0, Uni);;
 
-let mkmodify v1 v2 = (mkApp (mkApp (mkIdentifier "modify") v1) v2);;
+let mkmodify v1 v2 s2 = mkApp (mkApp (mkIdentifier "modify") s2) (mkPair (v1, v2));;
 let mkallocate v1 v2 = (mkApp (mkApp (mkIdentifier "allocate") v1) v2);;
-let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1)
+let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1);;

@@ -46,14 +46,17 @@ let rec trad_expr ee =
       |Acc(e) -> let s0 = news() in let s1 = news() in let v = newv() in let l = newv () in let te = trad_expr e in
                                                                          mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkLet v (mkread l s1) (mkPair (v,s1)) ))
       |Aff(nom, e)-> let s0 = news() in let s1= news() in let s2 = news() in let s3 =news() in let v1 = newv() in let v2 = newv() in let tnom = trad_expr nom in let te = trad_expr e in
-   mkFun s0 (mkLetPair (v1,s1) (mkApp tnom s0) (mkLetPair (v2,s2) (mkApp te s1) (mkLet s3 (mkmodify v1 v2) (mkPair (mkUnit (), s3)))))
+   mkFun s0 (mkLetPair (v1,s1) (mkApp tnom s0) (mkLetPair (v2,s2) (mkApp te s1) (mkLet s3 (mkmodify v1 v2 s2) (mkPair (mkUnit (), s3)))))
       |Cond((_, Testeq(e1,e2)), e3, e4)
        |Cond((_,Testneq(e1,e2)), e3, e4)
        |Cond((_,Testlt(e1,e2)), e3, e4)
        |Cond((_,Testgt(e1,e2)), e3, e4)
        |Cond((_,Testlet(e1,e2)), e3, e4)
-       |Cond((_,Testget(e1,e2)), e3, e4) -> let s0 = news() in let s1 = news() in let s2 = news() in let b1 = newv() in let b2 = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in let te3 = trad_expr e3 in let te4 = trad_expr e4 in
-  mkFun s0 (mkLetPair (b1,s1) (mkApp te1 s0)                           (mkLetPair (b2,s2) (mkApp te2 s1)                                    (mkPair (mkCond (mkBool e te1 te2) te3 te4, s2))))
+       |Cond((_,Testget(e1,e2)), e3, e4) -> let s0 = news() in let s1 = news() in let s2 = news() in let b1 = newv() in let b2 = newv() in
+       let te1 = trad_expr e1 in let te2 = trad_expr e2 in let te3 = trad_expr e3 in let te4 = trad_expr e4 in
+  mkFun s0 (mkLetPair (b1,s1) (mkApp te1 s0)(mkLetPair (b2,s2) (mkApp te2 s1) (mkCond (mkBool e b1 b2) (mkApp te3 s2) (mkApp te4 s2))))
+    |App(e1, e2) -> let s0 = news() in let s1 = news() in let s2 = news() in let f = newv() in let v = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
+    mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
       |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
   with x -> error_display node_id x; raise Fail
