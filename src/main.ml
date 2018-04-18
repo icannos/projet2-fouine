@@ -6,7 +6,7 @@ open Safe;;
 open Parser;;
 open Affichage;;
 open Eval;;
-
+(*open Continuation;;*)
 
 let initialize_envir () =
   match !tradimp with
@@ -36,6 +36,7 @@ let interpreter () =
 
    let parse () = Parser.main Lexer.token lexbuf in
    let ast = parse () in if !verbosemode then (print_string (istring_of_expr ast));
+                         (*il faudra ajouter les continuations ici quand elles existeront*)
     let ast = if !tradimp then exec_trad ast else  ast   in
 
   if(!debugmode) then (aff_expr ast; print_newline());

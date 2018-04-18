@@ -43,9 +43,10 @@ let optlist =
     ("-d", Arg.Set debugmode, "Active le mode de debuggage" );
     ("--verbose", Arg.Set verbosemode, "Active le mode verbose" );
     ("-v", Arg.Set verbosemode, "Active le mode verbose" );
-    ("-R", Arg.Set tradimp, "Active la traduction des aspects imperatif");
+    ("-R", Arg.Set tradimp, "Active la traduction des aspects imperatifs");
     ("--memory-file", Arg.String set_mem, "Permet de spécifier le fichier dans
-    lequel aller chercher les fonctions de gestion de la mémoire")
+                                           lequel aller chercher les fonctions de gestion de la mémoire");
+    ("-E", Arg.Set tradexcep, "Active la traduction en continuation")
   ]
 ;;
 
