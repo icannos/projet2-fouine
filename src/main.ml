@@ -6,7 +6,7 @@ open Safe;;
 open Parser;;
 open Affichage;;
 open Eval;;
-(*open Continuation;;*)
+open Continuation;;
 
 let initialize_envir () =
   match !tradimp with

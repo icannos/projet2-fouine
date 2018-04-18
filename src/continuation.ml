@@ -19,15 +19,16 @@ let newkE () =
  (0,Identifier ("kE" ^ (string_of_int !nbkE)));;
 
 
-  let rec trad_expr ee =
+  let rec cont_expr ee =
   let (node_id, e) = ee in
 
   try match e with
       (*cas de brique élémentaires, juste les donner à k: fun k kE -> k 52*)
       | Const x -> let k = newk() in let kE = newkE() in
-                                     mkFun k (mkFun kE (mkApp k mkConst x))
+                                     mkFun k (mkFun kE (mkApp k (mkConst x)))
       | Identifier x ->  let k = newk() in let kE = newkE() in
-                                     mkFun k (mkFun kE (mkApp k mkIdentifier x))
+                                           mkFun k (mkFun kE (mkApp k (mkIdentifier x)))
+    (*  | Add(e1,e2) -> *)
 
 
    with x -> error_display node_id x; raise Fail
