@@ -13,7 +13,9 @@ let mkFunxy x y im = (0, Fun(x, (0, Fun(y, im))));;
 let mkLet a b c  = (0, Let((a, b), c));;
 (* let (a,b) = c in d, fait car beaucoup utilisé *)
 let mkLetPair (a, b) c d = (0, Let(( (0, Cart([a;b])), c), d));;
+let mkLetRec f e1 e2 = (0, LetRec((f,e1),e2));;
 
+  
 (* string -> Identifier string *)
 let mkIdentifier varname = (0, Identifier varname);;
 

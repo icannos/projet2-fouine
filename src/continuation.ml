@@ -33,10 +33,14 @@ let newva () =
       | Const x -> let k = newk() in let kE = newkE() in
      mkFunxy k  kE (mkApp k (mkConst x))
       | Identifier x ->  let k = newk() in let kE = newkE() in
-      mkFunxy k  kE (mkApp k (mkIdentifier x))
+     mkFunxy k  kE (mkApp k (mkIdentifier x))
+      (*autre cas élémentaire : on rencontre une exception (en fait pas si élémentaire vu que ça peut être imbriqué)*)
+    (*  | Raise (_,Exn e) -> let k = nemk() in let kE = newkE() in let ce = cont_expr e in
+     mkFunxy k kE (mkAppxy ce kE kE) *)
+      (*ensuite les cas où on croit en la récursivité*)
       | Add(e1,e2) -> let k = newk() in let kE = newkE() in let v1 = newva() in let v2 = newva() in
  let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
-      mkFunxy k kE (mkAppxy ce1 (mkFun v1 (mkAppxy ce2 (mkFun v2 (mkApp k ( mkAdd v1 v2 ) ) ) kE )) kE )
+     mkFunxy k kE (mkAppxy ce1 (mkFun v1 (mkAppxy ce2 (mkFun v2 (mkApp k ( mkAdd v1 v2 ) ) ) kE )) kE )
                                     
 
 

@@ -56,7 +56,11 @@ let rec trad_expr ee =
        let te1 = trad_expr e1 in let te2 = trad_expr e2 in let te3 = trad_expr e3 in let te4 = trad_expr e4 in
   mkFun s0 (mkLetPair (b1,s1) (mkApp te1 s0)(mkLetPair (b2,s2) (mkApp te2 s1) (mkCond (mkBool e b1 b2) (mkApp te3 s2) (mkApp te4 s2))))
     |App(e1, e2) -> let s0 = news() in let s1 = news() in let s2 = news() in let f = newv() in let v = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
-    mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
+                                                                                                                                           mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
+
+    (*Si on croit aux oracles pour le let rec*)
+    |LetRec((nom,e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
+                                                                      mkFun s0 (mkLetPair (v1,s1) (mkApp te1 s0) (mkLetRec  nom v1 (mkApp te2 s0) ) )
       |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
   with x -> error_display node_id x; raise Fail

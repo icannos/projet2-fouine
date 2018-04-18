@@ -155,7 +155,9 @@ let rec eval ee env  =
     l'on veut lever, si ça lève une exception alors on remonte cette expression
     et non celle que l'on est en train de créer.
     *)
-    |Raise(expr) -> begin match eval expr env with |Exn x -> Exn x |v -> Exn v end
+    |Raise(expr) -> begin match eval expr env with |Exn x -> Exn x
+                                                   |v -> Exn v
+                    end
 
 
     | PrintInt e -> begin match eval e env with
