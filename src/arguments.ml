@@ -44,8 +44,7 @@ let optlist =
     ("--verbose", Arg.Set verbosemode, "Active le mode verbose" );
     ("-v", Arg.Set verbosemode, "Active le mode verbose" );
     ("-R", Arg.Set tradimp, "Active la traduction des aspects imperatifs");
-    ("--memory-file", Arg.String set_mem, "Permet de spécifier le fichier dans
-                                           lequel aller chercher les fonctions de gestion de la mémoire");
+    ("--memory-file", Arg.String set_mem, "Permet de spécifier le fichier dans lequel aller chercher les fonctions de gestion de la mémoire");
     ("-E", Arg.Set tradexcep, "Active la traduction en continuation")
   ]
 ;;

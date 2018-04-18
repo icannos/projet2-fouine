@@ -38,7 +38,7 @@ let interpreter () =
    let ast = parse () in if !verbosemode then (print_string (istring_of_expr ast));
                          (*il faudra ajouter les continuations ici quand elles existeront*)
     let ast = if !tradimp then exec_trad ast else  ast   in
-
+    let ast = if !tradexcep then exec_excep ast else ast in
   if(!debugmode) then (aff_expr ast; print_newline());
 
   let _ = eval ast (initialize_envir ()) in
