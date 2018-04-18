@@ -34,10 +34,10 @@ let newva () =
      mkFunxy k  kE (mkApp k (mkConst x))
       | Identifier x ->  let k = newk() in let kE = newkE() in
       mkFunxy k  kE (mkApp k (mkIdentifier x))
-    (*  | Add(e1,e2) -> let k = newk() in let kE = newkE() in let v1 = newva() in let v2 = newva() in
-                                                                                let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
-      
-     *)                               
+      | Add(e1,e2) -> let k = newk() in let kE = newkE() in let v1 = newva() in let v2 = newva() in
+ let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
+      mkFunxy k kE (mkAppxy ce1 (mkFun v1 (mkAppxy ce2 (mkFun v2 (mkApp k ( mkAdd v1 v2 ) ) ) kE )) kE )
+                                    
 
 
    with x -> error_display node_id x; raise Fail
