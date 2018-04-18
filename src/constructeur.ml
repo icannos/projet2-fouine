@@ -4,7 +4,10 @@ let mkApp f e = (0, App(f, e) );;
 
 (* patt -> e *)
 let mkFun patt e = (0, Fun(patt, e));;
+(*pour les continuations, il faut tout le temps définir des fonctions à deux arguments : *)
+let mkFunxy x y im = (0, Fun(x, (0, Fun(y, im))));;
 
+  
 (*let a = b in c*)
 let mkLet a b c  = (0, Let((a, b), c));;
 (* let (a,b) = c in d, fait car beaucoup utilisé *)
