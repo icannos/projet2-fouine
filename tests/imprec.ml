@@ -1,1 +1,1 @@
-let rec f x = 5
+let rec f x = 5;;

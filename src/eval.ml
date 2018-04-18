@@ -206,9 +206,9 @@ and evalb ee env =
     |"_" -> let _ = eval ee1 env in eval ee2 env
     |_ -> begin
        let _, e1 = ee1 in
-       match e1 with
+       match eval ee1 (Environnement.add nom (Int 0) env) with
        (* J'ajoute un Int 0 à la place de f histoire q'il connaisse f dans l'environnement lorsqu'il construit la cloture, mais de toutes façons f est remplacée dans l'environnement lors de l'application *)
-        |Fun(arg, fexpr) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  toplevel_envir := envir; eval ee2 envir
+        |Fonction(arg, fexpr, enirv) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  toplevel_envir := envir; eval ee2 envir
         |_ -> raise (NotFunction (string_of_expr ee1))
       end
 
