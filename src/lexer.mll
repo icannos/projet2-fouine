@@ -6,7 +6,7 @@
 }
 
 rule token = parse    (* la "fonction" aussi s'appelle token .. *)
-  | [' ' '\t']     { token lexbuf }    (* on saute les blancs et les tabulations *)
+  | [' ' '\t' '\r' '\n']     { token lexbuf }    (* on saute les blancs et les tabulations *)
  	     	   	           (* token: appel r�cursif *)
                                    (* lexbuf: argument implicite
                                       associ� au tampon o� sont
@@ -15,7 +15,6 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   |"(*" [^ '*']* "*)" { token lexbuf }
   (* File/errors management  *)
   | eof             { EOF }
-  | '\n'            { Lexing.new_line lexbuf; token lexbuf }
 
   (* Built in *)
   |"prInt"	    { PRINT }

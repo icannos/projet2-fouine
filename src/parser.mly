@@ -27,18 +27,21 @@ open Errmgr
 %token TRY RAISE
 
 
+%right CONSTR
 %nonassoc LPAREN
-%nonassoc RPAREN
+%left RPAREN
 %nonassoc LBRACKET
 %left RBRACKET
 
+
 %left DOUBLESEMICOL
-%right IN
+%left IN
+
 %right LET
 %right REC
 %right CASE
 
-%right CONSTR
+
 %right COMMA
 %right COLONCOLON
 
@@ -65,6 +68,7 @@ open Errmgr
 %left TIMES
 %left DIV
 %left PRINT
+
 
 %start main
 

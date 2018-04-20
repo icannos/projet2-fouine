@@ -2,7 +2,7 @@ let rec last_two l = match l with
     | [] -> raise NotLongEnough
     | [x] -> raise NotLongEnough
     | [x;y] -> (x,y)
-    | x::t -> last_two t
+    | x::t -> (last_two t)
 in
 
 
