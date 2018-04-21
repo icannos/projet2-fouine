@@ -8,6 +8,11 @@ open Affichage;;
 open Eval;;
 open Continuation;;
 
+let parse_string s =
+  let lexbuf = Lexing.from_string s in
+  Parser.main Lexer.token lexbuf
+;;
+
 let initialize_envir () =
   match !tradimp with
   | true ->
