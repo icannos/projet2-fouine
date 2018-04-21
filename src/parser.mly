@@ -8,7 +8,6 @@ open Errmgr
 /* description des lex�mes, ceux-ci sont d�crits dans lexer.mll */
 
 %token EOF
-%token EOL
 
 %token <int> INT       /* le lex�me INT a un attribut entier */
 %token PLUS TIMES MOINS DIV
@@ -28,6 +27,7 @@ open Errmgr
 
 
 %right CONSTR
+
 %nonassoc LPAREN
 %left RPAREN
 %nonassoc LBRACKET
@@ -35,7 +35,7 @@ open Errmgr
 
 
 %left DOUBLESEMICOL
-%left IN
+%right IN
 
 %right LET
 %right REC
@@ -68,6 +68,7 @@ open Errmgr
 %left TIMES
 %left DIV
 %left PRINT
+
 
 
 %start main

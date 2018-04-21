@@ -6,11 +6,12 @@
 }
 
 rule token = parse    (* la "fonction" aussi s'appelle token .. *)
-  | [' ' '\t' '\r' '\n']     { token lexbuf }    (* on saute les blancs et les tabulations *)
+  | [' ' '\t' '\n']     { token lexbuf }    (* on saute les blancs et les tabulations *)
  	     	   	           (* token: appel r�cursif *)
                                    (* lexbuf: argument implicite
                                       associ� au tampon o� sont
                                       lus les caract�res *)
+                                      
 
   |"(*" [^ '*']* "*)" { token lexbuf }
   (* File/errors management  *)
@@ -74,5 +75,5 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
 
   (*strings and litterals*)
   | ['0'-'9']+ as s { INT (int_of_string s) }
-  | ['a'-'z' '_'] ['a'-'z' '0'-'9' 'A'-'Z' '_']* as s { NOM (s) }
+  | ['a'-'z' '_']+  as s { NOM (s) }
   | ['A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as s { CONSTR (s) }
