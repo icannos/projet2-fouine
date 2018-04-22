@@ -8,14 +8,14 @@ let mkFun patt e = (0, Fun(patt, e));;
 (*pour les continuations, il faut tout le temps définir des fonctions à deux arguments : *)
 let mkFunxy x y im = (0, Fun(x, (0, Fun(y, im))));;
 
-  
+
 (*let a = b in c*)
 let mkLet a b c  = (0, Let((a, b), c));;
 (* let (a,b) = c in d, fait car beaucoup utilisé *)
 let mkLetPair (a, b) c d = (0, Let(( (0, Cart([a;b])), c), d));;
 let mkLetRec f e1 e2 = (0, LetRec((f,e1),e2));;
 
-  
+
 (* string -> Identifier string *)
 let mkIdentifier varname = (0, Identifier varname);;
 
@@ -38,13 +38,12 @@ let mkCond cond e1 e2 = (0, Cond(cond, e1, e2));;
 
 let mkBool comp e1 e2 = match comp with
   | Cond((_,Testeq(_,_) ), _, _) -> (0, Testeq(e1,e2))
-  | Cond((_,Testneq(_,_)), _, _) -> (0,Testneq(e1,e2))
-  | Cond((_,Testlt(_,_) ), _, _) ->(0,Testlt(e1,e2))
-  | Cond((_,Testgt(_,_) ), _, _) ->(0,Testgt(e1,e2))
-  | Cond((_,Testlet(_,_)), _, _) ->(0,Testlet(e1,e2))
-  | Cond((_,Testget(_,_)), _, _) ->(0,Testget(e1,e2))
-
-  ;;
+  | Cond((_,Testneq(_,_)), _, _) -> (0, Testneq(e1,e2))
+  | Cond((_,Testlt(_,_) ), _, _) -> (0, Testlt(e1,e2))
+  | Cond((_,Testgt(_,_) ), _, _) -> (0, Testgt(e1,e2))
+  | Cond((_,Testlet(_,_)), _, _) -> (0, Testlet(e1,e2))
+  | Cond((_,Testget(_,_)), _, _) -> (0, Testget(e1,e2))
+;;
 let mkLVide () = (0, Vide);;
 let mkListe x q = (0, Liste(x, q));;
 let mkUnit () = (0, Uni);;
@@ -53,7 +52,8 @@ let mkmodify v1 v2 s2 = mkApp (mkApp (mkIdentifier "modify") s2) (mkPair (v1, v2
 let mkallocate v1 v2 = (mkApp (mkApp (mkIdentifier "allocate") v1) v2);;
 let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1);;
 
+let mkPattCase pattern todo = (0, PattCase(pattern, todo));;
 
-(*let mkTry a b c = (0, Try(a,*) (*à compléter pour avoir try a with b -> c *)
-(*let mkExep ? qui traduit mkExcep a = E a*)
-let mkRaise e s = (0, Raise (mkPair e s));;
+let mkTry expression id todo = (0, Try(expression,[mkPattCase id todo]));; (*à compléter pour avoir try a with b -> c *)
+let mkExep id = (0, Constr("E", id));;
+let mkRaise e s = (0, Raise ((0, Constr("E", [e; s]))));;
