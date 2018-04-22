@@ -52,3 +52,8 @@ let mkUnit () = (0, Uni);;
 let mkmodify v1 v2 s2 = mkApp (mkApp (mkIdentifier "modify") s2) (mkPair (v1, v2));;
 let mkallocate v1 v2 = (mkApp (mkApp (mkIdentifier "allocate") v1) v2);;
 let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1);;
+
+
+(*let mkTry a b c = (0, Try(a,*) (*à compléter pour avoir try a with b -> c *)
+(*let mkExep ? qui traduit mkExcep a = E a*)
+let mkRaise e s = (0, Raise (mkPair e s));;

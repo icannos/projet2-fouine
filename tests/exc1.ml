@@ -1,1 +1,1 @@
-fun x -> x
+prInt ((fun x -> x) 5)

@@ -24,7 +24,7 @@ let newva () =
  (0,Identifier ("va" ^ (string_of_int !nbva)));;
 
 
-(*Attention, je crois que j'ai unproblème du à notre construction des exceptions ! Pour Raise et Try, je veux reconnaitre respectivement raise (E e) et Try e1 with x -> e2,je te laisse écrire ce qui correspond*)
+
 
 
   let rec cont_expr ee =
