@@ -52,7 +52,7 @@ let newva () =
 
       | PrintInt e -> let k = newk() in let kE = newkE() in
       let ce = cont_expr e in let x = newva() in
-     mkFunxy k kE (mkAppxy ce (mkFun x (mkAppxy (mkPrintInt x) k kE) ) kE)
+     mkFunxy k kE (mkAppxy ce (mkFun x (mkPrintInt x) ) kE)
 
 
       | Fun(patt, e) -> let k = newk() in let kE =newkE() in let ce = cont_expr e in
