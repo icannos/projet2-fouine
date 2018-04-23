@@ -1,1 +1,1 @@
-let a = fun x -> 5*x;;
+let f  = fun x ->(x+2) 
