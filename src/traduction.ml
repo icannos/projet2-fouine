@@ -64,7 +64,8 @@ let rec trad_expr ee =
                                                                                                                                          mkFun s0 (mkTry (mkApp te1 s0) (mkExep [(0,y);s1]) (mkApp te2 s1))
     | Raise e -> let s0 = news() in let (_, Constr("E", [x])) = e in let te = trad_expr e in mkFun s0 (mkRaise te s0)
     (*fun s0 -> try e1 s0 with E (x,s1) -> e2 s1*)                      (*fun s0 -> raise (e1,s0)*)
-      |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
+
+    |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
   with x -> error_display node_id x; raise Fail
 

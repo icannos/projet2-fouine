@@ -48,6 +48,8 @@ let interpreter () =
 
   let _ = eval ast (initialize_envir ()) in
 
+  if(!mem_mode) then (print_env !toplevel_envir) else ();
+
   flush stdout;
 ;;
 

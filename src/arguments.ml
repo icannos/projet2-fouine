@@ -6,10 +6,12 @@ open Printf
 
 let debugmode = ref false;;
 let verbosemode = ref false;;
+let mem_mode = ref false;;
 
 (*Modes de traduction*)
 let tradimp = ref false;;
 let tradexcep = ref false;;
+
 
 (* Fichier contenant les fonctions de mémoire *)
 let mem_file = ref ((Filename.dirname (Sys.argv.(0))) ^ "/memfonc.ml");;
@@ -43,6 +45,7 @@ let optlist =
     ("-d", Arg.Set debugmode, "Active le mode de debuggage" );
     ("--verbose", Arg.Set verbosemode, "Active le mode verbose" );
     ("-v", Arg.Set verbosemode, "Active le mode verbose" );
+    ("-m", Arg.Set mem_mode, "Affiche le dernier environnement connu");
     ("-R", Arg.Set tradimp, "Active la traduction des aspects imperatifs");
     ("--memory-file", Arg.String set_mem, "Permet de spécifier le fichier dans lequel aller chercher les fonctions de gestion de la mémoire");
     ("-E", Arg.Set tradexcep, "Active la traduction en continuation")
