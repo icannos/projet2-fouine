@@ -8,37 +8,6 @@ let string_of_identifier = function
   |s -> s
 ;;
 
-let rec string_of_value = function
-  |Int x -> string_of_int x
-  |Unit -> "()"
-  |Reference k -> "Reference"
-  |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
-  |Fonction(pattern, expr, env) -> ("Function ")
-  |LVide -> "[]"
-  |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
-  |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
-  |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
-  |Bool true -> "true"
-  |Bool false -> "false"
-  |Exn x -> "Exception"
-;;
-
-let print_value v = ps (string_of_value v);;
-
-let penv_item identifier v =
-  ps ((string_of_identifier identifier) ^ " = " ^ (string_of_value v) ^ "; ");;
-
-
-let print_env env = ps"{"; Environnement.iter penv_item env; ps "} \n";;
-
-
-let debug e env =
-  if !verbosemode then (print_env env);;
-
-
-
-
-
 (*Ajout d'une fonction pour mettre des pointvirgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
 let rec join sep liste = match liste with
   | [] -> ""
@@ -140,6 +109,33 @@ and  istring_aux s a b =
       begin"(0,"^ s ^ (istring_of_expr a) ^ ", " ^	(istring_of_expr b)^	 "))"   end
 
 ;;
+
+let rec string_of_value = function
+  |Int x -> string_of_int x
+  |Unit -> "()"
+  |Reference k -> "Reference"
+  |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
+  |Fonction(pattern, expr, env) -> ("Function: " ^ (string_of_expr pattern) ^ "->" ^ (string_of_expr pattern))
+  |LVide -> "[]"
+  |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
+  |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
+  |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
+  |Bool true -> "true"
+  |Bool false -> "false"
+  |Exn x -> "Exception"
+;;
+
+let print_value v = ps (string_of_value v);;
+
+let penv_item identifier v =
+  ps ((string_of_identifier identifier) ^ " = " ^ (string_of_value v) ^ "; ");;
+
+
+let print_env env = ps"{"; Environnement.iter penv_item env; ps "} \n";;
+
+
+let debug e env =
+  if !verbosemode then (print_env env);;
 
 
 let aff_expr e = ps (string_of_expr e);;

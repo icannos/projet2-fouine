@@ -1,1 +1,1 @@
-prInt ((fun x -> 3) 3);;
+let a = fun x -> 5*x;;

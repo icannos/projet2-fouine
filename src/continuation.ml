@@ -58,12 +58,13 @@ let newva () =
 
       | PrintInt e -> let k = newk() in let kE = newkE() in
       let ce = cont_expr e in let x = newva() in
-     mkFunxy k kE (mkAppxy ce (mkFun x ( (mkPrintInt x)) ) kE)
+     mkFunxy k kE (mkAppxy ce (mkFun x (mkAppxy (mkPrintInt x) k kE) ) kE)
 
 
       | Fun(patt, e) -> let k = newk() in let kE =newkE() in let ce = cont_expr e in
       let x1 = newva () in
-  mkFunxy k kE (mkApp k (mkFun patt  (mkAppxy ce (mkFun x1 x1) kE)))
+  mkFunxy k kE (mkApp k (mkFun patt ce ))
+
 
       | App(e1, e2) -> let f = newva() in let v = newva() in let k = newk() in let kE = newkE() in
       let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
@@ -83,7 +84,7 @@ let newva () =
 
        |Cond((_, Testeq(e1,e2)), e3, e4)
        |Cond((_,Testneq(e1,e2)), e3, e4)
-       |Cond((_,Testlt(e1,e2)), e3, e4)
+       |Cond((_,Testlt(e1,e2)), e3, e4) 
        |Cond((_,Testgt(e1,e2)), e3, e4)
        |Cond((_,Testlet(e1,e2)), e3, e4)
        |Cond((_,Testget(e1,e2)), e3, e4)
