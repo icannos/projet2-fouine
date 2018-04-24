@@ -33,7 +33,7 @@ l'idée est de ranger dans des dossiers différents les différents types de tes
 - Le rendu intermédiaire fonctionne.
 - Pour les traductions, nous récupérons l'arbre sortant du parser et nous le transformons avant de l'évaluer. Notre système de gestion d'erreur n'est pas pas adapté à cette opération, donc nous perdons les numéros de lignes lors des traductions. De plus, pour avoir un code moins indigeste, nous avons créer des méta constructeurs, qui sont regroupés dans le fichier constructeur.
 - Les traductions impératives sont dans tradimp, et ne traitent pas les bonus.
-- Les continuations sont dans tradexcep. Le let, le print, les opérations binaires et les conditions ont été testées et fonctionnent, contrairement au reste. Afin de vous permettre de lire ce que nous avons fait, nous avons ajouté un fichier traduction qui reprend sous forme lisible ce qui est implémenté.
+- Les continuations sont dans tradexcep. Le let, le print, les opérations binaires, les exceptions et les conditions ont été testées et fonctionnent, contrairement au reste. Afin de vous permettre de lire ce que nous avons fait, nous avons ajouté un fichier traduction qui reprend sous forme lisible ce qui est implémenté.
 - Les différentes options demandées ont été implémentées. Nous avons ici ajouté un mode -m qui nous permet de regarder l'environnement et qui nous a aidé au débug.
 
 ## Répartition de travail.

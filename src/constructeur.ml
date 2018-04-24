@@ -6,6 +6,7 @@ open Expr;;
 (* f e *)
 let mkApp f e = (0, App(f, e) );;
 let mkAppxy f x y = mkApp (mkApp f x) y;;
+  let mkAppxyz f x y z = mkApp (mkAppxy f x y) z;;
 
 (* patt -> e *)
 let mkFun patt e = (0, Fun(patt, e));;

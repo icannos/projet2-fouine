@@ -13,6 +13,10 @@
 ou
 [e1 e2] = fun k kE -> [e2] ([e1] k kE) kE
 
+By Alain
+[fun patt -> e] = fun k kE -> k (fun k' kE' x -> [e] k' kE')
+[e1 e2] = [e2] (fun x -> [e1] (fun f -> (f k kE x))kE) kE
+
 [let patt = e1 in e2 ] = fun k kE -> [e1] (x -> let patt  = x in ([e2] k kE)) kE
 [if e1 op e2 then e3 else e4 ] = fun k kE -> [e2] (fun x -> [e1] (fun y -> if x op y then [e3] k kE else [e4] k kE) kE) kE
 
