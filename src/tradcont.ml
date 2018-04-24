@@ -57,14 +57,11 @@ let newva () =
      mkFunxy k kE (mkAppxy ce (mkFun x (mkPrintInt x) ) kE)
 
 
-      | Fun(patt, e) -> let k = newk() in let kE =newkE() in let ce = cont_expr e in
-      let x1 = newva () in
-  mkFunxy k kE (mkApp k (mkFun patt ce ))
-
-
-      | App(e1, e2) -> let f = newva() in let v = newva() in let k = newk() in let kE = newkE() in
+      | Fun(patt, e) -> let k = newk() in let kE =newkE() in let ce = cont_expr e in let f = newva() in let x = newva() in
+   mkFunxy k kE (mkApp k (mkFun x (ce)) )                             
+      | App(e1, e2) -> let f = newva() in let x = newva() in let k = newk() in let kE = newkE() in
       let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
-  mkFunxy k kE (mkAppxy ce2 (mkAppxy ce1 k kE) kE)
+  mkFunxy k kE (mkAppxy ce2 (mkFun x (mkAppxy ce1 (mkFun f (mkAppxyz f x k kE)) kE) ) kE)
 
 
       | Try(e1,e2)-> let k = newk() in let x = newk () in let kE= newkE() in let ce1 = cont_expr e1 in let (_,PattCase((_, y),x) )=  (List.hd e2)in let ce2 = cont_expr x in
@@ -76,11 +73,11 @@ let newva () =
 
       |LetRec((nom, e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
       let s0 = newva() in
-      mkFunxy k ke (mkLet (mkIdentifier nom) (mkConst 0) (mkAppxy te1 (mkFun s0 (mkLetRec nom s0 (mkAppxy te2 k ke))) ke))
+      mkFunxy k ke (mkAppxy te1 (mkFun s0 (mkLetRec nom s0 (mkAppxy te2 k ke))) ke)
 
        |Cond((_, Testeq(e1,e2)), e3, e4)
        |Cond((_,Testneq(e1,e2)), e3, e4)
-       |Cond((_,Testlt(e1,e2)), e3, e4)
+       |Cond((_,Testlt(e1,e2)), e3, e4) 
        |Cond((_,Testgt(e1,e2)), e3, e4)
        |Cond((_,Testlet(e1,e2)), e3, e4)
        |Cond((_,Testget(e1,e2)), e3, e4)
@@ -94,7 +91,7 @@ let newva () =
     mkFunxy k kE (mkAppxy ce (mkFun x (mkRef e)) kE)                      (* | Aff(expr_ref,e) -> let k = newk() in let kE = newkE() in let ce = cont_expr e in*)
        | Acc e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
     mkFunxy k kE (mkAppxy ce (mkFun x (mkAcc e)) kE)
-
+       
 
    with x -> error_display node_id x; raise Fail
 
