@@ -47,9 +47,7 @@ let newva () =
 
     *)
 
-
-
-     | Constr(nom, x) -> let k = newk() in let kE = newkE() in let x = List.map cont_expr x in
+     | Constr(nom, x) -> let k = newk() in let kE = newkE() in let x1 = newva () in let x = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr x) in
     mkFunxy k  kE (mkApp k (mkConstr nom x))
 
     | Cart x -> let k = newk() in let x1 = newva () in let x2 = newva () in
