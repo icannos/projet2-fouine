@@ -2,7 +2,7 @@ open Expr;;
 
 
 (*Les fonctions et applications*)
-  
+
 (* f e *)
 let mkApp f e = (0, App(f, e) );;
 let mkAppxy f x y = mkApp (mkApp f x) y;;
@@ -57,13 +57,14 @@ let mkListe x q = (0, Liste(x, q));;
 let mkUnit () = (0, Uni);;
 let mkRef e = (0, Ref e);;
 let mkAcc e = (0, Acc e);;
-  
+let mkAff e1 e2 = (0, Aff(e1, e2));;
+
 let mkmodify v1 v2 s2 = mkApp (mkApp (mkIdentifier "modify") s2) (mkPair (v1, v2));;
 let mkallocate v1 v2 = (mkApp (mkApp (mkIdentifier "allocate") v1) v2);;
 let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1);;
 
 
-  
+
 let mkConstr nom lexpr = (0, Constr(nom, lexpr));;
 let mkPattCase pattern todo = (0, PattCase(pattern, todo));;
 

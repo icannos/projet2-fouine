@@ -31,6 +31,29 @@ let newva () =
       (*cas de brique élémentaires, juste les donner à k: fun k kE -> k 52*)
       | Const x -> let k = newk() in let kE = newkE() in
      mkFunxy k  kE (mkApp k (mkConst x))
+
+     | Vide -> let k = newk() in let kE = newkE() in
+    mkFunxy k  kE (mkApp k (mkLVide ()))
+
+    | Liste(x, y) -> let k = newk() in let kE = newkE() in let x = cont_expr x in let y = cont_expr y in
+   mkFunxy k  kE (mkApp k (mkListe x y))
+
+    |PattCase(patt, x) -> let k = newk() in let kE = newkE() in let x= cont_expr x in
+    mkPattCase patt x
+
+    |Match(expr, l) -> let k = newk() in let kE = newkE() in let l  = List.map cont_expr l in let ce = cont_expr expr in
+    let x = newva () in
+    mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkMatch x l))) kE)
+
+
+
+     | Constr(nom, x) -> let k = newk() in let kE = newkE() in let x = List.map cont_expr x in
+    mkFunxy k  kE (mkApp k (mkConstr nom x))
+
+    | Cart x -> let k = newk() in let kE = newkE() in let x = List.map cont_expr x in
+   mkFunxy k  kE (mkApp k (mkCart x))
+
+
       | Identifier x ->  let k = newk() in let kE = newkE() in
                                            mkFunxy k  kE (mkApp k (mkIdentifier x))
       | Uni -> let k = newk() in let kE = newkE() in
@@ -54,17 +77,18 @@ let newva () =
 
       | PrintInt e -> let k = newk() in let kE = newkE() in
       let ce = cont_expr e in let x = newva() in
-     mkFunxy k kE (mkAppxy ce (mkFun x (mkPrintInt x) ) kE)
+     mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkPrintInt x)) ) kE)
 
 
       | Fun(patt, e) -> let k = newk() in let kE =newkE() in let ce = cont_expr e in
-      let x1 = newva () in
-  mkFunxy k kE (mkApp k (mkFun patt ce ))
+      let x = newva () in let y = newva () in
+      mkFunxy k kE (mkApp k  (mkFun patt (mkFunxy x y (mkAppxy ce x y))))
 
 
       | App(e1, e2) -> let f = newva() in let v = newva() in let k = newk() in let kE = newkE() in
-      let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
-  mkFunxy k kE (mkAppxy ce2 (mkAppxy ce1 k kE) kE)
+      let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in let x = newva () in let y = newva () in
+  (* mkFunxy k kE (mkAppxy ce2 ((mkFun x (mkAppxy ce1 (mkFun y (mkApp k (mkApp y x))) kE) )) kE) *)
+      mkFunxy k kE (mkAppxy ce2 (mkFun x (mkAppxy ce1 (mkFun y (mkAppxy (mkApp y x) k kE)) kE)) kE)
 
 
       | Try(e1,e2)-> let k = newk() in let x = newk () in let kE= newkE() in let ce1 = cont_expr e1 in let (_,PattCase((_, y),x) )=  (List.hd e2)in let ce2 = cont_expr x in
@@ -91,9 +115,11 @@ let newva () =
 
        (*Aspects impératifs*)
        |Ref e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
-    mkFunxy k kE (mkAppxy ce (mkFun x (mkRef e)) kE)                      (* | Aff(expr_ref,e) -> let k = newk() in let kE = newkE() in let ce = cont_expr e in*)
+    mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkRef x))) kE)
+      | Aff(e1,e2) -> let k = newk() in let kE = newkE() in let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in let x = newva () in let y = newva () in
+      mkFunxy k kE (mkAppxy ce2 (mkFun y (mkAppxy ce1 (mkFun x (mkApp k (mkAff x y))) kE)) kE)
        | Acc e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
-    mkFunxy k kE (mkAppxy ce (mkFun x (mkAcc e)) kE)
+    mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkAcc x))) kE)
 
 
    with x -> error_display node_id x; raise Fail

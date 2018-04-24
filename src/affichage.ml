@@ -2,6 +2,7 @@ open Display;;
 open Env;;
 open Expr;;
 open Arguments;;
+open Memory
 
 
 let string_of_identifier = function
@@ -113,7 +114,7 @@ and  istring_aux s a b =
 let rec string_of_value = function
   |Int x -> string_of_int x
   |Unit -> "()"
-  |Reference k -> "Reference"
+  |Reference k -> "Reference on " ^ (string_of_value (read_address k))
   |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
   |Fonction(pattern, expr, env) -> ("Function: " ^ (string_of_expr pattern) ^ "->" ^ (string_of_expr pattern))
   |LVide -> "[]"
