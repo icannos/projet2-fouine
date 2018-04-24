@@ -15,20 +15,6 @@ Polissez-le sans cesse, et le repolissez,
 Ajoutez quelquefois, et souvent effacez." -- __Nicolas Boileau__
 
 ```
- _____    _          _              _____                 ___  ___           _                 ______
-|  ___|  | |        (_)            /  __ \       ___      |  \/  |          (_)                |  _  \
-| |__  __| |_      ___  __ _  ___  | /  \/      ( _ )     | .  . | __ ___  ___ _ __ ___   ___  | | | |
-|  __|/ _` \ \ /\ / / |/ _` |/ _ \ | |          / _ \/\   | |\/| |/ _` \ \/ / | '_ ` _ \ / _ \ | | | |
-| |__| (_| |\ V  V /| | (_| |  __/ | \__/\_    | (_>  <   | |  | | (_| |>  <| | | | | | |  __/ | |/ /
-\____/\__,_| \_/\_/ |_|\__, |\___|  \____(_)    \___/\/   \_|  |_/\__,_/_/\_\_|_| |_| |_|\___| |___(_)
-                        __/ |
-                       |___/
-```
-
-> "Hâtez-vous lentement, et sans perdre courage,
-Vingt fois sur le métier remettez votre ouvrage,
-Polissez-le sans cesse, et le repolissez,
-Ajoutez quelquefois, et souvent effacez." -- __Nicolas Boileau__
 
 ## Remarques -- Rendu 3
 
@@ -48,14 +34,17 @@ l'idée est de ranger dans des dossiers différents les différents types de tes
 - Pour les traductions, nous récupérons l'arbre sortant du parser et nous le transformons avant de l'évaluer. Notre système de gestion d'erreur n'est pas pas adapté à cette opération, donc nous perdons les numéros de lignes lors des traductions. De plus, pour avoir un code moins indigeste, nous avons créer des méta constructeurs, qui sont regroupés dans le fichier constructeur.
 - Les traductions impératives sont dans tradimp, et ne traitent pas les bonus.
 - Les continuations sont dans tradexcep. Le let, le print, les opérations binaires et les conditions ont été testées et fonctionnent, contrairement au reste. Afin de vous permettre de lire ce que nous avons fait, nous avons ajouté un fichier traduction qui reprend sous forme lisible ce qui est implémenté.
+- Les différentes options demandées ont été implémentées. Nous avons ici ajouté un mode -m qui nous permet de regarder l'environnement et qui nous a aidé au débug.
 
 ## Répartition de travail.
 
 Fait par Maxime
-- admissiblité (inchala) aux concours de l'ENS
+- Exceptions
+- Refonte des tests
+- Aide pour certain aspects des transformations.
 
 Fait par Edwige
-- Partage de toutes les erreurs rencontrés avec d'autres groupes pour une meilleure résolution
+- Transformations
 
 Fait par Alain
 - Thérapie de couple
