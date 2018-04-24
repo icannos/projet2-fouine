@@ -89,10 +89,12 @@ let newva () =
       let s0 = newva() in let s1 = newva () in
       mkFunxy k ke (mkAppxy tc2 (mkFun s0 (mkAppxy tc1 (mkFun s1  (mkCond (mkBool e s0 s1) (mkAppxy te1 k ke) (mkAppxy te2 k ke))) ke)) ke)
 
+       (*Aspects impératifs*)
        |Ref e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
-    mkFunxy k kE (mkAppxy ce (mkFun x (mkRef e)) kE)                   (*   | Aff(expr_ref,e) -> trop tard pour le faire*)                  | Acc e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
+    mkFunxy k kE (mkAppxy ce (mkFun x (mkRef e)) kE)                      (* | Aff(expr_ref,e) -> let k = newk() in let kE = newkE() in let ce = cont_expr e in*)
+       | Acc e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
     mkFunxy k kE (mkAppxy ce (mkFun x (mkAcc e)) kE)
-
+       
 
    with x -> error_display node_id x; raise Fail
 
