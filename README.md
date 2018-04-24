@@ -22,9 +22,12 @@ Le travail de ce rendu a consisté à reprendre selon les problèmes mentionnés
 ## Pour tester le code
 
 Puisque les tests se sont fait plus variés pour ce rendu, nous avons jugé nécessaire de modifier notre fonctionnement de ce point de vue, d'où l'apparition d'un nouveau dossier test 2
-TODO : EXPLIQUE CE TRUC (et au passage, ne faudrait-il pas le rendre plus propore d'ici ce soir ?)
+l'idée est de ranger dans des dossiers différents les différents types de test et de créer différents bash chargés d'exécuter leurs dossiers respectifs. (Oui faudra faire ça ce soir).
 
 ## Remarques
 
 - Le rendu intermédiaire fonctionne.
 - Pour les traductions, nous récupérons l'arbre sortant du parser
+
+## TO DO
+

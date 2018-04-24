@@ -76,11 +76,11 @@ let newva () =
 
       |LetRec((nom, e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
       let s0 = newva() in
-      mkFunxy k ke (mkAppxy te1 (mkFun s0 (mkLetRec nom s0 (mkAppxy te2 k ke))) ke)
+      mkFunxy k ke (mkLet (mkIdentifier nom) (mkConst 0) (mkAppxy te1 (mkFun s0 (mkLetRec nom s0 (mkAppxy te2 k ke))) ke))
 
        |Cond((_, Testeq(e1,e2)), e3, e4)
        |Cond((_,Testneq(e1,e2)), e3, e4)
-       |Cond((_,Testlt(e1,e2)), e3, e4) 
+       |Cond((_,Testlt(e1,e2)), e3, e4)
        |Cond((_,Testgt(e1,e2)), e3, e4)
        |Cond((_,Testlet(e1,e2)), e3, e4)
        |Cond((_,Testget(e1,e2)), e3, e4)
@@ -94,7 +94,7 @@ let newva () =
     mkFunxy k kE (mkAppxy ce (mkFun x (mkRef e)) kE)                      (* | Aff(expr_ref,e) -> let k = newk() in let kE = newkE() in let ce = cont_expr e in*)
        | Acc e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
     mkFunxy k kE (mkAppxy ce (mkFun x (mkAcc e)) kE)
-       
+
 
    with x -> error_display node_id x; raise Fail
 
