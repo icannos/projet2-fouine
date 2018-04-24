@@ -37,7 +37,7 @@ let newva () =
 
     | Liste(x, y) -> let k = newk() in let kE = newkE() in let x = cont_expr x in let y = cont_expr y in
    mkFunxy k  kE (mkApp k (mkListe x y))
-
+(*
     |PattCase(patt, x) -> let k = newk() in let kE = newkE() in let x= cont_expr x in
     mkPattCase patt x
 
@@ -45,13 +45,16 @@ let newva () =
     let x = newva () in
     mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkMatch x l))) kE)
 
+    *)
+
 
 
      | Constr(nom, x) -> let k = newk() in let kE = newkE() in let x = List.map cont_expr x in
     mkFunxy k  kE (mkApp k (mkConstr nom x))
 
-    | Cart x -> let k = newk() in let kE = newkE() in let x = List.map cont_expr x in
-   mkFunxy k  kE (mkApp k (mkCart x))
+    | Cart x -> let k = newk() in let x1 = newva () in let x2 = newva () in
+     let kE = newkE() in let x = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr x) in
+   mkFunxy k kE (mkApp k (mkCart x))
 
 
       | Identifier x ->  let k = newk() in let kE = newkE() in
