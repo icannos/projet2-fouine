@@ -1,4 +1,5 @@
-open Traduction;;
+open Tradimp;;
+open Tradcont;;
 open Arguments;;
 open Expr;;
 open Env;;
@@ -6,7 +7,7 @@ open Safe;;
 open Parser;;
 open Affichage;;
 open Eval;;
-open Continuation;;
+
 
 let parse_string s =
   let lexbuf = Lexing.from_string s in
@@ -41,9 +42,12 @@ let interpreter () =
 
    let parse () = Parser.main Lexer.token lexbuf in
    let ast = parse () in if !verbosemode then (print_string (istring_of_expr ast));
-                         (*il faudra ajouter les continuations ici quand elles existeront*)
+                         (*Les différentes traductions possibles*)
     let ast = if !tradimp then exec_trad ast else  ast   in
     let ast = if !tradexcep then exec_excep ast else ast in
+    let ast = if !excepimp then exec_trad (exec_excep ast) else ast in
+    let ast = if !impexcep then exec_excep (exec_trad ast) else ast in
+    
   if(!debugmode) then (aff_expr ast; print_newline());
 
   let _ = eval ast (initialize_envir ()) in

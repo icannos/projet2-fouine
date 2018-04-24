@@ -11,6 +11,8 @@ let mem_mode = ref false;;
 (*Modes de traduction*)
 let tradimp = ref false;;
 let tradexcep = ref false;;
+let impexcep = ref false;;
+let excepimp = ref false;;
 
 
 (* Fichier contenant les fonctions de mémoire *)
@@ -48,7 +50,9 @@ let optlist =
     ("-m", Arg.Set mem_mode, "Affiche le dernier environnement connu");
     ("-R", Arg.Set tradimp, "Active la traduction des aspects imperatifs");
     ("--memory-file", Arg.String set_mem, "Permet de spécifier le fichier dans lequel aller chercher les fonctions de gestion de la mémoire");
-    ("-E", Arg.Set tradexcep, "Active la traduction en continuation")
+    ("-E", Arg.Set tradexcep, "Active la traduction en continuation");
+    ("-RE", Arg.Set excepimp, "Active la traduction en continuation puis en supprimant les aspects imperatifs");
+    ("-ER", Arg.Set impexcep, "Active la traduction des aspects imperatifs suivie de la reecriture en continuations")
   ]
 ;;
 
