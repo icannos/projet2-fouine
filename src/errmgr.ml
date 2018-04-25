@@ -26,7 +26,7 @@ exception NotFunction of string;;
 exception BadArgument of string*string;;
 exception UnificationFails of string * string;;
 exception FindingIdentifierFailed;;
-exception PatternMatchingFails of string;;
+exception PatternMatchingFails;;
 exception Fail;;
 
 (* Cette fonction est appelée à la création de chaque noeud de l'AST elle renvoie un entier qui permet de récupérer les metadata associées au noeud dans la table de hash et ajoute dans ladite table
@@ -52,7 +52,7 @@ let error_display node_id except =
    | DivisionByZero |Division_by_zero -> pf "Division by zero \n"
    | CannotApply s -> pf "%s is not appliable \n" s
    | NotFunction s -> pf "%s is not a function \n" s
-   | PatternMatchingFails s -> pf ("Pattern Matching failed of value: %s \n") s
+   | PatternMatchingFails -> pf "Pattern Matching failed"
    | Invalid_argument s -> pf "Bad operation argument \n"
    | UnificationFails (se, sv) -> pf "Unable to unify %s with %s\n" se sv
    | BadArgument (s1,s2) -> pf "%s is a bad argument for %s \n" s1 s2

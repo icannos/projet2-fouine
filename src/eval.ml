@@ -134,8 +134,8 @@ let rec eval ee env  =
                   )
 
 
-    |Match(expr, exprlist) -> (let v = (eval expr env) in try  let e, envir = trymatch v exprlist env in
-                                   eval e envir with UnificationFails (_,_) -> raise (PatternMatchingFails (string_of_value v)))
+    |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
+                                   eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
 
 
     (*
