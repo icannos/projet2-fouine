@@ -37,20 +37,20 @@ let newva () =
 
     | Liste(x, y) -> let k = newk() in let kE = newkE() in let x = cont_expr x in let y = cont_expr y in
    mkFunxy k  kE (mkApp k (mkListe x y))
-(*
+
     |PattCase(patt, x) -> let k = newk() in let kE = newkE() in let x= cont_expr x in
     mkPattCase patt x
 
-    |Match(expr, l) -> let k = newk() in let kE = newkE() in let l  = List.map cont_expr l in let ce = cont_expr expr in
+    |Match(expr, l) -> let k = newk() in let x1 = newva () in let kE = newkE() in let l  = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr l)in let ce = cont_expr expr in
     let x = newva () in
-    mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkMatch x l))) kE)
+    mkFunxy k kE (mkAppxy ce (mkFun x (mkAppxy (mkMatch x l) k kE)) kE)
 
-    *)
+
 
      | Constr(nom, x) -> let k = newk() in let kE = newkE() in let x1 = newva () in let x = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr x) in
     mkFunxy k  kE (mkApp k (mkConstr nom x))
 
-    | Cart x -> let k = newk() in let x1 = newva () in let x2 = newva () in
+    | Cart x -> let k = newk() in let x1 = newva ()  in
      let kE = newkE() in let x = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr x) in
    mkFunxy k kE (mkApp k (mkCart x))
 
@@ -86,13 +86,13 @@ let newva () =
       mkFunxy k kE (mkApp k  (mkFun patt (mkFunxy x y (mkAppxy ce x y))))
 
 
-      | App(e1, e2) -> let f = newva() in let v = newva() in let k = newk() in let kE = newkE() in
+      | App(e1, e2) ->   let k = newk() in let kE = newkE() in
       let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in let x = newva () in let y = newva () in
   (* mkFunxy k kE (mkAppxy ce2 ((mkFun x (mkAppxy ce1 (mkFun y (mkApp k (mkApp y x))) kE) )) kE) *)
       mkFunxy k kE (mkAppxy ce2 (mkFun x (mkAppxy ce1 (mkFun y (mkAppxy (mkApp y x) k kE)) kE)) kE)
 
 
-      | Try(e1,e2)-> let k = newk() in let x = newk () in let kE= newkE() in let ce1 = cont_expr e1 in let (_,PattCase((_, y),x) )=  (List.hd e2)in let ce2 = cont_expr x in
+      | Try(e1,e2)-> let k = newk() in  let kE= newkE() in let ce1 = cont_expr e1 in let (_,PattCase((_, y),x) )=  (List.hd e2)in let ce2 = cont_expr x in
   mkFunxy k kE (mkAppxy ce1 k (mkFun (0,y) (mkAppxy ce2 k kE)))
 
       |Let((patt, e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
