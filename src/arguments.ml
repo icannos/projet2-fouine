@@ -14,6 +14,11 @@ let tradexcep = ref false;;
 let impexcep = ref false;;
 let excepimp = ref false;;
 
+(*pour la compilation*)
+let stackcode = ref false;;
+let machine = ref false;;
+  
+
 
 (* Fichier contenant les fonctions de mémoire *)
 let mem_file = ref ((Filename.dirname (Sys.argv.(0))) ^ "/memfonc.ml");;
@@ -52,7 +57,9 @@ let optlist =
     ("--memory-file", Arg.String set_mem, "Permet de spécifier le fichier dans lequel aller chercher les fonctions de gestion de la mémoire");
     ("-E", Arg.Set tradexcep, "Active la traduction en continuation");
     ("-RE", Arg.Set excepimp, "Active la traduction en continuation puis en supprimant les aspects imperatifs");
-    ("-ER", Arg.Set impexcep, "Active la traduction des aspects imperatifs suivie de la reecriture en continuations")
+    ("-ER", Arg.Set impexcep, "Active la traduction des aspects imperatifs suivie de la reecriture en continuations");
+    ("-machine", Arg.Set machine, "Active l'execution du code compile");
+    ("-stackcode", Arg.Set stackcode, "Active l'affichage du code compile")
   ]
 ;;
 

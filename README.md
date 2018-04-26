@@ -92,6 +92,12 @@ programmes fouine du sujet me semble aller contre cette idée ? (Parce que j'ima
 d'ici jeudi prochain, le rendu intermédiaire est fini,le readme associé à cette partie également.
 
 
+## Pour Maxime
+On dirait que le truc de base fonctionne assez facilement, j'ai ajouté les options demandées et jai tout coder salement dans tradcomp, l'exemple de ce matin est dans exemplecomp et fonctionne. Je serais contente que tu me propose une réorganisation de ce que j'ai fait, et ce même si ça implique de réécrire une partie. J'ajoute les fonctions demain, mais j'ai des doutes sur la gestion de la clôture, si tu peux me donner ton avis avant c'est mieux. Cela rejoint le point suivant :
+
+J'ai un gros doute sur la gestion de l'environnement eu égard au fait que Endlet ne prend pas d'argument mais ça me semble casse gueule. Pour l'instant j'ai implémenté ce qui correspondant le plus au slide, mais ça me semble incohérent.
+
+
 
 
 
