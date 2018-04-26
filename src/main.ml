@@ -7,7 +7,7 @@ open Safe;;
 open Parser;;
 open Affichage;;
 open Eval;;
-
+open Tradmachine;;
 
 let parse_string s =
   let lexbuf = Lexing.from_string s in

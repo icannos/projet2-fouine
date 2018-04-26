@@ -10,7 +10,7 @@ Notion d'environnement avec
 
 La machine a donc trois éléments : code, environnnement, pile
 
-Le let récupère la valeur du haut de la pile et ajoute à l'envronnement (x,v)
+Le let récupère la valeur du haut de la pile et ajoute à l'environnement (x,v)
 Le endlet jette la dernière association à la poubelle
 
 [let x = 3 + 2 in x + 7] = 
