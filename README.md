@@ -65,3 +65,47 @@ Fait par Alain
 Fait par Totoro
 - Debug intégral 
 
+
+
+
+
+## Organisation pour les jours à venir
+
+Pour Maxime
+- faire les dossiers de tests  (pour dimanche)
+- vérifier que tous les fichiers de tests des profs et d'Alain fonctionnent (idem)
+- réfléchir (sur carnet donc dans un premier temps) au typage simple du 2.2 
+
+Pour Edwige
+- Faire un truc pour identifier les parties de fouine pur : choix d'annoatation : ajout d'un constructeur 'Pur' après le parseur et avant l'évaluation. -> La phrase Pour ce faire, vous devrez sans doute modifier légèrement le type qui sert à représenter les
+programmes fouine du sujet me semble aller contre cette idée ? (Parce que j'imaginais juste remonter l'arbre) -> une étiquette supplémentaire partout ?
+- Ajout du traitement de fouine pur :
+	* faire la traduction caml assembleur
+	* créer un environnemment et une pile
+	* faire la fonction d'évaluation associée
+
+
+
+
+
+## But :
+d'ici jeudi prochain, le rendu intermédiaire est fini,le readme associé à cette partie également.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
