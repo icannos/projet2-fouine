@@ -73,4 +73,4 @@ let mkPattCase pattern todo = (0, PattCase(pattern, todo));;
 (*Les exceptions*)
 let mkTry expression id todo = (0, Try(expression,[mkPattCase id todo]));; (*à compléter pour avoir try a with b -> c *)
 let mkExep id = (0, Constr("E", id));;
-let mkRaise e s = (0, Raise ((0, Constr("E", [e; s]))));;
+let mkRaise e s = (0, Raise ((0, Constr("E", [s; e]))));;

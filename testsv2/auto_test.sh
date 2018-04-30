@@ -8,7 +8,7 @@ tests_dir="simples/"
 fouinepath=../bin/fouine
 
 echo -e "\n **************** Starting Tests *****************"
-for test in $(ls -p $tests_dir | grep -v / )
+for test in $(ls -p $tests_dir | grep -E ".*\.ml"  )
 do
 	printf "Testing %-10s : %10s" $test
 	printf "%10s \n"

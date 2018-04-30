@@ -60,9 +60,9 @@ let rec trad_expr ee =
                                                                                                                                            mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
 
     |LetRec((nom,e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
-                mkFun s0 (mkLetPair (v1,s1) (mkLet (mkIdentifier nom) (mkConst 0) (mkApp te1 s0)) (mkLetRec nom v1 (mkApp te2 s0) ))
+                mkFun s0 (mkLetPair (v1,s1) (mkLet (mkIdentifier nom) (mkConst 0) (mkApp te1 s0)) (mkLetRec nom v1 (mkApp te2 s1) ))
     |Try(e1,e2) -> let te1 = trad_expr e1 in let  (_,PattCase((_, Constr("E", [(_, y)])),x) ) =  (List.hd e2) in let te2 = trad_expr x in let s0 = news() in let s1 = news() in
-                                                                                                                                         mkFun s0 (mkTry (mkApp te1 s0) (mkExep [(0,y);s1]) (mkApp te2 s1))
+                    mkFun s0 (mkTry (mkApp te1 s0) (mkExep [s1; (0,y)]) (mkApp te2 s1))
     | Raise e -> let s0 = news() in let (_, Constr("E", [x])) = e in let te = trad_expr e in mkFun s0 (mkRaise te s0)
     (*fun s0 -> try e1 s0 with E (x,s1) -> e2 s1*)                      (*fun s0 -> raise (e1,s0)*)
 
