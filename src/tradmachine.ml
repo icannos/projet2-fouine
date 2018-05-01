@@ -1,7 +1,7 @@
 open Expr;;
 open Errmgr;;
- 
- 
+
+
 type instruction =
   | C of int
   | Add
@@ -18,7 +18,7 @@ type instruction =
 type code = instruction list
 
 type memslot = I of int |L of  memslot list | Eps
-          
+
 type environnement = (name * memslot) list
 
 type pile = memslot list
@@ -33,15 +33,15 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
-  | Let((patt,e1),e2) -> let (_, Identifier x) = patt in (compile e1)@[Let x]@(compile e2)@[Endlet]
-  | Identifier x -> [Access x]
-  | Fun(argument, expr) ->let (_, Identifier nom) = argument in [Clos(nom, ((compile expr)@[Ret]))]
+  | Let((patt,e1),e2) -> let (_, Identifier (nom,_)) = patt in (compile e1)@[Let x]@(compile e2)@[Endlet]
+  | Identifier (x, _) -> [Access x]
+  | Fun(argument, expr) -> let (_, Identifier (nom,_)) = argument in [Clos(nom, ((compile expr)@[Ret]))]
   | App(e1,e2) -> (compile e2)@(compile e1)@[Apply]
-                
-         
+
+
 with x -> error_display node_id x ; raise Fail
 ;;
- 
+
 
 let rec joli_code l s =
   match l with
@@ -67,7 +67,7 @@ let affiche_code e = print_string (joli_code e ""); print_newline ();;
 let rec val_env env x = match env with
   | [] -> raise Not_found
   | (a,b)::q when a = x -> b
-  | _::q -> val_env q x                       
+  | _::q -> val_env q x
 
 let miseajour inst (env, pile) = match inst with
   | Add -> let  (I a)::(I b)::q = pile in (env, (I (a+b))::q)
@@ -78,15 +78,14 @@ let miseajour inst (env, pile) = match inst with
   | (Access x) -> let v = val_env env x in (env, v::pile)
   | (Let x) -> let v::q = pile in ( (x,v)::env, q)
   | Endlet -> let t::q = env in (q, pile)
-  | Ret -> let v::c::e::q = pile in 
-  | Apply ->
+  | Ret -> let v::c::e::q = pile in ()
+  | Apply -> ()
   | Clos(x, code)-> let newv = closure code env in (env, newv::pile)
-                                                 
+
 
 let rec exec_code c env pile = match c with
   | [] -> let [I x] = pile in print_int x; print_newline ()
   | i::q -> let (newenv, newpile) = miseajour i (env, pile) in
             exec_code q newenv newpile
-                              
+
 let execution c = exec_code c [] [];;
-                              
