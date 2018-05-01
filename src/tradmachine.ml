@@ -14,9 +14,11 @@ type instruction =
 
 type code = instruction list
 
-type environnement = (name * int) list
+type memslot = I of int |L of  memslot list
+          
+type environnement = (name * memslot) list
 
-type pile = int list
+type pile = memslot list
 
 
 let rec compile ee =
@@ -51,7 +53,7 @@ let rec joli_code l s =
   ;;
 
 
-let affiche_code e = print_string (joli_code e ""); print_newline();;
+let affiche_code e = print_string (joli_code e ""); print_newline ();;
 
 
 let rec val_env env x = match env with
@@ -60,17 +62,17 @@ let rec val_env env x = match env with
   | _::q -> val_env q x                       
 
 let miseajour inst (env, pile) = match inst with
-  | Add -> let  a::b::q = pile in (env, (a+b)::q)
-  | Mul -> let a::b::q = pile in (env, (a*b)::q)
-  | Sub -> let a::b::q = pile in (env, (a-b)::q)
-  | Div -> let a::b::q = pile in (env, (a/b)::q)
-  | (C k) -> (env, k::pile)
+  | Add -> let  (I a)::(I b)::q = pile in (env, (I (a+b))::q)
+  | Mul -> let (I a)::(I b)::q = pile in (env,(I (a*b))::q)
+  | Sub -> let (I a)::(I b)::q = pile in (env,(I (a-b))::q)
+  | Div -> let (I a)::(I b)::q = pile in (env,(I (a/b))::q)
+  | (C k) -> (env,(I k)::pile)
   | (Access x) -> let v = val_env env x in (env, v::pile)
   | (Let x) -> let v::q = pile in ( (x,v)::env, q)
   | Endlet -> let t::q = env in (q, pile)
 
 let rec exec_code c env pile = match c with
-  | [] -> let [x] = pile in print_int x; print_newline()
+  | [] -> let [I x] = pile in print_int x; print_newline ()
   | i::q -> let (newenv, newpile) = miseajour i (env, pile) in
             exec_code q newenv newpile
                               
