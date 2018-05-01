@@ -19,7 +19,7 @@ let rec join sep liste = match liste with
 let rec string_of_expr ee =
   let (node_id, e) = ee in
   match e with
-  | Identifier s -> s
+  | Identifier (s, _) -> s
   | Const k -> string_of_int k
   | Add(e1,e2) -> string_of_expr_bin "+" e1 e2
   | Mul(e1,e2) -> string_of_expr_bin "*" e1 e2
@@ -67,7 +67,7 @@ and string_of_expr_bin op a b =
 let rec istring_of_expr ee =
 let (node_id, e) = ee in
   match e with
-  | Identifier s -> "(0," ^ "Identifier \""^ s ^ "\")"
+  | Identifier (s, _) -> "(0," ^ "Identifier \""^ s ^ "\")"
   | Const k -> "(0, Const " ^ (string_of_int k) ^")"
   | Add(e1,e2) -> istring_aux "Add(" e1 e2
   | Mul(e1,e2) -> istring_aux "Mul(" e1 e2

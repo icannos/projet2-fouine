@@ -23,8 +23,8 @@ let buildEnv pattern env expr =
 let unification expr v env = (*fonction de type expr-> value-> env -> env, ajoute dans l'environnement l'unification de expr avec v si c'est possible, si l'unification est impossible on lève l'exception UnificationFails, à remplir un jour*)
   let envir = ref env in
   let rec unif (expr,v) = match expr, v with
-    |(_,Identifier key), x when key <> "_"-> envir := (Environnement.add key x (!envir))
-    |(_,Identifier key), x when key = "_"-> ()
+    |(_,Identifier (key, _)), x when key <> "_"-> envir := (Environnement.add key x (!envir))
+    |(_,Identifier (key, _)), x when key = "_"-> ()
     |(_, Const x), Int y when x = y -> ()
 
     |(_,Constr(c1, exprlist)), TSum(c2, vlist)
@@ -103,7 +103,7 @@ let rec eval ee env  =
     (* Créer une référence revient à trouver une nouvelle adresse, ajouter à cette adresse l'evaluation de l'expression puis renvoyer un truc  Reference(addr)  *)
     | Ref(e) -> let addr = new_address () in begin match eval e env with |Exn x -> Exn x |v -> add_memory addr v; Reference(addr) end
 
-    | Identifier nom ->
+    | Identifier (nom, _) ->
        begin
         try (Environnement.find nom env)
         with Not_found -> raise (UnknownIdentifier nom)
@@ -214,7 +214,7 @@ and evalb ee env =
 
   and evalapp e1 e2  env =  match  eval e1 env with
                     |Exn x -> Exn x
-                    |Fonction((_, Identifier "_"), expr, fenv) ->  eval expr fenv
+                    |Fonction((_, Identifier ("_", _)), expr, fenv) ->  eval expr fenv
                     |Fonction(argument, expr, fenv) ->  eval expr (unification argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
                     |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (unification arg (eval e2 env) recenv)
                     |Int k -> raise (CannotApply "integer")

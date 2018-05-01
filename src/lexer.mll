@@ -34,6 +34,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "then"          { THEN }
   | "else"          { ELSE }
 
+
   | "match" 	    { MATCH }
   | "with" 	    { WITH }
   | "function"	    { FUNCTION }
@@ -43,6 +44,7 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | '['             { LBRACKET }
   | ']'             { RBRACKET }
   | "::"            { COLONCOLON }
+  | ':'             { COLON }
 
   | "fun"           { FUN }
   | "->"            { DONNE }

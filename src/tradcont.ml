@@ -13,15 +13,15 @@ let  nbva = ref 0;;
 
 let newk () =
   nbk := !nbk + 1;
- (0,Identifier ("k" ^ (string_of_int !nbk)));;
+ (0,Identifier ("k" ^ (string_of_int !nbk), (0,Typed((0,TypeId "_")))));;
 
 let newkE () =
   nbkE := !nbkE + 1;
- (0,Identifier ("kE" ^ (string_of_int !nbkE)));;
+ (0,Identifier ("kE" ^ (string_of_int !nbkE),(0,Typed((0,TypeId "_")))));;
 
 let newva () =
   nbva := !nbva + 1;
- (0,Identifier ("va" ^ (string_of_int !nbva)));;
+ (0,Identifier ("va" ^ (string_of_int !nbva), (0,Typed((0,TypeId "_")))));;
 
 
   let rec cont_expr ee =
@@ -55,7 +55,7 @@ let newva () =
    mkFunxy k kE (mkApp k (mkCart x))
 
 
-      | Identifier x ->  let k = newk() in let kE = newkE() in
+      | Identifier (x, _) ->  let k = newk() in let kE = newkE() in
                                            mkFunxy k  kE (mkApp k (mkIdentifier x))
       | Uni -> let k = newk() in let kE = newkE() in
       mkFunxy k kE (mkApp k (mkUnit()) )

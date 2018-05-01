@@ -11,11 +11,11 @@ let  nbs =ref 0;;
 (*fonction qui renvoie un sn où n est un numéro par encore utilisé*)
 let news () =
   nbs := !nbs + 1;
- (0,Identifier ("s" ^ (string_of_int !nbs)));;
+ (0,Identifier ("s" ^ (string_of_int !nbs), (0,Typed((0,TypeId "_")))));;
 
 let newv () =
   nbv := !nbv + 1;
- (0,Identifier ("v" ^ (string_of_int !nbv)));;
+ (0,Identifier ("v" ^ (string_of_int !nbv), (0,Typed((0,TypeId "_")))));;
 
 (*des méta-constructeurs qui évitent un code de traduction illisible sont dans constructeurs*)
 

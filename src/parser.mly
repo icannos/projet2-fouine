@@ -22,7 +22,7 @@ open Errmgr
 %token REF BANG AFF
 %token COMMA
 %token UNIT
-%token LBRACKET RBRACKET COLONCOLON
+%token LBRACKET RBRACKET COLONCOLON COLON
 %token TRY RAISE
 
 
@@ -83,6 +83,16 @@ main:
 ;
 
 
+idtyped:
+  |NOM {(error_handler  (), Identifier($1, Type((error_handler  (), TypeId "_"))))}
+  |LPAREN NOM COLON typed RPAREN  {(error_handler  (), Identifier($2, Typed $4))}
+;
+
+typed:
+|NOM {(error_handler  (), TypeId $1 )}
+|typed DONNE typed {(error_handler  (),  Fun($1, $3) )}
+;
+
 toplevel:   /* les let de surface */
  |binding toplevel				{  (error_handler  (), Let($1, $2)) }   /* le cas de base let a = 5 in expr*/
  |binding DOUBLESEMICOL toplevel 		{  (error_handler  (), Let($1, $3)) }   /* let a = 5 ... let b = 8;; expr*/
@@ -139,7 +149,7 @@ binding:
 ;
 
 rec_binding:
- |LET REC NOM functexpr			{($3, $4)}
+ |LET REC idtyped functexpr			{($3, $4)}
 ;
 
 functexpr:
@@ -159,7 +169,7 @@ pattern: /* c'est les différentes choses qu'on peut matcher */
  | LPAREN uplet_pattern RPAREN	        	{  (error_handler  (), Cart $2)}
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
  | CONSTR                                      {  (error_handler  (), Constr($1, [])) }
- | NOM                                      	{  (error_handler  (), Identifier $1 ) }
+ | idtyped                                      	{  (error_handler  (), $1 ) }
  | liste_pattern                                {  $1 }
 ;
 
