@@ -32,7 +32,7 @@ let rec string_of_expr ee =
   | Let((patt,e1),e2) ->
          "let "^ (string_of_expr patt) ^ " = "^ (string_of_expr e1)^ "\n" ^
 	" in  "^ string_of_expr e2
-  | LetRec((nom,e1),e2) -> "let rec " ^ nom ^ " = "^
+  | LetRec(((0, Identifier (nom, _)),e1),e2) -> "let rec " ^ nom ^ " = "^
 	string_of_expr e1	^ "\n" ^ " in  "^ (string_of_expr e2)
   | Fun(pattern,e1) ->   "( fun "^ (string_of_expr pattern)  ^ " -> " ^ (string_of_expr e1)  ^ " )"
   | App(e1,e2) ->  "("^ (string_of_expr e1)^ " " ^ (string_of_expr e2) ^ ")"
@@ -77,7 +77,7 @@ let (node_id, e) = ee in
   | Ref(e) -> "(0,Ref " ^ (istring_of_expr e)^")"
   | Acc(e) -> "(0,Acc"^ (istring_of_expr e)^")"
   | Let((patt,e1),e2) -> "(0,Let( ("^ istring_of_expr patt ^ ", "^ (istring_of_expr e1) ^ "), ("^ (istring_of_expr e2) 	^ ")))"
-  | LetRec((nom,e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
+  | LetRec(((0, Identifier (nom, _)),e1),e2) -> "(0,LetRec("^ nom^ ", "^(istring_of_expr e1)^
 	( ", ")^ (istring_of_expr e2)^ "))"
   | Fun(pattern,e1) ->  "(0, Fun( "^ (istring_of_expr pattern) ^ "," ^ (istring_of_expr  e1) ^ "))"
   | App(e1, e2) ->  "(0,App("^ (istring_of_expr e1)^ ", "^ (istring_of_expr e2) ^ "))"

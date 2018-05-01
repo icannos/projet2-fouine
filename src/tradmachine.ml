@@ -1,7 +1,7 @@
 open Expr;;
 open Errmgr;;
- 
- 
+
+
 type instruction =
   | C of int
   | Add
@@ -15,7 +15,7 @@ type instruction =
 type code = instruction list
 
 type memslot = I of int |L of  memslot list
-          
+
 type environnement = (name * memslot) list
 
 type pile = memslot list
@@ -30,13 +30,13 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
-  | Let((patt,e1),e2) -> let (_, Identifier x) = patt in (compile e1)@[Let x]@(compile e2)@[Endlet]
-  | Identifier x -> [Access x]
-                
-         
+  | Let((patt,e1),e2) -> let (_, Identifier (x,_)) = patt in (compile e1)@[Let x]@(compile e2)@[Endlet]
+  | Identifier (x,_) -> [Access x]
+
+
 with x -> error_display node_id x ; raise Fail
 ;;
- 
+
 
 let rec joli_code l s =
   match l with
@@ -59,7 +59,7 @@ let affiche_code e = print_string (joli_code e ""); print_newline ();;
 let rec val_env env x = match env with
   | [] -> raise Not_found
   | (a,b)::q when a = x -> b
-  | _::q -> val_env q x                       
+  | _::q -> val_env q x
 
 let miseajour inst (env, pile) = match inst with
   | Add -> let  (I a)::(I b)::q = pile in (env, (I (a+b))::q)
@@ -75,6 +75,5 @@ let rec exec_code c env pile = match c with
   | [] -> let [I x] = pile in print_int x; print_newline ()
   | i::q -> let (newenv, newpile) = miseajour i (env, pile) in
             exec_code q newenv newpile
-                              
+
 let execution c = exec_code c [] [];;
-                              

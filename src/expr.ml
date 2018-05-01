@@ -15,7 +15,7 @@ type expr =
 
   (* Binding constr  *)
   | Let of (extexpr * extexpr) * extexpr
-  | LetRec of  (name* extexpr)* extexpr
+  | LetRec of  (extexpr* extexpr)* extexpr
   | Identifier of name * extexpr
   | Fun of extexpr * extexpr
   | App of extexpr * extexpr
@@ -101,7 +101,7 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   | PrintInt e  -> freevars bindedvars fvars e
   | Let((constr_expr, e1), e2)  ->
      VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.union (getIdentifiersInConstr constr_expr) bindedvars) fvars e2)
-  | LetRec((nom, e1), e2)  ->
+  | LetRec( ((_, Identifier (nom, _)), e1), e2)  ->
      VarsSet.union (freevars bindedvars  fvars e1)(freevars (VarsSet.add nom bindedvars) fvars e2)
   | Cond(booleen,e1,e2)  -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen)
 

@@ -170,7 +170,8 @@ let rec eval ee env  =
     | Sou(e1,e2) -> safe_sou (eval e1 env) (eval e2 env)
     | Div(e1,e2) -> safe_div (eval e1 env) (eval e2 env)
     | Let((pattern, e1), e2) -> evallet pattern e1 e2 env
-    | LetRec((nom, e1), e2) -> evalletrec nom e1 e2 env
+    | LetRec(((_, Identifier (nom, _)), e1), e2) -> evalletrec nom e1 e2 env
+    | LetRec(_, _) -> failwith "Bad LetRec args"
     | Cond(booleen,e1,e2) -> begin match evalb booleen env with |Exn x -> Exn x |Bool b -> if b  then (eval e1 env) else (eval e2 env) | _ -> failwith "Not a boolean" end
     | Uni -> Unit
 
