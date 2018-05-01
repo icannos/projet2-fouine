@@ -11,11 +11,11 @@ let  nbs =ref 0;;
 (*fonction qui renvoie un sn où n est un numéro par encore utilisé*)
 let news () =
   nbs := !nbs + 1;
- (0,Identifier ("s" ^ (string_of_int !nbs)));;
+ (0,Identifier ("s" ^ (string_of_int !nbs), (0,Typed((0,TypeId "_")))));;
 
 let newv () =
   nbv := !nbv + 1;
- (0,Identifier ("v" ^ (string_of_int !nbv)));;
+ (0,Identifier ("v" ^ (string_of_int !nbv), (0,Typed((0,TypeId "_")))));;
 
 (*des méta-constructeurs qui évitent un code de traduction illisible sont dans constructeurs*)
 
@@ -59,8 +59,8 @@ let rec trad_expr ee =
     |App(e1, e2) -> let s0 = news() in let s1 = news() in let s2 = news() in let f = newv() in let v = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
                                                                                                                                            mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
 
-    |LetRec((nom,e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
-                mkFun s0 (mkLetPair (v1,s1) (mkLet (mkIdentifier nom) (mkConst 0) (mkApp te1 s0)) (mkLetRec nom v1 (mkApp te2 s1) ))
+    |LetRec(((0, Identifier (nom, _)),e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
+                mkFun s0 (mkLetPair (v1,s1) (mkLet (mkIdentifier nom) (mkConst 0) (mkApp te1 s0)) (mkLetRec (mkIdentifier nom) v1 (mkApp te2 s1) ))
     |Try(e1,e2) -> let te1 = trad_expr e1 in let  (_,PattCase((_, Constr("E", [(_, y)])),x) ) =  (List.hd e2) in let te2 = trad_expr x in let s0 = news() in let s1 = news() in
                     mkFun s0 (mkTry (mkApp te1 s0) (mkExep [s1; (0,y)]) (mkApp te2 s1))
     | Raise e -> let s0 = news() in let (_, Constr("E", [x])) = e in let te = trad_expr e in mkFun s0 (mkRaise te s0)

@@ -22,7 +22,7 @@ open Errmgr
 %token REF BANG AFF
 %token COMMA
 %token UNIT
-%token LBRACKET RBRACKET COLONCOLON
+%token LBRACKET RBRACKET COLONCOLON COLON
 %token TRY RAISE
 
 
@@ -83,6 +83,16 @@ main:
 ;
 
 
+idtyped:
+  |NOM {(error_handler  (), Identifier($1, (0,Typed((error_handler  (), TypeId "_")))))}
+  |LPAREN NOM COLON typed RPAREN  {(error_handler  (), Identifier($2, (0,Typed $4)))}
+;
+
+typed:
+|NOM {(error_handler  (), TypeId $1 )}
+|typed DONNE typed {(error_handler  (),  Fun($1, $3) )}
+;
+
 toplevel:   /* les let de surface */
  |binding toplevel				{  (error_handler  (), Let($1, $2)) }   /* le cas de base let a = 5 in expr*/
  |binding DOUBLESEMICOL toplevel 		{  (error_handler  (), Let($1, $3)) }   /* let a = 5 ... let b = 8;; expr*/
@@ -114,8 +124,8 @@ simplexpr:
  | IF boolexpr THEN simplexpr ELSE simplexpr   {  (error_handler  (),Cond($2, $4, $6)) }
  | listexpr                                    { $1 }
 
- | simplexpr SEMICOL simplexpr                 {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),$3)) }
- | simplexpr DOUBLESEMICOL                  {  (error_handler  (), Let(((error_handler  (),Identifier "_"),$1),(error_handler  (),Const 0))) }
+ | simplexpr SEMICOL simplexpr                 {  (error_handler  (), Let(((error_handler  (),Identifier ("_"  , (0, Typed((0, TypeId "_"))))  ),$1),$3)) }
+ | simplexpr DOUBLESEMICOL                  {  (error_handler  (), Let(((error_handler  (),Identifier ("_"  , (0, Typed((0, TypeId "_"))))),$1),(error_handler  (),Const 0))) }
  | priexpr AFF simplexpr 			       {  (error_handler  (), Aff($1, $3)) }
  | REF simplexpr			       {  (error_handler  (),Ref($2)) }
  | UNIT	  	    	 		       {(error_handler (), Uni)}
@@ -139,18 +149,18 @@ binding:
 ;
 
 rec_binding:
- |LET REC NOM functexpr			{($3, $4)}
+ |LET REC idtyped functexpr			{($3, $4)}
 ;
 
 functexpr:
  | EGAL simplexpr				{ $2 }
- | UNIT functexpr				{  (error_handler  (), Fun((error_handler () ,Identifier "_"), $2)) }
+ | UNIT functexpr				{  (error_handler  (), Fun((error_handler () ,Identifier ("_",(0, Typed((0, TypeId "_"))))), $2)) }
  | pattern functexpr                        	{  (error_handler  (), Fun($1, $2)) }
 ;
 
 funexpr:
  | DONNE simplexpr				{ $2 }
- | UNIT funexpr				{  (error_handler  (), Fun((error_handler () ,Identifier "_"), $2)) }
+ | UNIT funexpr				{  (error_handler  (), Fun((error_handler () ,Identifier ("_",(0, Typed((0, TypeId "_"))))), $2)) }
  | pattern funexpr                        	{  (error_handler  (), Fun($1, $2)) }
 ;
 
@@ -159,7 +169,7 @@ pattern: /* c'est les différentes choses qu'on peut matcher */
  | LPAREN uplet_pattern RPAREN	        	{  (error_handler  (), Cart $2)}
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
  | CONSTR                                      {  (error_handler  (), Constr($1, [])) }
- | NOM                                      	{  (error_handler  (), Identifier $1 ) }
+ | idtyped                                      	{   $1  }
  | liste_pattern                                {  $1 }
 ;
 
@@ -226,7 +236,7 @@ listexpr:
 
 
 priexpr:
- | NOM	      	     		       	   	{  (error_handler  (), Identifier $1) }
+ | NOM	      	     		       	   	{  (error_handler  (), Identifier ($1,(0, Typed((0, TypeId "_"))))) }
  | BANG priexpr			        	{  (error_handler  (), Acc $2 )    }
  | INT                                          {  (error_handler  (), Const $1) }
  | LPAREN simplexpr RPAREN                      { $2 }

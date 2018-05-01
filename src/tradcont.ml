@@ -13,15 +13,15 @@ let  nbva = ref 0;;
 
 let newk () =
   nbk := !nbk + 1;
- (0,Identifier ("k" ^ (string_of_int !nbk)));;
+ (0,Identifier ("k" ^ (string_of_int !nbk), (0,Typed((0,TypeId "_")))));;
 
 let newkE () =
   nbkE := !nbkE + 1;
- (0,Identifier ("kE" ^ (string_of_int !nbkE)));;
+ (0,Identifier ("kE" ^ (string_of_int !nbkE),(0,Typed((0,TypeId "_")))));;
 
 let newva () =
   nbva := !nbva + 1;
- (0,Identifier ("va" ^ (string_of_int !nbva)));;
+ (0,Identifier ("va" ^ (string_of_int !nbva), (0,Typed((0,TypeId "_")))));;
 
 
   let rec cont_expr ee =
@@ -55,7 +55,7 @@ let newva () =
    mkFunxy k kE (mkApp k (mkCart x))
 
 
-      | Identifier x ->  let k = newk() in let kE = newkE() in
+      | Identifier (x, _) ->  let k = newk() in let kE = newkE() in
                                            mkFunxy k  kE (mkApp k (mkIdentifier x))
       | Uni -> let k = newk() in let kE = newkE() in
       mkFunxy k kE (mkApp k (mkUnit()) )
@@ -99,9 +99,10 @@ let newva () =
       let s0 = newva() in
       mkFunxy k ke (mkAppxy te1 (mkFun s0 (mkLet patt s0 (mkAppxy te2 k ke))) ke)
 
-      |LetRec((nom, e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
+      |LetRec(((0, Identifier (nom, _)), e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
       let s0 = newva() in
-      mkFunxy k ke (mkLet (mkIdentifier nom) (mkConst 0) (mkAppxy te1 (mkFun s0 (mkLetRec nom s0 (mkAppxy te2 k ke))) ke))
+      mkFunxy k ke (mkLet (mkIdentifier nom) (mkConst 0) (mkAppxy te1 (mkFun s0 (mkLetRec (mkIdentifier nom) s0 (mkAppxy te2 k ke))) ke))
+      |LetRec(_,_) -> failwith "Bad LetRec pattern"
 
        |Cond((_, Testeq(e1,e2)), e3, e4)
        |Cond((_,Testneq(e1,e2)), e3, e4)

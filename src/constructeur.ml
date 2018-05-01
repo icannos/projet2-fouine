@@ -24,7 +24,7 @@ let mkLetRec f e1 e2 = (0, LetRec((f,e1),e2));;
 
 
 (* string -> Identifier string *)
-let mkIdentifier varname = (0, Identifier varname);;
+let mkIdentifier varname = (0, Identifier (varname, (0, Typed(0, TypeId "_"))));;
 
 let mkPair (a,b) = (0, Cart([a;b]));;
 

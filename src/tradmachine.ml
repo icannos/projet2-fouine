@@ -78,9 +78,10 @@ let miseajour inst (env, pile) = match inst with
   | (Access x) -> let v = val_env env x in (env, v::pile)
   | (Let x) -> let v::q = pile in ( (x,v)::env, q)
   | Endlet -> let t::q = env in (q, pile)
-  | Ret ->
+  | Ret -> let v::c::e::q = pile in 
   | Apply ->
-  | Clos(x, code)->
+  | Clos(x, code)-> let newv = closure code env in (env, newv::pile)
+                                                 
 
 let rec exec_code c env pile = match c with
   | [] -> let [I x] = pile in print_int x; print_newline ()
