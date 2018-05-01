@@ -17,7 +17,11 @@ type instruction =
 
 type code = instruction list
 
-type memslot = I of int |L of  memslot list | Eps
+type memslot = I of int
+             (*Pour les fonctions*)
+             |Clot of ( memslot list * memslot list)
+             |L of memslot list
+             | Eps
 
 type environnement = (name * memslot) list
 
@@ -33,7 +37,7 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
-  | Let((patt,e1),e2) -> let (_, Identifier (nom,_)) = patt in (compile e1)@[Let x]@(compile e2)@[Endlet]
+  | Let((patt,e1),e2) -> let (_, Identifier (nom,_)) = patt in (compile e1)@[Let nom]@(compile e2)@[Endlet]
   | Identifier (x, _) -> [Access x]
   | Fun(argument, expr) -> let (_, Identifier (nom,_)) = argument in [Clos(nom, ((compile expr)@[Ret]))]
   | App(e1,e2) -> (compile e2)@(compile e1)@[Apply]
@@ -69,23 +73,35 @@ let rec val_env env x = match env with
   | (a,b)::q when a = x -> b
   | _::q -> val_env q x
 
-let miseajour inst (env, pile) = match inst with
-  | Add -> let  (I a)::(I b)::q = pile in (env, (I (a+b))::q)
-  | Mul -> let (I a)::(I b)::q = pile in (env,(I (a*b))::q)
-  | Sub -> let (I a)::(I b)::q = pile in (env,(I (a-b))::q)
-  | Div -> let (I a)::(I b)::q = pile in (env,(I (a/b))::q)
-  | (C k) -> (env,(I k)::pile)
-  | (Access x) -> let v = val_env env x in (env, v::pile)
-  | (Let x) -> let v::q = pile in ( (x,v)::env, q)
-  | Endlet -> let t::q = env in (q, pile)
-  | Ret -> let v::c::e::q = pile in ()
-  | Apply -> ()
-  | Clos(x, code)-> let newv = closure code env in (env, newv::pile)
-
+(*Je ne suis pas certaine que cette représentation soit adaptée, à voir*)
+let closure x code env = (x, Clot (code, env))
 
 let rec exec_code c env pile = match c with
   | [] -> let [I x] = pile in print_int x; print_newline ()
-  | i::q -> let (newenv, newpile) = miseajour i (env, pile) in
-            exec_code q newenv newpile
+  | i::suitec -> match i with
+            | Add -> let  (I a)::(I b)::q = pile in
+                     exec_code suitec env ((I (a+b))::q)
+            | Mul -> let (I a)::(I b)::q = pile in
+                      exec_code suitec env ((I (a*b))::q)
+            | Sub -> let (I a)::(I b)::q = pile in
+                      exec_code suitec env ((I (a-b))::q)
+            | Div -> let (I a)::(I b)::q = pile in
+                      exec_code suitec env ((I (a/b))::q)
+            | (C k) -> exec_code suitec env ((I k)::pile)
+            | (Access x) -> let v = val_env env x in
+                            exec_code suitec env (v::pile)
+            | (Let x) -> let v::q = pile in
+                         exec_code suitec  ((x,v)::env)  q
+            | Endlet -> let t::q = env in
+                        exec_code suitec q  pile
+            | Ret -> let v::(L c1)::(L e)::q = pile  in
+                     exec_code c1 e (v::q)
+            | Apply -> let v::(Clos(x,(c1,e1)))::q = pile in
+                       let newc = (x,v) in
+                       exec_code c1 (newc::e1) (Eps::c::e::q) 
+            | Clos(x, code)-> let newv = closure x  code env in
+                              exec_code suitec env (newv::pile)
 
+
+            
 let execution c = exec_code c [] [];;
