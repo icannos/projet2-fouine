@@ -97,7 +97,10 @@ On dirait que le truc de base fonctionne assez facilement, j'ai ajouté les opti
 
 J'ai un gros doute sur la gestion de l'environnement eu égard au fait que Endlet ne prend pas d'argument mais ça me semble casse gueule. Pour l'instant j'ai implémenté ce qui correspondant le plus au slide, mais ça me semble incohérent.
 
-
+## Fonctionnement de notre machine
+- On a des intructions : un code est une liste d'instruction, et les fonctions sont définies par Clos(nom, code).
+- L'environnement est une liste de couple nom, memslot. Une fonction est définie par une Clot(x,code,env). Pour pouvoir mettre du code et des environnements dans la pile, on a Lenv et Lcode
+- La pile est juste une liste de memslot.
 
 
 

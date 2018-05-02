@@ -19,11 +19,12 @@ type code = instruction list
 
 type memslot = I of int
              (*Pour les fonctions*)
-             |Clot of ( memslot list * memslot list)
-             |L of memslot list
+             |Clot of (name * instruction list * environnement)
+             |Lcode of instruction list
+             |Lenv of environnement
              | Eps
-
-type environnement = (name * memslot) list
+and
+ environnement = (name * memslot) list
 
 type pile = memslot list
 
@@ -60,8 +61,8 @@ let rec joli_code l s =
   | Endlet::q -> joli_code q (s ^ "Endlet \n")
   | Ret::q -> joli_code q (s ^ "Ret \n")
   | Apply::q -> joli_code q (s ^ "Apply \n")
-  | (Clos (x, inst))::q -> joli_code q (s ^ "Clos(" ^ x ^ (joli_code inst "")^ ")\n")
-(*Je ne sais pas exactement ce que je veux afficher dans ce cas*)
+  | (Clos (x, inst))::q -> joli_code q (s ^ "Clos(" ^ x ^ (joli_code inst "\n")^ ")\n")
+
   ;;
 
 
@@ -73,8 +74,6 @@ let rec val_env env x = match env with
   | (a,b)::q when a = x -> b
   | _::q -> val_env q x
 
-(*Je ne suis pas certaine que cette représentation soit adaptée, à voir*)
-let closure x code env = (x, Clot (code, env))
 
 let rec exec_code c env pile = match c with
   | [] -> let [I x] = pile in print_int x; print_newline ()
@@ -94,13 +93,12 @@ let rec exec_code c env pile = match c with
                          exec_code suitec  ((x,v)::env)  q
             | Endlet -> let t::q = env in
                         exec_code suitec q  pile
-            | Ret -> let v::(L c1)::(L e)::q = pile  in
-                     exec_code c1 e (v::q)
-            | Apply -> let v::(Clos(x,(c1,e1)))::q = pile in
+            | Ret -> let v::(Lcode c1)::(Lenv e1)::q = pile  in
+                     exec_code c1 e1 (v::q)
+            | Apply -> let v::(Clot(x,c1,e1))::q = pile in
                        let newc = (x,v) in
-                       exec_code c1 (newc::e1) (Eps::c::e::q) 
-            | Clos(x, code)-> let newv = closure x  code env in
-                              exec_code suitec env (newv::pile)
+                       exec_code c1 (newc::e1) (Eps::(Lcode c)::(Lenv env)::q) 
+            | Clos(x, code)-> exec_code suitec env (Clot(x,code,env)::pile)
 
 
             
