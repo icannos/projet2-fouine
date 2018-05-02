@@ -1,7 +1,8 @@
 open Expr;;
 open Errmgr;;
 
-
+exception Notmatched;;
+  
 type instruction =
   | C of int
   | Add
@@ -74,32 +75,51 @@ let rec val_env env x = match env with
   | (a,b)::q when a = x -> b
   | _::q -> val_env q x
 
+let rec affiche_slot slot = match slot with
+  |I a -> print_int a
+  |Clot (nom, _,_)-> print_string nom
+  |Lcode code -> print_string "Lcode"
+  |Lenv env -> print_string "Lenv"
+  | Eps -> print_string "Epsilon"
 
-let rec exec_code c env pile = match c with
-  | [] -> let [I x] = pile in print_int x; print_newline ()
-  | i::suitec -> match i with
-            | Add -> let  (I a)::(I b)::q = pile in
-                     exec_code suitec env ((I (a+b))::q)
-            | Mul -> let (I a)::(I b)::q = pile in
-                      exec_code suitec env ((I (a*b))::q)
-            | Sub -> let (I a)::(I b)::q = pile in
-                      exec_code suitec env ((I (a-b))::q)
-            | Div -> let (I a)::(I b)::q = pile in
-                      exec_code suitec env ((I (a/b))::q)
-            | (C k) -> exec_code suitec env ((I k)::pile)
-            | (Access x) -> let v = val_env env x in
+let rec affiche_env env = match env with
+  | [] -> ()
+  | (nom, _)::q -> print_string nom ; affiche_env q
+
+let rec affiche_pile pile = match pile with
+  | [] -> ()
+  | memslot::q -> affiche_slot memslot; affiche_pile q
+
+          
+let rec exec_code c env pile =  match (c, env, pile) with
+  | ([], _, [I x]) ->  print_int x; print_newline ()
+  | (Add::suitec,_, (I a)::(I b)::q)  ->
+     exec_code suitec env ((I (a+b))::q)
+  | (Mul::suitec,_, (I a)::(I b)::q)  ->
+        exec_code suitec env ((I (a*b))::q)
+  | (Div::suitec,_, (I a)::(I b)::q)  ->
+           exec_code suitec env ((I (a/b))::q)
+  | (Sub::suitec,_, (I a)::(I b)::q)  ->
+                     exec_code suitec env ((I (a-b))::q)
+ 
+  | ((C k)::suitec,_,_)  -> exec_code suitec env ((I k)::pile)
+  | ((Access x)::suitec,_,_) -> let v = val_env env x in
                             exec_code suitec env (v::pile)
-            | (Let x) -> let v::q = pile in
+  | ((Let x)::suitec,_,v::q) -> 
                          exec_code suitec  ((x,v)::env)  q
-            | Endlet -> let t::q = env in
+  | (Endlet::suitec, t::q,_) ->
                         exec_code suitec q  pile
-            | Ret -> let v::(Lcode c1)::(Lenv e1)::q = pile  in
-                     exec_code c1 e1 (v::q)
-            | Apply -> let v::(Clot(x,c1,e1))::q = pile in
+  | (Ret::suitec,_,  v::Eps::(Lcode c1)::(Lenv e1)::q) -> 
+                            exec_code c1 e1 (v::q)
+  | (Apply::suitec,_,(Clot(x,c1,e1))::v::q) ->
                        let newc = (x,v) in
-                       exec_code c1 (newc::e1) (Eps::(Lcode c)::(Lenv env)::q) 
-            | Clos(x, code)-> exec_code suitec env (Clot(x,code,env)::pile)
-
+                       exec_code c1 (newc::e1) (Eps::(Lcode suitec)::(Lenv env)::q) 
+  | (Clos(x, code)::suitec,_,_)-> exec_code suitec env (Clot(x,code,env)::pile)
+  | (_,_, _) -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
+    print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
+           print_string "Pile:";print_newline(); affiche_pile pile;
+           print_newline(); raise Notmatched)
+                                
 
             
 let execution c = exec_code c [] [];;
