@@ -46,6 +46,8 @@ let rec string_of_expr ee =
   | Try(x,listcases) -> "(try " ^ (string_of_expr x)  ^ " with \n" ^ (List.fold_right (^) (List.map string_of_expr listcases) "")^")"
   | PattCase(pattern, expr) -> "| " ^ (string_of_expr pattern) ^ " -> " ^ (string_of_expr expr) ^"\n"
   | Raise x -> "raise (" ^ (string_of_expr x) ^") \n "
+
+  |_ -> failwith "Something gone wrong with affichage.string_of_expr"
 and aff_bexpr bb=
   let (node_id, b) = bb in
   match b with
@@ -124,6 +126,7 @@ let rec string_of_value = function
   |Bool true -> "true"
   |Bool false -> "false"
   |Exn x -> "Exception"
+
 ;;
 
 let print_value v = ps (string_of_value v);;

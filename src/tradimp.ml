@@ -61,14 +61,24 @@ let rec trad_expr ee =
 
     |LetRec(((0, Identifier (nom, _)),e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
                 mkFun s0 (mkLetPair (v1,s1) (mkLet (mkIdentifier nom) (mkConst 0) (mkApp te1 s0)) (mkLetRec (mkIdentifier nom) v1 (mkApp te2 s1) ))
-    |Try(e1,e2) -> let te1 = trad_expr e1 in let  (_,PattCase((_, Constr("E", [(_, y)])),x) ) =  (List.hd e2) in let te2 = trad_expr x in let s0 = news() in let s1 = news() in
-                    mkFun s0 (mkTry (mkApp te1 s0) (mkExep [s1; (0,y)]) (mkApp te2 s1))
-    | Raise e -> let s0 = news() in let (_, Constr("E", [x])) = e in let te = trad_expr e in mkFun s0 (mkRaise te s0)
-    (*fun s0 -> try e1 s0 with E (x,s1) -> e2 s1*)                      (*fun s0 -> raise (e1,s0)*)
+    |Try(e1,e2) -> let te1 = trad_expr e1 in
+    begin
+        match (List.hd e2) with
+          | (_,PattCase((_, Constr("E", [(_, y)])),x) )->
+              let te2 = trad_expr x in let s0 = news() in let s1 = news() in
+                mkFun s0 (mkTry (mkApp te1 s0) (mkExep [s1; (0,y)]) (mkApp te2 s1))
+          |_ -> failwith "Bad pattern for try ... with in tradimp.trad_expr"
+    end
+    | Raise e -> let s0 = news() in
+    begin
+      match e with
+      | (_, Constr("E", [x])) -> let te = trad_expr e in mkFun s0 (mkRaise te s0)
+      | _ -> failwith "Bad error constructor for raise in tradimp.trad_expr"
+    end
 
     |x -> let s0 = news () in mkFun s0 (mkPair ((0, x),s0))
 
-  with x -> error_display node_id x; raise Fail
+  with x -> error_display node_id x;
 
 ;;
 

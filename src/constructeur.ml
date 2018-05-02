@@ -50,6 +50,8 @@ let mkBool comp e1 e2 = match comp with
   | Cond((_,Testgt(_,_) ), _, _) -> (0, Testgt(e1,e2))
   | Cond((_,Testlet(_,_)), _, _) -> (0, Testlet(e1,e2))
   | Cond((_,Testget(_,_)), _, _) -> (0, Testget(e1,e2))
+
+  |_ -> failwith "Something gone wrong with constructeur.mkBool"
 ;;
 let mkLVide () = (0, Vide);;
 let mkListe x q = (0, Liste(x, q));;

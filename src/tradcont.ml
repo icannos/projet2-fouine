@@ -92,8 +92,12 @@ let newva () =
       mkFunxy k kE (mkAppxy ce2 (mkFun x (mkAppxy ce1 (mkFun y (mkAppxy (mkApp y x) k kE)) kE)) kE)
 
 
-      | Try(e1,e2)-> let k = newk() in  let kE= newkE() in let ce1 = cont_expr e1 in let (_,PattCase((_, y),x) )=  (List.hd e2)in let ce2 = cont_expr x in
-  mkFunxy k kE (mkAppxy ce1 k (mkFun (0,y) (mkAppxy ce2 k kE)))
+      | Try(e1,e2)-> let k = newk() in  let kE= newkE() in let ce1 = cont_expr e1 in
+      begin
+        match (List.hd e2) with
+        | (_,PattCase((_, y),x) ) -> let ce2 = cont_expr x in mkFunxy k kE (mkAppxy ce1 k (mkFun (0,y) (mkAppxy ce2 k kE)))
+        | _ -> failwith "Bad pattern for try ... with in trad_cont"
+      end
 
       |Let((patt, e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
       let s0 = newva() in
@@ -123,8 +127,10 @@ let newva () =
        | Acc e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in
     mkFunxy k kE (mkAppxy ce (mkFun x (mkApp k (mkAcc x))) kE)
 
+    |_ -> failwith "Something gone wrong with tradcont.cont_expr"
 
-   with x -> error_display node_id x; raise Fail
+
+   with x -> error_display node_id x
 
 ;;
 

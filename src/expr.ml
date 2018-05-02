@@ -90,6 +90,10 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   |Aff(e1, e2)  -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
   |Ref e  -> (freevars bindedvars fvars e)
   |Acc (e)  -> (freevars bindedvars fvars e)
+
+
+  |Typed _
+  |TypeId _
   |Const (_)  -> fvars
   |Constr (_, listxpr)
   |Cart listxpr  ->
@@ -100,12 +104,14 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   |Identifier (_, _) -> fvars
   |Liste(t,q) -> VarsSet.union (freevars bindedvars fvars t) (freevars bindedvars fvars q)
 
+
   | Raise e
   | PrintInt e  -> freevars bindedvars fvars e
   | Let((constr_expr, e1), e2)  ->
      VarsSet.union (freevars bindedvars fvars e1) (freevars (VarsSet.union (getIdentifiersInConstr constr_expr) bindedvars) fvars e2)
   | LetRec( ((_, Identifier (nom, _)), e1), e2)  ->
      VarsSet.union (freevars bindedvars  fvars e1)(freevars (VarsSet.add nom bindedvars) fvars e2)
+
   | Cond(booleen,e1,e2)  -> VarsSet.union (VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)) (freevarsb bindedvars fvars booleen)
 
   |Fun(pattern, expr)  -> freevars (VarsSet.union (getIdentifiersInConstr pattern) bindedvars) fvars expr
@@ -120,6 +126,8 @@ let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   | Sou(e1,e2)
   | Div(e1,e2)
   | App(e1, e2)  -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
+
+  |_ -> failwith "Something gone wrong with expr.freevars"
 and freevarsb bindedvars fvars ee =
   let (_, e) = ee in
   match e with
@@ -197,6 +205,8 @@ let rec inquisition ast =
     |Try(expr, listxpr)  ->  (node_id, Try(inquisition expr, List.map inquisition listxpr))
 
     | App(e1, e2)  -> (node_id, App(inquisition e1, inquisition e2))
+
+    | _ -> failwith "Something gone wrong with expr.inquisition"
   and inquisition_bool ee =
     let (node_id, e) = ee in
     match e with

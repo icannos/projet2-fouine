@@ -179,7 +179,9 @@ let rec eval ee env  =
     |App(e1, e2) -> evalapp e1 e2 env
 
     |PattCase(_,_)-> failwith "Pattcase without match"
-  with x -> error_display node_id x; raise Fail
+
+    |_ -> failwith "Something gone wrong with eval.eval"
+  with x -> error_display node_id x
 (* evalb de type bexpr -> env -> bool*)
 
 and evalb ee env =
@@ -206,7 +208,6 @@ and evalb ee env =
   and evalletrec  nom ee1 ee2 env = match nom with
     |"_" -> let _ = eval ee1 env in eval ee2 env
     |_ -> begin
-       let _, e1 = ee1 in
        match eval ee1 (Environnement.add nom (Int 0) env) with
        (* J'ajoute un Int 0 à la place de f histoire q'il connaisse f dans l'environnement lorsqu'il construit la cloture, mais de toutes façons f est remplacée dans l'environnement lors de l'application *)
         |Fonction(arg, fexpr, enirv) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  toplevel_envir := envir; eval ee2 envir
