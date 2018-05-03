@@ -16,10 +16,18 @@ type instruction =
   | Rec of name
   | Ret
   | Apply
+  | IfThenElse of (instruction list) * (instruction list)
+  | Eq
+  | Neq
+  | Lt
+  | Gt
+  | Le
+  | Ge
 
 type code = instruction list
 
 type memslot = I of int
+             | B of bool
              (*Pour les fonctions*)
              |Clot of (name * instruction list * environnement)
              |ClotR of (name * name * instruction list * environnement)
@@ -46,11 +54,23 @@ let rec compile ee =
   | Fun(argument, expr) -> let (_, Identifier (nom,_)) = argument in [Clos(nom, ((compile expr)@[Ret]))]
   | LetRec(((_, Identifier (f,_)), e1), e2) -> (compile e1)@[Rec f]@[Let f]@(compile e2)@[Endlet]
   | App(e1,e2) -> (compile e2)@(compile e1)@[Apply]
+  | Cond(b, e1, e2) -> (compileb b)@([IfThenElse(compile e1, compile e2)])
 
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
 
 with x -> error_display node_id x
+
+and compileb ee =
+  let node_id, e = ee in
+  match e with
+
+  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Eq]
+  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Neq]
+  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Lt]
+  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Gt]
+  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Le]
+  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Ge]
 ;;
 
 
@@ -108,6 +128,21 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | (Sub::suitec,_, (I a)::(I b)::q)  ->
                      exec_code suitec env ((I (a-b))::q)
 
+  |(Eq::suitec, _, u::v::q)-> exec_code suitec env ((B (u=v))::q)
+  |(Neq::suitec, _, u::v::q)-> exec_code suitec env ((B (u<>v))::q)
+  |(Lt::suitec, _, u::v::q)-> exec_code suitec env ((B (u<v))::q)
+  |(Gt::suitec, _, u::v::q)-> exec_code suitec env ((B (u>v))::q)
+  |(Le::suitec, _, u::v::q)-> exec_code suitec env ((B (u<=v))::q)
+  |(Ge::suitec, _, u::v::q)-> exec_code suitec env ((B (u>=v))::q)
+
+  |(IfThenElse(e1, e2)::suitec, _, u::q) ->
+  begin
+  match u with
+  | B true -> exec_code (e1@suitec) env q
+  | B false -> exec_code (e1@suitec) env q
+  | _ -> failwith "Something gone wrong with IfThenElse in tradmachine.exec_code"
+  end
+
   | ((C k)::suitec,_,_)  -> exec_code suitec env ((I k)::pile)
   | ((Access x)::suitec,_,_) -> let v = val_env env x in
                             exec_code suitec env (v::pile)
@@ -129,6 +164,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;
            print_newline(); raise Notmatched)
+
 
 
 
