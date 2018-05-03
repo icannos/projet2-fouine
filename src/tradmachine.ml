@@ -66,11 +66,11 @@ and compileb ee =
   match e with
 
   | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Eq]
-  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Neq]
-  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Lt]
-  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Gt]
-  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Le]
-  | Testeq(e1,e2) -> (compile e1)@(compile e2)@[Ge]
+  | Testneq(e1,e2) -> (compile e1)@(compile e2)@[Neq]
+  | Testlt(e1,e2) -> (compile e1)@(compile e2)@[Lt]
+  | Testgt(e1,e2) -> (compile e1)@(compile e2)@[Gt]
+  | Testlet(e1,e2) -> (compile e1)@(compile e2)@[Le]
+  | Testget(e1,e2) -> (compile e1)@(compile e2)@[Ge]
 ;;
 
 
