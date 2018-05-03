@@ -49,9 +49,9 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
-  | Let((patt,e1),e2) -> let (_, Identifier (nom,_)) = patt in (compile e1)@[Let nom]@(compile e2)@[Endlet]
+  | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
   | Identifier (x, _) -> [Access x]
-  | Fun(argument, expr) -> let (_, Identifier (nom,_)) = argument in [Clos(nom, ((compile expr)@[Ret]))]
+  | Fun((_, Identifier (nom,_)) , expr) ->  [Clos(nom, ((compile expr)@[Ret]))]
   | LetRec(((_, Identifier (f,_)), e1), e2) -> (compile e1)@[Rec f]@[Let f]@(compile e2)@[Endlet]
   | App(e1,e2) -> (compile e2)@(compile e1)@[Apply]
   | Cond(b, e1, e2) -> (compileb b)@([IfThenElse(compile e1, compile e2)])
@@ -103,10 +103,13 @@ let rec val_env env x = match env with
 
 let rec affiche_slot slot = match slot with
   |I a -> print_int a
+  |B a -> print_string (string_of_bool a)
   |Clot (nom, _,_)-> print_string nom
+  |ClotR (nom, _,_, _)-> print_string nom
   |Lcode code -> print_string "Lcode"
   |Lenv env -> print_string "Lenv"
   | Eps -> print_string "Epsilon"
+
 
 let rec affiche_env env = match env with
   | [] -> ()

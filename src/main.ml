@@ -19,7 +19,7 @@ let initialize_envir () =
   | true ->
   let lexbuf = Lexing.from_string (read_file !mem_file) in
       let parse () = Parser.main Lexer.token lexbuf in
-          eval (parse ()) (Environnement.empty); !toplevel_envir
+          let _ = eval (parse ()) (Environnement.empty) in !toplevel_envir
   | false -> Environnement.empty
 
 ;;
@@ -47,7 +47,7 @@ let interpreter () =
     let ast = if !tradexcep then exec_excep ast else ast in
     let ast = if !excepimp then exec_trad (exec_excep ast) else ast in
     let ast = if !impexcep then exec_excep (exec_trad ast) else ast in
-    
+
     if(!debugmode) then (aff_expr ast; print_newline());
 
     if !stackcode then (affiche_code (compile ast));
