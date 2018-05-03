@@ -47,8 +47,10 @@ let rec compile ee =
   | LetRec(((_, Identifier (f,_)), e1), e2) -> (compile e1)@[Rec f]@[Let f]@(compile e2)@[Endlet]
   | App(e1,e2) -> (compile e2)@(compile e1)@[Apply]
 
+  | _ -> failwith "Something gone wrong with tradmachine.compile."
 
-with x -> error_display node_id x ; raise Fail
+
+with x -> error_display node_id x
 ;;
 
 
