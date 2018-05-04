@@ -69,10 +69,10 @@ let rec trad_expr ee =
                 mkFun s0 (mkTry (mkApp te1 s0) (mkExep [s1; (0,y)]) (mkApp te2 s1))
           |_ -> failwith "Bad pattern for try ... with in tradimp.trad_expr"
     end
-    | Raise e -> let s0 = news() in
+    | Raise e -> let s0 = news() in let s1 = news() in let v1 = newv() in
     begin
       match e with
-      | (_, Constr("E", [x])) -> let te = trad_expr x in mkFun s0 (mkRaise te s0)
+      | (_, Constr("E", [x])) -> let te = trad_expr x in mkFun s0 (mkLetPair (v1, s1) (mkApp te s0) (mkRaise v1 s1))
       | _ -> failwith "Bad error constructor for raise in tradimp.trad_expr"
     end
 
