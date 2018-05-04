@@ -17,6 +17,6 @@ let rec read num memoire = match memoire with
 
 (*modify de type loc -> value -> unit*)
 let rec modify memoire couple = match memoire with
-  | (n,v)::q -> let (num, newval)=couple in if n = num then (num, newval)::q else (n,v)::(modify memoire couple)
+  | (n,v)::q -> let (num, newval)= couple in if n = num then (num, newval)::q else (n,v)::(modify q couple)
   | [] -> raise Notfound
 ;;
