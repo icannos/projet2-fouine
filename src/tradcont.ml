@@ -103,7 +103,7 @@ let newva () =
       let s0 = newva() in
       mkFunxy k ke (mkAppxy te1 (mkFun s0 (mkLet patt s0 (mkAppxy te2 k ke))) ke)
 
-      |LetRec(((0, Identifier (nom, _)), e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
+      |LetRec(((_, Identifier (nom, _)), e1), e2) -> let te1 = cont_expr e1 in let te2 = cont_expr e2 in  let k = newk () in let ke = newk () in
       let s0 = newva() in
       mkFunxy k ke (mkLet (mkIdentifier nom) (mkConst 0) (mkAppxy te1 (mkFun s0 (mkLetRec (mkIdentifier nom) s0 (mkAppxy te2 k ke))) ke))
       |LetRec(_,_) -> failwith "Bad LetRec pattern"
@@ -117,7 +117,7 @@ let newva () =
        -> let tc1 = cont_expr e1 in let tc2 = cont_expr e2 in
         let te1 = cont_expr e3 in let te2 = cont_expr e4 in  let k = newk () in let ke = newk () in
       let s0 = newva() in let s1 = newva () in
-      mkFunxy k ke (mkAppxy tc2 (mkFun s0 (mkAppxy tc1 (mkFun s1  (mkCond (mkBool e s0 s1) (mkAppxy te1 k ke) (mkAppxy te2 k ke))) ke)) ke)
+      mkFunxy k ke (mkAppxy tc2 (mkFun s0 (mkAppxy tc1 (mkFun s1  (mkCond (mkBool e s1 s0) (mkAppxy te1 k ke) (mkAppxy te2 k ke))) ke)) ke)
 
        (*Aspects impératifs*)
        |Ref e -> let k = newk() in let kE = newkE () in let ce = cont_expr e in let x = newva() in

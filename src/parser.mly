@@ -27,7 +27,7 @@ open Errmgr
 
 
 %right CONSTR
-%left NOM
+
 
 %nonassoc LPAREN
 %left RPAREN
@@ -40,6 +40,8 @@ open Errmgr
 %right LET
 %right REC
 %right CASE
+%right NOM
+
 
 
 %right COMMA
@@ -137,6 +139,7 @@ simplexpr:
 
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
 
+ | CONSTR NOM                             	       {  (error_handler  (), Constr($1, [(error_handler  (), Identifier($2, (0,Typed((error_handler  (), TypeId "_")))))]))}
  | CONSTR INT                             	       {  (error_handler  (), Constr($1, [(error_handler  (), Const $2)]))}
  | CONSTR                             	       {  (error_handler  (), Constr($1, []))}
 
@@ -171,7 +174,7 @@ funexpr:
 pattern: /* c'est les différentes choses qu'on peut matcher */
  | INT 					        {  (error_handler (),  Const $1 ) }
  | LPAREN uplet_pattern RPAREN	        	{  (error_handler  (), Cart $2)}
- | CONSTR NOM          {  (error_handler  (), Constr($1, [(error_handler  (), Identifier ($2,(0, Typed((0, TypeId "_")))))])) }
+ | CONSTR idtyped          {  (error_handler  (), Constr($1, [$2])) }
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
  | CONSTR                                      {  (error_handler  (), Constr($1, [])) }
  | idtyped                                      	{   $1  }

@@ -39,6 +39,7 @@ let interpreter () =
 
 
   let lexbuf = Lexing.from_string (!srcfile) in
+  
 
    let parse () = Parser.main Lexer.token lexbuf in
    let ast = parse () in if !verbosemode then (print_string (istring_of_expr ast));

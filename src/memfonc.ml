@@ -12,7 +12,6 @@ let allocate valeur memoire = match memoire with
 let rec read num memoire = match memoire with
   | (n,v)::q -> if n = num then v else read num q
   | [] -> raise Notfound
-
 ;;
 
 (*modify de type loc -> value -> unit*)

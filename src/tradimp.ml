@@ -25,6 +25,14 @@ let rec trad_expr ee =
   try match e with
       | Const x -> let s0 = news () in mkFun s0 (mkPair ((mkConst x), s0))
       | Identifier (x, _) -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0)) (*j'ai synthétiser les deux cas dans le dernier, on peut  discuter ce choix*)
+      | Cart(lexpr) -> let s0 = news() in
+            let rec tradlist bs acc = begin function
+                  | [] -> let l = List.rev acc in mkPair (mkCart(l), bs)
+                  | x::q -> let v,s = newv (), news () in let precode = (tradlist s ((mkPair (v,s))::acc) q) in
+                        (mkLetPair (v,s) (mkApp (trad_expr x) bs) precode)   end
+            in
+              mkFun s0 (tradlist s0 [] lexpr)
+
       | PrintInt e -> let s0 = news () and s1 = news () and v1 = newv () and te = trad_expr e in
       mkFun s0 (mkLetPair (v1, s1) (mkApp te s0) (mkPair(mkPrintInt v1, s1)))
 
@@ -59,8 +67,8 @@ let rec trad_expr ee =
     |App(e1, e2) -> let s0 = news() in let s1 = news() in let s2 = news() in let f = newv() in let v = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
                                                                                                                                            mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
 
-    |LetRec(((0, Identifier (nom, _)),e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
-                mkFun s0 (mkLetPair (v1,s1) (mkLet (mkIdentifier nom) (mkConst 0) (mkApp te1 s0)) (mkLetRec (mkIdentifier nom) v1 (mkApp te2 s1) ))
+    |LetRec(((_, Identifier (nom, _)),e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
+        mkFun s0 (mkLet (mkIdentifier nom) (mkConst 0) (mkLetPair (v1,s1) (mkApp te1 s0) (mkLetRec (mkIdentifier nom) v1 (mkApp te2 s1) )))
     |Try(e1,e2) -> let te1 = trad_expr e1 in
     begin
         match (List.hd e2) with

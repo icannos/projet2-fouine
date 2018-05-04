@@ -32,7 +32,7 @@ let rec string_of_expr ee =
   | Let((patt,e1),e2) ->
          "let "^ (string_of_expr patt) ^ " = "^ (string_of_expr e1)^ "\n" ^
 	" in  "^ string_of_expr e2
-  | LetRec(((0, Identifier (nom, _)),e1),e2) -> "let rec " ^ nom ^ " = "^
+  | LetRec(((_, Identifier (nom, _)),e1),e2) -> "let rec " ^ nom ^ " = "^
 	string_of_expr e1	^ "\n" ^ " in  "^ (string_of_expr e2)
   | Fun(pattern,e1) ->   "( fun "^ (string_of_expr pattern)  ^ " -> " ^ (string_of_expr e1)  ^ " )"
   | App(e1,e2) ->  "("^ (string_of_expr e1)^ " " ^ (string_of_expr e2) ^ ")"
