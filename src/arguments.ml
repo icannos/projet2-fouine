@@ -17,7 +17,7 @@ let excepimp = ref false;;
 (*pour la compilation*)
 let stackcode = ref false;;
 let machine = ref false;;
-  
+
 
 
 (* Fichier contenant les fonctions de mémoire *)
@@ -30,7 +30,7 @@ let srcfile = ref "";;
 let read_all chan =let data = ref "" in
 try
   while true; do
-    data := !data ^ input_line chan
+    data := !data ^ (input_line chan) ^ " \n"
   done; !data
   with End_of_file -> close_in chan; !data
 ;;
