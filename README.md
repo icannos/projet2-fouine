@@ -24,11 +24,11 @@ Le rendu ne correspond donc pas à l'idéal dépeint par Boileau, il n'est certa
 
 
 ## Remarques
-
+- La compilation de fouine est maintenant Warning Free. Nous avons grandement amélioré la gestion des erreurs.
 - Nous avons corrigé le bug lié aux retours à la ligne.
 - Nous avons corrigé une partie importante des traductions. Un problème persiste cependant lorsque l'on traduit effectue la traduction -ER car nos fonctions de gestion de la mémoire sont écrites en fouine et ne passent pas la traduction en continuation (question de pattern matching etc...).
 - Nous avons aussi effectué un "fix" rapide pour coller aux consignes pour la syntaxe des exceptions: (E x).
-- Les tests sont en cours de réorganisation dans testsV2. `machine` correspond aux tests de la machine à pile, `manual` aux tests nécessitant une correction manuelle, `simples` les tests pouvant être corrigés par OCaml, `trans_excep` les test pour la traduction -E et `trans_imp` ceux pour la traduction impérative.
+- Les tests sont en cours de réorganisation dans tests. `machine` correspond aux tests de la machine à pile, `manual` aux tests nécessitant une correction manuelle, `simples` les tests pouvant être corrigés par OCaml, `trans_excep` les test pour la traduction -E et `trans_imp` ceux pour la traduction impérative.
 
 ```
 ├── auto_test.sh

@@ -49,10 +49,11 @@ let interpreter () =
     let ast = if !impexcep then exec_excep (exec_trad ast) else ast in
 
     if(!debugmode) then (aff_expr ast; print_newline());
+    if(!outcode) then (aff_expr ast; print_newline());
 
     if !stackcode then (affiche_code (compile ast));
     if !machine then (execution (compile ast));
-  let _ = eval ast (initialize_envir ()) in
+  let _ = if(!outcode = false) then eval ast (initialize_envir ()) else Int 0 in
 
   if(!mem_mode) then (print_env !toplevel_envir) else ();
 

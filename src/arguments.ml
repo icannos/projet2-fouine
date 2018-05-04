@@ -14,6 +14,8 @@ let tradexcep = ref false;;
 let impexcep = ref false;;
 let excepimp = ref false;;
 
+let outcode = ref false;;
+
 (*pour la compilation*)
 let stackcode = ref false;;
 let machine = ref false;;
@@ -59,7 +61,8 @@ let optlist =
     ("-RE", Arg.Set excepimp, "Active la traduction en continuation puis en supprimant les aspects imperatifs");
     ("-ER", Arg.Set impexcep, "Active la traduction des aspects imperatifs suivie de la reecriture en continuations");
     ("-machine", Arg.Set machine, "Active l'execution du code compile");
-    ("-stackcode", Arg.Set stackcode, "Active l'affichage du code compile")
+    ("-stackcode", Arg.Set stackcode, "Active l'affichage du code compile");
+    ("-outcode", Arg.Set outcode, "Affiche le programme traduit à l'écran sans l'exécuter")
   ]
 ;;
 
