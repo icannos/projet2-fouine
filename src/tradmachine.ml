@@ -23,6 +23,7 @@ type instruction =
   | Gt
   | Le
   | Ge
+  | Print
 
 type code = instruction list
 
@@ -55,6 +56,7 @@ let rec compile ee =
   | LetRec(((_, Identifier (f,_)), e1), e2) -> (compile e1)@[Rec f]@[Let f]@(compile e2)@[Endlet]
   | App(e1,e2) -> (compile e2)@(compile e1)@[Apply]
   | Cond(b, e1, e2) -> (compileb b)@([IfThenElse(compile e1, compile e2)])
+  | PrintInt e -> (compile e)@[Print]
 
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
@@ -88,8 +90,16 @@ let rec joli_code l s =
   | Ret::q -> joli_code q (s ^ "Ret \n")
   | Apply::q -> joli_code q (s ^ "Apply \n")
   | (Clos (x, inst))::q -> joli_code q (s ^ "Clos(" ^ x ^ (joli_code inst "\n")^ ")\n")
-
-  |_ -> "Not yet implemented"
+  | IfThenElse(e1,e2)::q -> joli_code q (s ^ "IfThenElse(" ^ (joli_code e1 "\n") ^ (joli_code e2 "\n"))
+  | Eq::q ->  joli_code q (s ^ "Eq\n")
+  | Neq::q ->  joli_code q (s ^ "Neq\n")
+  | Lt::q ->  joli_code q (s ^ "Lt\n")
+  | Gt::q ->  joli_code q (s ^ "Gt\n")
+  | Le::q ->  joli_code q (s ^ "Le\n")
+  | Ge::q ->  joli_code q (s ^ "Ge\n")
+  | (Rec x)::q ->  joli_code q (s ^ "Rec  " ^x ^"\n")
+  | Print::q -> joli_code q (s ^ "Print\n")
+(* |_ -> "Not yet implemented"*)
   ;;
 
 
@@ -122,6 +132,8 @@ let rec affiche_pile pile = match pile with
 
 let rec exec_code c env pile =  match (c, env, pile) with
   | ([], _, [I x]) ->  print_int x; print_newline ()
+  | (Print::suitec, _, (I a)::q) ->
+     print_int a; print_newline () ; exec_code suitec env pile
   | (Add::suitec,_, (I a)::(I b)::q)  ->
      exec_code suitec env ((I (a+b))::q)
   | (Mul::suitec,_, (I a)::(I b)::q)  ->
@@ -163,7 +175,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
                     exec_code c1 (newc::crec::e1) (Eps::(Lcode suitec)::(Lenv env)::q)
   | (Clos(x, code)::suitec,_,_)-> exec_code suitec env (Clot(x,code,env)::pile)
   | (Rec(f)::suitec,_, Clot(x,code,env)::q)-> exec_code suitec env (ClotR(f, x,code,env)::q)
-  | (_,_, _) -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
+  | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;
            print_newline(); raise Notmatched)
