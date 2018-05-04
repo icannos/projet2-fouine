@@ -27,12 +27,12 @@ open Errmgr
 
 
 %right CONSTR
+%left NOM
 
 %nonassoc LPAREN
 %left RPAREN
 %nonassoc LBRACKET
 %left RBRACKET
-
 
 %left DOUBLESEMICOL
 %right IN
@@ -68,6 +68,8 @@ open Errmgr
 %left TIMES
 %left DIV
 %left PRINT
+
+
 
 
 
@@ -135,7 +137,10 @@ simplexpr:
 
 
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
+
+ | CONSTR INT                             	       {  (error_handler  (), Constr($1, [(error_handler  (), Const $2)]))}
  | CONSTR                             	       {  (error_handler  (), Constr($1, []))}
+
  | MATCH simplexpr WITH list_pattern_case      {  (error_handler (), Match($2, $4) )}
  | TRY simplexpr WITH list_pattern_case        {  (error_handler (), Try($2, $4)) }
  | MATCH simplexpr WITH lonely_pattern      {  (error_handler (), Match($2, $4) )}
@@ -167,6 +172,7 @@ funexpr:
 pattern: /* c'est les différentes choses qu'on peut matcher */
  | INT 					        {  (error_handler (),  Const $1 ) }
  | LPAREN uplet_pattern RPAREN	        	{  (error_handler  (), Cart $2)}
+ | CONSTR NOM          {  (error_handler  (), Constr($1, [(error_handler  (), Identifier ($2,(0, Typed((0, TypeId "_")))))])) }
  | CONSTR LPAREN uplet_pattern RPAREN           {  (error_handler  (), Constr($1, $3)) }
  | CONSTR                                      {  (error_handler  (), Constr($1, [])) }
  | idtyped                                      	{   $1  }
