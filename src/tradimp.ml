@@ -28,7 +28,7 @@ let rec trad_expr ee =
       | Cart(lexpr) -> let s0 = news() in
             let rec tradlist bs acc = begin function
                   | [] -> let l = List.rev acc in mkPair (mkCart(l), bs)
-                  | x::q -> let v,s = newv (), news () in let precode = (tradlist s ((mkPair (v,s))::acc) q) in
+                  | x::q -> let v,s = newv (), news () in let precode = (tradlist s (v::acc) q) in
                         (mkLetPair (v,s) (mkApp (trad_expr x) bs) precode)   end
             in
               mkFun s0 (tradlist s0 [] lexpr)
