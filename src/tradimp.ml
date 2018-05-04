@@ -72,7 +72,7 @@ let rec trad_expr ee =
     | Raise e -> let s0 = news() in
     begin
       match e with
-      | (_, Constr("E", [x])) -> let te = trad_expr e in mkFun s0 (mkRaise te s0)
+      | (_, Constr("E", [x])) -> let te = trad_expr x in mkFun s0 (mkRaise te s0)
       | _ -> failwith "Bad error constructor for raise in tradimp.trad_expr"
     end
 
