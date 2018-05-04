@@ -14,7 +14,7 @@ Vingt fois sur le métier remettez votre ouvrage,
 Polissez-le sans cesse, et le repolissez,
 Ajoutez quelquefois, et souvent effacez." -- __Nicolas Boileau__
 
-```
+
 
 ## Remarques -- Rendu 3
 
