@@ -135,7 +135,6 @@ simplexpr:
   | LPAREN n_uplets RPAREN 		       {  (error_handler  (), Cart $2 ) }
   | liste                                       { $1 }
 
-
  | CONSTR LPAREN uplet_simplexpr RPAREN	       {  (error_handler  (), Constr($1, $3))}
 
  | CONSTR INT                             	       {  (error_handler  (), Constr($1, [(error_handler  (), Const $2)]))}
@@ -238,6 +237,7 @@ listexpr:
  | listexpr LPAREN n_uplets RPAREN 		       {  (error_handler  (), App($1,(error_handler  (),Cart $3))) }
  | listexpr liste		       {  (error_handler  (), App($1,$2)) }
  | listexpr priexpr                            {  (error_handler  (), App($1, $2)) }
+ | listexpr UNIT                            {  (error_handler  (), App($1,(error_handler  (),Uni) )) }
 ;
 
 
@@ -246,6 +246,7 @@ priexpr:
  | BANG priexpr			        	{  (error_handler  (), Acc $2 )    }
  | INT                                          {  (error_handler  (), Const $1) }
  | LPAREN simplexpr RPAREN                      { $2 }
+
 
 ;
 

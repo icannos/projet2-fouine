@@ -25,23 +25,38 @@ Le rendu ne correspond donc pas à l'idéal dépeint par Boileau, il n'est certa
 
 ## Remarques
 
-- Pour les traductions, nous récupérons l'arbre sortant du parser et nous le transformons avant de l'évaluer. Notre système de gestion d'erreur n'est pas pas adapté à cette opération, donc nous perdons les numéros de lignes lors des traductions. De plus, pour avoir un code moins indigeste, nous avons créer des méta constructeurs, qui sont regroupés dans le fichier constructeur.
-- Les traductions impératives sont dans tradimp, et ne traitent pas les bonus.
-- Les continuations sont dans tradexcep. Les cas du bases sont fonctionnels, mais nous n'avons pas eu le temps de tester les bonus. De plus le cas des n-uplets nous a posé problème, mais doit au moins être juste pour le cas particulier des couples.
-- Les différentes options demandées ont été implémentées. Nous avons ici ajouté un mode -m qui nous permet de regarder l'environnement et qui nous a aidé au débug.
+- Nous avons corrigé le bug lié aux retours à la ligne.
+- Nous avons corrigé une partie importante des traductions. Un problème persiste cependant lorsque l'on traduit effectue la traduction -ER car nos fonctions de gestion de la mémoire sont écrites en fouine et ne passent pas la traduction en continuation (question de pattern matching etc...).
+- Nous avons aussi effectué un "fix" rapide pour coller aux consignes pour la syntaxe des exceptions: (E x).
+- Les tests sont en cours de réorganisation dans testsV2. `machine` correspond aux tests de la machine à pile, `manual` aux tests nécessitant une correction manuelle, `simples` les tests pouvant être corrigés par OCaml, `trans_excep` les test pour la traduction -E et `trans_imp` ceux pour la traduction impérative.
 
-## Tests
+```
+├── auto_test.sh
+├── machine
+│   ├── letrec.ml
+│   └── printons.ml
+├── manual
+│   ├── arbre.ml
+│   ├── couples.ml
+│   ├── error_pattern.ml
+│   ├── errors.ml
+│   └── README.txt
+├── simples ...
+├── trans_excep
+│   ├── div.ml
+│   ├── imp.ml
+│   ├── letrec.ml
+│   └── README.txt
+└── trans_imp
+    ├── bertrand.ml
+    ├── cond.ml
+    ├── div.ml
+    ├── function.ml
+    ├── hard.ml
+    ├── README.txt
+    └── r_prof.ml
+```
 
-- Nous avions pour projet de refactoriser nos tests en proposant des corrections pour les traductions, mais le temps nous a manqué. Nous avons aussi eu la fâcheuse tendance à modifier tout le temps le même fichier, et nous sommes conscients que les tests que nous vous fournissons ne sont pas aussi nombreux qu'ils pourraient l'être, ni aussi systématiques que possibles
-- Au niveau des tests que vous fournissez, plusieurs apparaissent faux à cause de l'erreur de parsing que vous nous avons déjà signalée. Cependant, nous les passons quitte à ajouter des espaces en début de ligne. Deux tests résistent néanmoins : basic-chaining à cause du g () qui n'est pas parser correctement et basic-exceptions car f x = raise (E x) (raise x à la place fonctionne). Nous n'avons pas eu le temps de nous plonger plus avant sur ces deux problèmes, que nous comptons cependant résoudre sous peu.
-
-- Pour ce parseur, nous proposons, en restant polis :
-	* ce gâcheur de temps 
-	* ce trou noir de l'incompréhension
-	* l'erreur invisible
-	* .
-.
-.
 
 ## Répartition de travail.
 
@@ -51,11 +66,13 @@ Fait par Maxime
 - Exceptions
 - Suite des continuations
 - Aide pour certains aspects des transformations.
+- Correction Rendu 3
 
 Fait par Edwige
 - Relecture des exceptions
 - Transformations impératives
 - Début des continuations
+- Machine à pile (en cours)
 - Readme
 
 Fait par Alain
@@ -63,67 +80,4 @@ Fait par Alain
 - Aide à la compréhension de ces phénomènes étranges que constituent les transformations de programme
 
 Fait par Totoro
-- Debug intégral 
-
-
-
-
-
-## Organisation pour les jours à venir
-
-Pour Maxime
-- faire les dossiers de tests  (pour dimanche)
-- vérifier que tous les fichiers de tests des profs et d'Alain fonctionnent (idem)
-- réfléchir (sur carnet donc dans un premier temps) au typage simple du 2.2 
-
-Pour Edwige
-- Faire un truc pour identifier les parties de fouine pur : choix d'annoatation : ajout d'un constructeur 'Pur' après le parseur et avant l'évaluation. -> La phrase Pour ce faire, vous devrez sans doute modifier légèrement le type qui sert à représenter les
-programmes fouine du sujet me semble aller contre cette idée ? (Parce que j'imaginais juste remonter l'arbre) -> une étiquette supplémentaire partout ?
-- Ajout du traitement de fouine pur :
-	* faire la traduction caml assembleur
-	* créer un environnemment et une pile
-	* faire la fonction d'évaluation associée
-
-
-
-
-
-## But :
-d'ici jeudi prochain, le rendu intermédiaire est fini,le readme associé à cette partie également.
-
-
-## Pour Maxime
-On dirait que le truc de base fonctionne assez facilement, j'ai ajouté les options demandées et jai tout coder salement dans tradcomp, l'exemple de ce matin est dans exemplecomp et fonctionne. Je serais contente que tu me propose une réorganisation de ce que j'ai fait, et ce même si ça implique de réécrire une partie. J'ajoute les fonctions demain, mais j'ai des doutes sur la gestion de la clôture, si tu peux me donner ton avis avant c'est mieux. Cela rejoint le point suivant :
-
-J'ai un gros doute sur la gestion de l'environnement eu égard au fait que Endlet ne prend pas d'argument mais ça me semble casse gueule. Pour l'instant j'ai implémenté ce qui correspondant le plus au slide, mais ça me semble incohérent.
-
-
-TODO LIST:
-- me faire ça : Vous pouvez aussi, pour faciliter le debug, implémenter une option qui exécute la machine et l’interprète,
-et compare les résultats, en poussant des cris s’il y a une différence. Ceci est facultatif.
-
-## Fonctionnement de notre machine
-- On a des intructions : un code est une liste d'instruction, et les fonctions sont définies par Clos(nom, code).
-- L'environnement est une liste de couple nom, memslot. Une fonction est définie par une Clot(x,code,env). Pour pouvoir mettre du code et des environnements dans la pile, on a Lenv et Lcode
-- La pile est juste une liste de memslot.
-
-## Questions à poser:
--faut il faire le point 2.2 ?
--comment faire les aspects impératifs ?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Debug intégral

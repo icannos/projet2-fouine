@@ -11,13 +11,15 @@ let toplevel_envir = ref (Environnement.empty);;
 let buildEnv pattern env expr =
   let nenv = ref (Environnement.empty) in
   let addVar key  =
+    try
     nenv := Environnement.add key (Environnement.find key env) (!nenv)
+    with _ -> failwith ("buildEnv. Something not found: " ^ key)
   in
 
 
   let freeV = freevars (getIdentifiersInConstr pattern) (VarsSet.empty) expr in
+    VarsSet.iter addVar freeV; !nenv
 
-  VarsSet.iter addVar freeV; !nenv
 ;;
 
 let unification expr v env = (*fonction de type expr-> value-> env -> env, ajoute dans l'environnement l'unification de expr avec v si c'est possible, si l'unification est impossible on lève l'exception UnificationFails, à remplir un jour*)
@@ -135,7 +137,7 @@ let rec eval ee env  =
 
 
     |Match(expr, exprlist) -> (try let e, envir = trymatch (eval expr env) exprlist env in
-                                   eval e envir with UnificationFails (_,_) -> raise PatternMatchingFails)
+                                   eval e envir with UnificationFails (s,v) -> raise (PatternMatchingFails (s^ " and " ^ v)))
 
 
     (*

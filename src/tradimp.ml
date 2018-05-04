@@ -41,7 +41,7 @@ let rec trad_expr ee =
  mkFun s0 (mkLetPair (patt, s1) (mkApp te1 s0) (mkApp te2 s1) )
       |Fun(patt,e) -> let s0 = news()  in let te = trad_expr e in
   mkFun s0 (mkPair (mkFun patt te, s0))
-      |Ref(e1) -> let s0 = news() in let s1 = news() in let s2 = news() in let v0 = newv() in let l = newv () in let te = trad_expr e1 in
+      |Ref(e1) -> let s0 = news() in let s1 = news() in let v0 = newv()  in let te = trad_expr e1 in
     mkFun s0 (mkLetPair (v0,s1) (mkApp te s0) (mkallocate v0 s1))
       |Acc(e1) -> let s0 = news() in let s1 = news() in let v = newv() in let l = newv () in let te = trad_expr e1 in
          mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkLet v (mkread l s1) (mkPair (v,s1)) ))

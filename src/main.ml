@@ -15,7 +15,7 @@ let parse_string s =
 ;;
 
 let initialize_envir () =
-  match !tradimp with
+  match (!tradimp || !impexcep || !excepimp) with
   | true ->
   let lexbuf = Lexing.from_string (read_file !mem_file) in
       let parse () = Parser.main Lexer.token lexbuf in
