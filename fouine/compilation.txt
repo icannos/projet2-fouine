@@ -1,0 +1,77 @@
+Compilation vers une machine à pile
+
+Le langage cible est un langage impératif
+MAchine à deux piles
+Résultat d'un programme : haut de la pile à la fin
+Notion d'environnement avec
+	* access(x)
+	* let(x)
+	* endlet (x) : fin de la portée du x.
+
+La machine a donc trois éléments : code, environnnement, pile
+
+Le let récupère la valeur du haut de la pile et ajoute à l'environnement (x,v)
+Le endlet jette la dernière association à la poubelle
+
+[let x = 3 + 2 in x + 7] = 
+
+Attention, problème de décalage !!!
+
+code		environnement		source
+
+c 2; 		rien			rien
+c 3; 		rien			2
+A ; 		rien			3 2
+Let(x) ; 	rien			5
+c 7; 		(x,5)			5	
+Access(x); 	(x,5)			7
+A; 		(x,5)			5 7
+ENDLET		(x,5)			12
+		rien			12
+
+
+Compilations des fonctons et applications
+
+
+fun x -> e
+clos(x, [e]; Ret) crée la fonction
+La clôture est l'identificateur, le code et une copie de la pile
+Lors du apply on impose donc d'avoir un haut de pile adéquat.
+Pour pouvoir revenir à la fin de la fonction on met déjà la suite (cf transparent, pas trop compris)
+On ajoute le ret à la fin en mode C pour dire qu'on sort de la fonction
+[e2];[e1]; apply
+
+
+c' e' sont ceux qui s'appelle c e à la ligne d'avant.
+Un Ret ; c ignore le c
+
+exemple du tableau
+
+[(fun x -> x+2) 3 ] =
+
+
+code			environnement		pile
+
+c3			rien			rien
+close(x,p1)		rien			3
+apply epsilon		rien			(x,p1)[rien] 3
+	
+p1 =			(x,3)			epsilon vide
+c2			(x,3)			2 epsilon vide
+Access(x)		(x,3)			3 2 epsilon vide
+A			(x,3)			5 epsilon vide
+Ret			(x,3)			5 epsilon vide
+epsilon			rien			5
+
+
+
+
+
+
+
+
+
+
+
+
+
