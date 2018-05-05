@@ -1,6 +1,8 @@
 (*fonctions de gestion de la mémoire*)
 open Env;;
 (*création de notre mémoire : HashTable indéxée par des int*)
+open Composantmachine;;
+  
 
 (* Ca c'est pour définir une table de hashage indexée par des int, on donne le test d'égalité et 
 la fonction de hash, on doit le faire aussi si on utilise des Map indexées par des int mais 
@@ -33,5 +35,25 @@ let read_address addr =  Mem.find memoire addr;;
  
   
 let new_address ()  = Mem.length memoire;;
+
+
+(*Je ne vois que cette méthode, je te laisse faire mieux*)
+module Membis  = Hashtbl.Make(IntHash);;
+
   
+type memoirebis_t = memslot Membis.t;;
+let memoirebis = (Membis.create 100);;
+  
+Membis.add memoire 0 (Int 0);;
+Membis.remove memoire 0;; 
+
+ (*fonction qui remplit une adresse*)
+let add_memorybis addr v  =  Membis.replace memoire addr v;;
+ 
+  
+ (*fonction qui lit une référence*)
+let read_addressbis addr =  Membis.find memoire addr;; 
+ 
+  
+let new_addressbis ()  = Membis.length memoire;; 
  

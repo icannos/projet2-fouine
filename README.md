@@ -81,3 +81,21 @@ Fait par Alain
 
 Fait par Totoro
 - Debug intégral
+
+
+
+
+
+## Pour Maxime
+
+Je continue à avoir un petit problème avec les arguments du print qui s'affichent deux fois. Si tu peux trouver d'où çça vient ça me réjouira.
+
+Ajout des aspects impératifs :
+On utilise la mémoire déjà utilisée de façon tradtionnelle :
+- Pour créer une nouvelle référence, on execute le e, qui se met donc en haut de la pile, on lit un ref, donc on crée une nouvelle adresse à laquelle on ajoute la valeur de haut de la pile.
+- Pour récupérer la valeur d'une ref
+
+
+
+
+

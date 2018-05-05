@@ -1,45 +1,9 @@
 open Expr;;
 open Errmgr;;
-
-exception Notmatched;;
-
-type instruction =
-  | C of int
-  | Add
-  | Mul
-  | Sub
-  | Div
-  | Let of name
-  | Access of name
-  | Endlet
-  | Clos of name * (instruction list)
-  | Rec of name
-  | Ret
-  | Apply
-  | IfThenElse of (instruction list) * (instruction list)
-  | Eq
-  | Neq
-  | Lt
-  | Gt
-  | Le
-  | Ge
-  | Print
-
-type code = instruction list
-
-type memslot = I of int
-             | B of bool
-             (*Pour les fonctions*)
-             |Clot of (name * instruction list * environnement)
-             |ClotR of (name * name * instruction list * environnement)
-             |Lcode of instruction list
-             |Lenv of environnement
-             | Eps
-and
- environnement = (name * memslot) list
-
-type pile = memslot list
-
+open Memory;;
+open Composantmachine;;
+  
+  
 
 let rec compile ee =
   (*prend un arbre de fouine pur et renvoie le code associé*)
@@ -58,6 +22,10 @@ let rec compile ee =
   | Cond(b, e1, e2) -> (compileb b)@([IfThenElse(compile e1, compile e2)])
   | PrintInt e -> (compile e)@[Print]
 
+  (*Aspects impératifs*)
+  | Acc e -> (compile e)@[Bang]
+  | Aff(expr_ref, e) -> (compile expr_ref)@(compile e)@[Aff]
+  | Ref e -> (compile e)@[Ref]
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
 
@@ -76,63 +44,17 @@ and compileb ee =
 ;;
 
 
-let rec joli_code l s =
-  match l with
-  | [] -> s
-  | Add::q -> joli_code q (s ^ "Add \n")
-  | Mul::q -> joli_code q (s ^ "Mul \n")
-  | Sub::q -> joli_code q (s ^ "Sub \n")
-  | Div::q -> joli_code q (s ^ "Div \n")
-  | (C k)::q -> joli_code q (s ^ "C " ^ (string_of_int k) ^ "\n")
-  | (Access x)::q -> joli_code q (s ^ "Access "^ x ^ "\n")
-  | (Let x)::q -> joli_code q (s ^ "Let " ^x ^"\n")
-  | Endlet::q -> joli_code q (s ^ "Endlet \n")
-  | Ret::q -> joli_code q (s ^ "Ret \n")
-  | Apply::q -> joli_code q (s ^ "Apply \n")
-  | (Clos (x, inst))::q -> joli_code q (s ^ "Clos(" ^ x ^ (joli_code inst "\n")^ ")\n")
-  | IfThenElse(e1,e2)::q -> joli_code q (s ^ "IfThenElse(" ^ (joli_code e1 "\n") ^ (joli_code e2 "\n"))
-  | Eq::q ->  joli_code q (s ^ "Eq\n")
-  | Neq::q ->  joli_code q (s ^ "Neq\n")
-  | Lt::q ->  joli_code q (s ^ "Lt\n")
-  | Gt::q ->  joli_code q (s ^ "Gt\n")
-  | Le::q ->  joli_code q (s ^ "Le\n")
-  | Ge::q ->  joli_code q (s ^ "Ge\n")
-  | (Rec x)::q ->  joli_code q (s ^ "Rec  " ^x ^"\n")
-  | Print::q -> joli_code q (s ^ "Print\n")
-(* |_ -> "Not yet implemented"*)
-  ;;
-
-
-let affiche_code e = print_string (joli_code e ""); print_newline ();;
-
-
 let rec val_env env x = match env with
   | [] -> raise Not_found
   | (a,b)::q when a = x -> b
   | _::q -> val_env q x
 
-let rec affiche_slot slot = match slot with
-  |I a -> print_int a
-  |B a -> print_string (string_of_bool a)
-  |Clot (nom, _,_)-> print_string nom
-  |ClotR (nom, _,_, _)-> print_string nom
-  |Lcode code -> print_string "Lcode"
-  |Lenv env -> print_string "Lenv"
-  | Eps -> print_string "Epsilon"
 
-
-let rec affiche_env env = match env with
-  | [] -> ()
-  | (nom, _)::q -> print_string nom ; affiche_env q
-
-let rec affiche_pile pile = match pile with
-  | [] -> ()
-  | memslot::q -> affiche_slot memslot; affiche_pile q
 
 
 let rec exec_code c env pile =  match (c, env, pile) with
-  | ([], _, [I x]) ->  print_int x; print_newline ()
-  | (Print::suitec, _, (I a)::q) ->
+  | ([], _, [I x]) ->(*print_string "ici ";*)  print_int x; print_newline ()
+  | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
      print_int a; print_newline () ; exec_code suitec env pile
   | (Add::suitec,_, (I a)::(I b)::q)  ->
      exec_code suitec env ((I (a+b))::q)
@@ -175,6 +97,14 @@ let rec exec_code c env pile =  match (c, env, pile) with
                     exec_code c1 (newc::crec::e1) (Eps::(Lcode suitec)::(Lenv env)::q)
   | (Clos(x, code)::suitec,_,_)-> exec_code suitec env (Clot(x,code,env)::pile)
   | (Rec(f)::suitec,_, Clot(x,code,env)::q)-> exec_code suitec env (ClotR(f, x,code,env)::q)
+  (*Aspects impératifs*)
+  | (Ref::suitec, _, v::q) -> let addr = new_addressbis () in
+                              add_memorybis addr v;
+                              exec_code suitec env (Reference addr)::q
+  | (Bang::suitec, _, (Reference addr)::q)-> let v = read_addressbis addr in exec_code suitec env (v::q)
+  | (Aff::suitec, _, (Reference addr)::e::q) -> add_memorybis addr e; exec_code suitec env q
+
+                                            
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;
