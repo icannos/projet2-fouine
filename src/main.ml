@@ -8,6 +8,8 @@ open Parser;;
 open Affichage;;
 open Eval;;
 open Tradmachine;;
+open Showmachine;;
+  
 
 let parse_string s =
   let lexbuf = Lexing.from_string s in

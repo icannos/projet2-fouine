@@ -1,6 +1,8 @@
 open Expr;;
 open Errmgr;;
 open Composantmachine;;
+open Showmachine;;
+  
 
 
 
