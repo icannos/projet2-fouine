@@ -1,1 +1,1 @@
-let a = 2 in let b = prInt 2;;
+let a = 2 in let b = 2 in prInt b
