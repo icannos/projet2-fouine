@@ -2,7 +2,7 @@ exception Notmatched;;
 
 type name = string;;
 
-  
+
 type instruction =
   | C of int
   | Add

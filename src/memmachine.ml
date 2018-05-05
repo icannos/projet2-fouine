@@ -1,6 +1,4 @@
-(*fonctions de gestion de la mémoire*)
-open Env;;
-(*création de notre mémoire : HashTable indéxée par des int*)
+open Composantmachine;;
 
 
 (* Ca c'est pour définir une table de hashage indexée par des int, on donne le test d'égalité et
@@ -15,14 +13,13 @@ module IntHash =
         end
 ;;
 
+(*Je ne vois que cette méthode, je te laisse faire mieux*)
 module Mem  = Hashtbl.Make(IntHash);;
 
-type memoire_t = value Mem.t;; (*définitions analogues aux environnements*)
+type memoire_t = memslot Mem.t;;
+let memoire = (Mem.create 100);;
 
-let memoire = (Mem.create 100);;(*initialisation de la mémoire*)
-
-(*A priori temporaire c'est juste pour permettre au compilateur d'inférer les types, je ne sais pas faire autrement: il faudra demander. *)
-Mem.add memoire 0 (Int 0);;
+Mem.add memoire 0 (I 0);;
 Mem.remove memoire 0;;
 
  (*fonction qui remplit une adresse*)

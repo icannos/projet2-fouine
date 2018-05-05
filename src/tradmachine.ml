@@ -1,9 +1,8 @@
 open Expr;;
 open Errmgr;;
-open Memory;;
 open Composantmachine;;
-  
-  
+
+
 
 let rec compile ee =
   (*prend un arbre de fouine pur et renvoie le code associé*)
@@ -98,13 +97,13 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | (Clos(x, code)::suitec,_,_)-> exec_code suitec env (Clot(x,code,env)::pile)
   | (Rec(f)::suitec,_, Clot(x,code,env)::q)-> exec_code suitec env (ClotR(f, x,code,env)::q)
   (*Aspects impératifs*)
-  | (Ref::suitec, _, v::q) -> let addr = new_addressbis () in
-                              add_memorybis addr v;
-                              exec_code suitec env (Reference addr)::q
-  | (Bang::suitec, _, (Reference addr)::q)-> let v = read_addressbis addr in exec_code suitec env (v::q)
-  | (Aff::suitec, _, (Reference addr)::e::q) -> add_memorybis addr e; exec_code suitec env q
+  | (Ref::suitec, _, v::q) -> let addr = Memmachine.new_address () in
+                              Memmachine.add_memory addr v;
+                              exec_code suitec env ((Reference addr)::q)
+  | (Bang::suitec, _, (Reference addr)::q)-> let v = Memmachine.read_address addr in exec_code suitec env (v::q)
+  | (Aff::suitec, _, (Reference addr)::e::q) -> Memmachine.add_memory addr e; exec_code suitec env q
 
-                                            
+
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;
