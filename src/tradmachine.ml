@@ -15,6 +15,7 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
+  | Let(((_, Identifier ("_",_)),e1),e2)->(compile e1)@(compile e2)
   | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
   | Identifier (x, _) -> [Access x]
   | Fun((_, Identifier (nom,_)) , expr) ->  [Clos(nom, ((compile expr)@[Ret]))]
@@ -54,7 +55,7 @@ let rec val_env env x = match env with
 
 
 let rec exec_code c env pile =  match (c, env, pile) with
-  | ([], _, [I x]) ->(*print_string "ici ";*)  print_int x; print_newline ()
+  | ([], _, (I x)::q) ->  print_int x; print_newline ()
   | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
   | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
      print_int a; print_newline () ; exec_code suitec env pile
