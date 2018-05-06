@@ -55,6 +55,7 @@ let rec val_env env x = match env with
 
 let rec exec_code c env pile =  match (c, env, pile) with
   | ([], _, [I x]) ->(*print_string "ici ";*)  print_int x; print_newline ()
+  | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
   | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
      print_int a; print_newline () ; exec_code suitec env pile
   | (Add::suitec,_, (I a)::(I b)::q)  ->
@@ -103,7 +104,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
                               Memmachine.add_memory addr v;
                               exec_code suitec env ((Reference addr)::q)
   | (Bang::suitec, _, (Reference addr)::q)-> let v = Memmachine.read_address addr in exec_code suitec env (v::q)
-  | (Aff::suitec, _, (Reference addr)::e::q) -> Memmachine.add_memory addr e; exec_code suitec env q
+  | (Aff::suitec, _, e::(Reference addr)::q) -> Memmachine.add_memory addr e; exec_code suitec env q
 
 
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
