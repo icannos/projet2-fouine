@@ -36,7 +36,7 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
      -> List.iter unif (List.combine exprlist vlist)
     |(_,Vide), LVide -> ()
     |(_,Liste(t,q)), Listing(a,b) -> unif (t,a); unif (q,b)
-    |_ -> raise (UnificationFails (string_of_expr expr, string_of_value v))
+    |_ -> raise (UnificationFails (string_of_expr 0 expr, string_of_value v))
   in
   unif (expr,v); !envir
 ;;
@@ -91,14 +91,14 @@ let rec eval ee env  =
     *)
        begin  match eval e env with
             |Exn x -> Exn x
-            |Reference(addr)->(try read_address addr with Not_found -> raise (UnknownReference (string_of_expr e)))
+            |Reference(addr)->(try read_address addr with Not_found -> raise (UnknownReference (string_of_expr 0  e)))
             | _ -> failwith "Not a reference"
        end
     (* Pour l'affectation on récupère de même l'adresse associée au nom dans l'environnement, puis on ajoute dans la mémoire l'évaluation de l'expression, on retourne ici un nouveau type Unit qui correspond au unit de caml *)
     | Aff(expr_ref, e) ->
     begin match (eval expr_ref env) with
             |Reference(addr)->(try add_memory addr (eval e env); Unit
-                                                     with Not_found ->  raise (UnknownReference (string_of_expr e)))
+                                                     with Not_found ->  raise (UnknownReference (string_of_expr 0 e)))
             |_ -> failwith "Not a reference"
     end
 
@@ -213,7 +213,7 @@ and evalb ee env =
        match eval ee1 (Environnement.add nom (Int 0) env) with
        (* J'ajoute un Int 0 à la place de f histoire q'il connaisse f dans l'environnement lorsqu'il construit la cloture, mais de toutes façons f est remplacée dans l'environnement lors de l'application *)
         |Fonction(arg, fexpr, enirv) ->  let envir = Environnement.add nom (Rec(nom, arg, fexpr, (buildEnv arg (Environnement.add nom (Int 0) env) fexpr))) env in  toplevel_envir := envir; eval ee2 envir
-        |_ -> raise (NotFunction (string_of_expr ee1))
+        |_ -> raise (NotFunction (string_of_expr 0 ee1))
       end
 
   and evalapp e1 e2  env =  match  eval e1 env with

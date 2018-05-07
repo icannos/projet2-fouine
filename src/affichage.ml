@@ -15,51 +15,55 @@ let rec join sep liste = match liste with
   | [a] -> a
   | a::q -> a ^ sep ^ join sep q;;
 
+let rec tab n = match n with
+  |0-> ""
+  |n-> "  " ^ tab (n-1)
+
 (*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
-let rec string_of_expr ee =
+let rec string_of_expr n ee =
   let (node_id, e) = ee in
   match e with
   | Identifier (s, _) -> s
   | Const k -> string_of_int k
-  | Add(e1,e2) -> string_of_expr_bin "+" e1 e2
-  | Mul(e1,e2) -> string_of_expr_bin "*" e1 e2
-  | Sou(e1,e2) -> string_of_expr_bin "-" e1 e2
-  | Div(e1,e2) -> string_of_expr_bin "/" e1 e2
-  | Aff(e,e1) ->  (string_of_expr e) ^ " := " ^ (string_of_expr e1)
-  | Ref(e) ->  " ref " ^ (string_of_expr e)
-  | Acc(e) ->  " !"^ (string_of_expr e)
-  | PrintInt(e) -> "prInt (" ^ (string_of_expr e)  ^ ")"
+  | Add(e1,e2) -> string_of_expr_bin n "+" e1 e2
+  | Mul(e1,e2) -> string_of_expr_bin n "*" e1 e2
+  | Sou(e1,e2) -> string_of_expr_bin n "-" e1 e2
+  | Div(e1,e2) -> string_of_expr_bin n "/" e1 e2
+  | Aff(e,e1) ->  (string_of_expr n e) ^ " := " ^ (string_of_expr n e1)
+  | Ref(e) ->  " ref " ^ (string_of_expr n e)
+  | Acc(e) ->  " !"^ (string_of_expr n e)
+  | PrintInt(e) -> "prInt (" ^ (string_of_expr n e)  ^ ")"
   | Let((patt,e1),e2) ->
-         "let "^ (string_of_expr patt) ^ " = "^ (string_of_expr e1)^ "\n" ^
-	" in  "^ string_of_expr e2
+         "let "^ (string_of_expr n patt) ^ " = "^ (string_of_expr n e1)^ "\n" ^ (tab n) ^
+	" in  "^ (string_of_expr (n+1) e2)
   | LetRec(((_, Identifier (nom, _)),e1),e2) -> "let rec " ^ nom ^ " = "^
-	string_of_expr e1	^ "\n" ^ " in  "^ (string_of_expr e2)
-  | Fun(pattern,e1) ->   "( fun "^ (string_of_expr pattern)  ^ " -> " ^ (string_of_expr e1)  ^ " )"
-  | App(e1,e2) ->  "("^ (string_of_expr e1)^ " " ^ (string_of_expr e2) ^ ")"
-  | Cond(b,e1,e2) ->  "if "^ (aff_bexpr b)^"\n" ^  " then \n ( "^(string_of_expr e1)^ ") \n else \n (" ^ (string_of_expr e2)^ ")"
+	(string_of_expr n e1)	^ "\n" ^(tab n) ^ " in  "^ (string_of_expr (n+1) e2)
+  | Fun(pattern,e1) ->   "( fun "^ (string_of_expr n  pattern)  ^ " -> " ^ (string_of_expr n e1)  ^ " )"
+  | App(e1,e2) ->  "("^ (string_of_expr n e1)^ " " ^ (string_of_expr n e2) ^ ")"
+  | Cond(b,e1,e2) ->  "if "^ (aff_bexpr n b)^"\n" ^ (tab n) ^ "then \n"^(tab (n+1)) ^"("^(string_of_expr (n+2) e1)^ ") \n"^(tab n) ^"else\n"^ (tab (n+1)) ^"("  ^(string_of_expr (n+2) e2)^ ")"
   | Uni ->  "()"
   | Vide ->  "[]"
-  | Liste(t,q)-> (string_of_expr t)^ "::" ^ (string_of_expr q)
-  | Cart up -> "(" ^ (join "," (List.map string_of_expr up))  ^ ")"
-  | Constr (construct, up) ->  "constr(" ^ construct ^ "," ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map string_of_expr up) "") ^ ")"
-  | Match(x,listcases) -> "(match " ^ (string_of_expr x)  ^ " with \n" ^ (List.fold_right (^) (List.map string_of_expr listcases) "") ^ ")"
-  | Try(x,listcases) -> "(try " ^ (string_of_expr x)  ^ " with \n" ^ (List.fold_right (^) (List.map string_of_expr listcases) "")^")"
-  | PattCase(pattern, expr) -> "| " ^ (string_of_expr pattern) ^ " -> " ^ (string_of_expr expr) ^"\n"
-  | Raise x -> "raise (" ^ (string_of_expr x) ^") \n "
+  | Liste(t,q)-> (string_of_expr n t)^ "::" ^ (string_of_expr n q)
+  | Cart up -> "(" ^ (join "," (List.map (string_of_expr n) up))  ^ ")"
+  | Constr (construct, up) ->  "constr(" ^ construct ^ "," ^ (List.fold_right (fun s1 s2 -> if(s2 <> "") then s1 ^ "," ^ s2 else s1 ^ s2) (List.map (string_of_expr n) up) "") ^ ")"
+  | Match(x,listcases) -> "(match " ^ (string_of_expr n x)  ^ " with \n" ^ (List.fold_right (^) (List.map (string_of_expr n)  listcases) "") ^ ")"
+  | Try(x,listcases) ->(tab n) ^ "(try " ^ (string_of_expr (n+1)  x)  ^ "\n"^ (tab n) ^"with \n" ^ (List.fold_right (^) (List.map (string_of_expr (n+1)) listcases) "")^")"
+  | PattCase(pattern, expr) -> (tab n) ^"| " ^ (string_of_expr n pattern) ^ " -> " ^ (string_of_expr n expr) ^"\n"
+  | Raise x -> "raise (" ^ (string_of_expr n x) ^") \n "
 
   |_ -> failwith "Something gone wrong with affichage.string_of_expr"
-and aff_bexpr bb=
+and aff_bexpr n bb=
   let (node_id, b) = bb in
   match b with
-  | Testeq(e1,e2)-> string_of_expr_bin "=" e1 e2
-  | Testneq(e1,e2) -> string_of_expr_bin "<>" e1 e2
-  | Testlt(e1,e2) -> string_of_expr_bin "<" e1 e2
-  | Testgt(e1,e2) -> string_of_expr_bin ">" e1 e2
-  | Testlet(e1,e2) -> string_of_expr_bin "<=" e1 e2
-  | Testget(e1,e2) -> string_of_expr_bin ">=" e1 e2
+  | Testeq(e1,e2)-> string_of_expr_bin n "=" e1 e2
+  | Testneq(e1,e2) -> string_of_expr_bin n "<>" e1 e2
+  | Testlt(e1,e2) -> string_of_expr_bin n "<" e1 e2
+  | Testgt(e1,e2) -> string_of_expr_bin n ">" e1 e2
+  | Testlet(e1,e2) -> string_of_expr_bin n "<=" e1 e2
+  | Testget(e1,e2) -> string_of_expr_bin n ">=" e1 e2
 
-and string_of_expr_bin op a b =
-  begin "("^ (string_of_expr a)^  " "^  op^  " "^  (string_of_expr b)^   ")"  end ;;
+and string_of_expr_bin n op a b =
+  begin "("^ (string_of_expr n a)^  " "^  op^  " "^  (string_of_expr n  b)^   ")"  end ;;
 
 
 
@@ -118,7 +122,7 @@ let rec string_of_value = function
   |Unit -> "()"
   |Reference k -> "Reference on " ^ (string_of_value (read_address k))
   |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
-  |Fonction(pattern, expr, env) -> ("Function: " ^ (string_of_expr pattern) ^ "->" ^ (string_of_expr pattern))
+  |Fonction(pattern, expr, env) -> ("Function: " ^ (string_of_expr 0 pattern) ^ "->" ^ (string_of_expr 0 pattern))
   |LVide -> "[]"
   |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
   |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
@@ -142,4 +146,4 @@ let debug e env =
   if !verbosemode then (print_env env);;
 
 
-let aff_expr e = ps (string_of_expr e);;
+let aff_expr e = ps (string_of_expr 0 e);;
