@@ -89,5 +89,6 @@ let rec trad_expr ee =
   with x -> error_display node_id x;
 
 ;;
-
-let exec_trad ast = mkApp (trad_expr ast) (0, Vide);;
+(*Changement : on ne part plus de la liste vide comme mémoire,
+mais du couple (identité, 0)*)
+let exec_trad ast = mkApp (trad_expr ast) (mkPair (mkFun (mkIdentifier "x") (mkIdentifier "x"), (0, Const 0)));;
