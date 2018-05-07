@@ -96,6 +96,14 @@ On utilise la mémoire déjà utilisée de façon tradtionnelle :
 - Pour récupérer la valeur d'une ref
 
 
+Tu peux trouver l'origine du problème pour la mémoire ?
+
+## Des exceptions
+
+Il faut rajouter les exceptions à notre machine. Je suggère qu'on se limite au exception E machin.
+Mais même ainsi je ne sais pas exactement comment faire. J'ai l'impression qu'il faudrait rajouter des délimiteurs quand on arrive dans un try, que l'on vire si on ressort du truc, parce qu'on arrive au bout ou à cause d'une erreur.
+En gros ajouter à instruction BeginTry EndTry Raise 
+que l'on mette au début un machin sur la pile. En cas de raise : "sauter" jusqu'au Endtry ?
 
 
 

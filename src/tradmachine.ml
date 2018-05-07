@@ -55,7 +55,7 @@ let rec val_env env x = match env with
 
 
 let rec exec_code c env pile =  match (c, env, pile) with
-  | ([], _, (I x)::q) ->  print_int x; print_newline ()
+  | ([], _, (I x)::q) -> print_string "Haut de la pile en fin de calcul : "; print_int x; print_newline ()
   | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
   | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
      print_int a; print_newline () ; exec_code suitec env pile
