@@ -74,7 +74,7 @@ let rec trad_expr ee =
         match (List.hd e2) with
           | (_,PattCase((_, Constr("E", [(_, y)])),x) )->
               let te2 = trad_expr x in let s0 = news() in let s1 = news() in
-                mkFun s0 (mkTry (mkApp te1 s0) (mkExep [s1; (0,y)]) (mkApp te2 s1))
+                mkFun s0 (mkTry (mkApp te1 s0) (mkExep [mkPair ((0,y), s1)]) (mkApp te2 s1))
           |_ -> failwith "Bad pattern for try ... with in tradimp.trad_expr"
     end
     | Raise e -> let s0 = news() in let s1 = news() in let v1 = newv() in

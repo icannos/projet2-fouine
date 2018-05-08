@@ -179,8 +179,6 @@ pattern: /* c'est les différentes choses qu'on peut matcher */
  | CONSTR                                      {  (error_handler  (), Constr($1, [])) }
  | idtyped                                      	{   $1  }
  | liste_pattern                                {  $1 }
-;
-
 
 
 pattern_case:     /*dans une fonction les differents cas possibles  */

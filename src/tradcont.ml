@@ -47,12 +47,29 @@ let newva () =
 
     *)
 
-     | Constr(nom, x) -> let k = newk() in let kE = newkE() in let x1 = newva () in let x = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr x) in
-    mkFunxy k  kE (mkApp k (mkConstr nom x))
+     | Constr(nom, l) -> let k = newk() in let kE = newkE() in let x1 = newva () in
+     let rec simplify_constr acc = begin function
+           | [] -> let l = List.rev acc in mkConstr nom l
+           | x::q -> let v = newva () in mkLet v x (simplify_constr (v::acc) q)
+           end
+     in
+     begin match List.for_all (fun x -> match x with |(_, Identifier(_,_)) -> true |_ -> false ) l with
+     |true -> let l = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr l) in mkFunxy k  kE (mkApp k (mkConstr nom l))
+     |false -> let n_expr = simplify_constr [] l in cont_expr n_expr
+     end
 
-    | Cart x -> let k = newk() in let x1 = newva ()  in
-     let kE = newkE() in let x = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr x) in
-   mkFunxy k kE (mkApp k (mkCart x))
+
+    | Cart l -> let k = newk() in let x1 = newva ()  in let kE = newkE() in
+    let rec simplify_cart acc = begin function
+          | [] -> let l = List.rev acc in mkCart l
+          | x::q -> let v = newva () in mkLet v x (simplify_cart (v::acc) q)
+          end
+    in
+    begin match List.for_all (fun x -> match x with |(_, Identifier(_,_)) -> true |_ -> false ) l with
+    |true -> let l = List.map (fun x -> mkAppxy x (mkFun x1 x1) kE) (List.map cont_expr l) in mkFunxy k kE (mkApp k (mkCart l))
+    |false -> let n_expr = simplify_cart [] l in cont_expr n_expr
+    end
+
 
 
       | Identifier (x, _) ->  let k = newk() in let kE = newkE() in
@@ -97,7 +114,7 @@ let newva () =
       | Try(e1,e2)-> let k = newk() in  let kE= newkE() in let ce1 = cont_expr e1 in
       begin
         match (List.hd e2) with
-        | (_,PattCase((_, y),x) ) -> let ce2 = cont_expr x in mkFunxy k kE (mkAppxy ce1 k (mkFun (0,y) (mkAppxy ce2 k kE)) )
+        | (_,PattCase(y,x) ) -> let ce2 = cont_expr x in mkFunxy k kE (mkAppxy ce1 k (mkFun y (mkAppxy ce2 k kE)) )
         | _ -> failwith "Bad pattern for try ... with in trad_cont"
       end
 
