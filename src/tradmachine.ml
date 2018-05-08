@@ -10,6 +10,7 @@ let rec compile ee =
   (*prend un arbre de fouine pur et renvoie le code associé*)
   let (node_id, e) = ee in
   try match  e with
+                                
   | Const k -> [C k]
   | Add(e1,e2) -> (compile e2)@(compile e1)@[Add]
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
@@ -28,8 +29,23 @@ let rec compile ee =
   | Acc e -> (compile e)@[Bang]
   | Aff(expr_ref, e) -> (compile expr_ref)@(compile e)@[Aff]
   | Ref e -> (compile e)@[Ref]
+
+  (*Exception, à nouveau on se limite au cas E truc, comme pour les traductions*)
+  |Try(e1, e2) ->begin
+        match (List.hd e2) with
+          | (_,PattCase((_, Constr("E", [(_, y)])),x) )->
+              (compile e1)@[Beginwith]@(compile (0,y))@[Endwith]@(compile x)@[Endexcep]
+          |_ -> failwith "Bad pattern for try ... with in tradmachine.compile"
+    end
+  | Raise(e) -> begin
+      match e with
+      | (_, Constr("E", [x])) -> (compile x)@[Raise]
+      | _ -> failwith "Bad error constructor for raise in tradmachine.compile"
+    end
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
+                 
+  
 
 with x -> error_display node_id x
 
@@ -57,6 +73,24 @@ let rec val_env env x = match env with
 let rec exec_code c env pile =  match (c, env, pile) with
   | ([], _, (I x)::q) -> print_string "Haut de la pile en fin de calcul : "; print_int x; print_newline ()
   | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
+(*Les exceptions*)
+      (*Je les mets au début, car il faut que l'exception soit détectée en priorité*)
+  (*Si onretrouve un Raise, la valeur de la pile est celle de l'exception, qu'on remet donc sur la pile dans une exception, pour l'instant j'ai mis un entier mais la généralisation est immédiate*)
+  | (Raise::suitec, _,_) -> exec_code suitec env (Exception::pile)
+  (*Quand une exception est sur le dessus de la pile, on ne faire rien si ce n'est chercher un beginwith*)
+  | (Beginwith::suitec, env, (Exception)::q) -> exec_code suitec env q
+  (*hop, on ignore juste ce qu'il se passe*)
+  | (_::suitec, env, (Exception)::q) -> exec_code suitec env pile
+  (*Il faut comparer pour voir si on a rattrappé ce qu'il faut, et dans ce cas exécuter e2, pas sûre de moi sur ce cas*)
+  | (Endwith::suitec, env, a::b::q) -> if a=b then
+                                         (exec_code suitec env q)
+                                       else
+                                         (exec_code suitec env (Ignore::b::q))
+  (*Si on doit exécuter ce bout, il y a un ignore qui force à passer, on le vire quand on rencontre un Endexcep*)
+  | (Endexcep::suitec, env, (Ignore)::q) -> exec_code suitec env q
+  (*hop, on ignore juste ce qu'il se passe*)
+  | (_::suitec, env, (Ignore)::q) -> exec_code suitec env pile
+                
   | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
      print_int a; print_newline () ; exec_code suitec env pile
   | (Add::suitec,_, (I a)::(I b)::q)  ->
@@ -102,11 +136,13 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | (Rec(f)::suitec,_, Clot(x,code,env)::q)-> exec_code suitec env (ClotR(f, x,code,env)::q)
   (*Aspects impératifs*)
   | (Ref::suitec, _, v::q) -> let addr = Memmachine.new_address () in
-                              Memmachine.add_memory addr v;
-                              exec_code suitec env ((Reference addr)::q)
-  | (Bang::suitec, _, (Reference addr)::q)-> let v = Memmachine.read_address addr in exec_code suitec env (v::q)
+    Memmachine.add_memory addr v;
+    exec_code suitec env ((Reference addr)::q)
+  | (Bang::suitec, _, (Reference addr)::q)-> let v = Memmachine.read_address addr in
+    exec_code suitec env (v::q)
   | (Aff::suitec, _, e::(Reference addr)::q) -> Memmachine.add_memory addr e; exec_code suitec env q
 
+  
 
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();

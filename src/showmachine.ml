@@ -13,6 +13,8 @@ let rec affiche_slot slot = match slot with
   |Lenv env -> print_string "Lenv\n"
   | Eps -> print_string "Epsilon\n"
   | Reference a -> print_string "Reference\n"
+  | Exception -> print_string "Exception\n"
+  | Ignore -> print_string "Ignore\n"
 
 
 let rec affiche_env env = match env with
@@ -49,6 +51,10 @@ let rec joli_code n l s =
   | Ref::q-> joli_code n q (s ^ (tab n) ^ "Ref\n")
   | Aff::q -> joli_code n q (s ^ (tab n) ^"Aff\n")
   | Bang::q -> joli_code n q (s ^ (tab n) ^ "Bang\n")
+  | Raise::q -> joli_code n q (s ^ (tab n) ^ "Raise\n")
+  | Beginwith::q -> joli_code (n+1) q (s ^ (tab n) ^ "Beginwith\n")
+  | Endwith::q -> joli_code n q (s ^ (tab (n-1)) ^ "Endwith\n")
+  | Endexcep::q -> joli_code (n-1) q (s ^ (tab (n-1)) ^ "Endexcep\n")
 (*|_ -> "Not yet implemented"*)
   ;;
 

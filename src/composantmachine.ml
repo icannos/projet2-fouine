@@ -23,10 +23,21 @@ type instruction =
   | Gt
   | Le
   | Ge
-  | Print (*Il y a un print en trop, je ne comprends pas pourquooi*)
+  | Print
+
+  (*Les aspects récursifs*)
   | Ref
   | Aff
   | Bang
+
+(*Les exceptions*)
+  | Raise
+  | Beginwith
+  | Endwith
+  | Endexcep
+
+
+  
 
 
 type code = instruction list
@@ -41,6 +52,10 @@ type memslot = I of int
              | Eps
              (*Pour les aspects impératifs*)
              | Reference of int
+
+             (*Pour les exceptions*)
+             | Exception
+             | Ignore (*Je pense qu'un seul suffit mais c'est plus clair pour l'instant*)
 and
  environnement = (name * memslot) list
 
