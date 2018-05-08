@@ -62,6 +62,8 @@ let newva () =
       (*autre cas élémentaire : on rencontre une exception (en fait pas si élémentaire vu que ça peut être imbriqué)*)
       | Raise (e) -> let k = newk() in let kE = newkE() in let ce = cont_expr e in
      mkFunxy k kE (mkAppxy ce kE kE)
+
+
       (*ensuite les cas où on croit en la récursivité*)
       | Add(e1,e2) -> let k = newk() in let kE = newkE() in let v1 = newva() in let v2 = newva() in
  let ce1 = cont_expr e1 in let ce2 = cont_expr e2 in
@@ -95,7 +97,7 @@ let newva () =
       | Try(e1,e2)-> let k = newk() in  let kE= newkE() in let ce1 = cont_expr e1 in
       begin
         match (List.hd e2) with
-        | (_,PattCase((_, y),x) ) -> let ce2 = cont_expr x in mkFunxy k kE (mkAppxy ce1 k (mkFun (0,y) (mkAppxy ce2 k kE)))
+        | (_,PattCase((_, y),x) ) -> let ce2 = cont_expr x in mkFunxy k kE (mkAppxy ce1 k (mkFun (0,y) (mkAppxy ce2 k kE)) )
         | _ -> failwith "Bad pattern for try ... with in trad_cont"
       end
 

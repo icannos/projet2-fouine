@@ -32,7 +32,7 @@ let srcfile = ref "";;
 let read_all chan =let data = ref "" in
 try
   while true; do
-    data := !data ^ (input_line chan) ^ " \n"
+    data := " \n"^ !data ^ (input_line chan) ^ " \n"
   done; !data
   with End_of_file -> close_in chan; !data
 ;;

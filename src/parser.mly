@@ -254,6 +254,7 @@ priexpr:
 ;
 
 boolexpr:
+ | LPAREN boolexpr RPAREN                      {  $2 }
  | simplexpr EGAL simplexpr                    {  (error_handler  (),Testeq($1,$3)) }
  | simplexpr NONEGAL simplexpr                 {  (error_handler  (),Testneq($1,$3)) }
  | simplexpr INF_S simplexpr                   {  (error_handler  (),Testlt($1,$3)) }
