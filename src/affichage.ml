@@ -49,7 +49,7 @@ let rec string_of_expr n ee =
   | Match(x,listcases) -> "(match " ^ (string_of_expr n x)  ^ " with \n" ^ (List.fold_right (^) (List.map (string_of_expr n)  listcases) "") ^ ")"
   | Try(x,listcases) ->(tab n) ^ "(try " ^ (string_of_expr (n+1)  x)  ^ "\n"^ (tab n) ^"with \n" ^ (List.fold_right (^) (List.map (string_of_expr (n+1)) listcases) "")^")"
   | PattCase(pattern, expr) -> (tab n) ^"| " ^ (string_of_expr n pattern) ^ " -> " ^ (string_of_expr n expr) ^"\n"
-  | Raise x -> "raise (" ^ (string_of_expr n x) ^") \n "
+  | Raise x -> "raise (" ^ (string_of_expr n x) ^")"
 
   |_ -> failwith "Something gone wrong with affichage.string_of_expr"
 and aff_bexpr n bb=

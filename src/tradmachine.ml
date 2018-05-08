@@ -34,7 +34,7 @@ let rec compile ee =
   |Try(e1, e2) ->begin
         match (List.hd e2) with
           | (_,PattCase((_, Constr("E", [(_, Identifier (nom,_))])),x) )->
-              (compile e1)@[Beginwith]@[Let nom]@[Endwith]@(compile x)@[Endexcep]@[Endlet]
+              (compile e1)@[Beginwith]@[Let nom]@[Endwith]@(compile x)@[Endlet]@[Endexcep]
           |_ -> failwith "Bad pattern for try ... with in tradmachine.compile"
     end
   | Raise(e) -> begin
@@ -75,7 +75,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
 (*Les exceptions*)
       (*Je les mets au début, car il faut que l'exception soit détectée en priorité*)
-  (*Si onretrouve un Raise, la valeur de la pile est celle de l'exception, qu'on remet donc sur la pile dans une exception, pour l'instant j'ai mis un entier mais la généralisation est immédiate*)
+  (*Si onretrouve un Raise, la valeur de la pile est celle de l'exception, qu'on remet donc sur la pile dans une exception*)
   | (Raise::suitec, _,_) -> exec_code suitec env (Exception::pile)
   (*Quand une exception est sur le dessus de la pile, on ne faire rien si ce n'est chercher un beginwith*)
   | (Beginwith::suitec, env, (Exception)::q) -> exec_code suitec env q
