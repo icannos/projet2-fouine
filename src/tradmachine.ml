@@ -114,7 +114,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
   begin
   match u with
   | B true -> exec_code (e1@suitec) env q
-  | B false -> exec_code (e1@suitec) env q
+  | B false -> exec_code (e2@suitec) env q
   | _ -> failwith "Something gone wrong with IfThenElse in tradmachine.exec_code"
   end
 
