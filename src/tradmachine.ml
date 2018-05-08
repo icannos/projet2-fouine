@@ -30,11 +30,11 @@ let rec compile ee =
   | Aff(expr_ref, e) -> (compile expr_ref)@(compile e)@[Aff]
   | Ref e -> (compile e)@[Ref]
 
-  (*Exception, à nouveau on se limite au cas E truc, comme pour les traductions*)
+  (*Exception, à nouveau on se limite au cas E truc, comme pour les traductions, donc on donne au x la valeur du haut de la pile*)
   |Try(e1, e2) ->begin
         match (List.hd e2) with
-          | (_,PattCase((_, Constr("E", [(_, y)])),x) )->
-              (compile e1)@[Beginwith]@(compile (0,y))@[Endwith]@(compile x)@[Endexcep]
+          | (_,PattCase((_, Constr("E", [(_, Identifier (nom,_))])),x) )->
+              (compile e1)@[Beginwith]@[Let nom]@[Endwith]@(compile x)@[Endexcep]@[Endlet]
           |_ -> failwith "Bad pattern for try ... with in tradmachine.compile"
     end
   | Raise(e) -> begin
@@ -81,13 +81,14 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | (Beginwith::suitec, env, (Exception)::q) -> exec_code suitec env q
   (*hop, on ignore juste ce qu'il se passe*)
   | (_::suitec, env, (Exception)::q) -> exec_code suitec env pile
-  (*Il faut comparer pour voir si on a rattrappé ce qu'il faut, et dans ce cas exécuter e2, pas sûre de moi sur ce cas*)
-  | (Endwith::suitec, env, a::b::q) -> if a=b then
-                                         (exec_code suitec env q)
-                                       else
-                                         (exec_code suitec env (Ignore::b::q))
+  | (Beginwith::suitec, env, _) -> exec_code suitec env (Ignore::pile)
+  (*Il n'y a que deux cas à traiter si on a une exception sur le dessus ou pas*)
+  |(Endwith::suitec,_,_)-> exec_code suitec env pile
+
+  | (Endexcep::suitec,_, (Ignore)::q) -> exec_code suitec env q
+  | (Endexcep::suitec,_, _) ->  (exec_code suitec env pile)
   (*Si on doit exécuter ce bout, il y a un ignore qui force à passer, on le vire quand on rencontre un Endexcep*)
-  | (Endexcep::suitec, env, (Ignore)::q) -> exec_code suitec env q
+
   (*hop, on ignore juste ce qu'il se passe*)
   | (_::suitec, env, (Ignore)::q) -> exec_code suitec env pile
                 

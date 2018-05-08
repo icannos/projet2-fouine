@@ -19,7 +19,7 @@ let rec affiche_slot slot = match slot with
 
 let rec affiche_env env = match env with
   | [] -> ()
-  | (nom, _)::q -> print_string nom ; affiche_env q
+  | (nom, _)::q -> print_string nom; print_newline() ; affiche_env q
 
 let rec affiche_pile pile = match pile with
   | [] -> ()
