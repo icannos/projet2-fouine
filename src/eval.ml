@@ -226,7 +226,7 @@ and evalb ee env =
                     |Unit -> raise (CannotApply "unit")
                     |LVide -> raise (CannotApply "lvide")
                     |TSum(_,_) -> raise (CannotApply "tsum")
-                    |Cartesian _ -> raise (CannotApply "cartesian")
+                    |Cartesian x -> raise (CannotApply ("cartesian: " ^ (string_of_value (Cartesian x))))
                     |Listing(_,_) -> raise (CannotApply "a list")
                     |Bool _ -> raise (CannotApply "a boolean")
 

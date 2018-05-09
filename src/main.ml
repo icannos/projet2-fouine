@@ -9,7 +9,7 @@ open Affichage;;
 open Eval;;
 open Tradmachine;;
 open Showmachine;;
-  
+
 
 let parse_string s =
   let lexbuf = Lexing.from_string s in
@@ -39,8 +39,13 @@ let interpreter () =
   Voir Arguments.ml pour les déclarations.
 *)
 
-
-  let lexbuf = Lexing.from_string (!srcfile) in
+  let memory_functions = begin
+  match (!tradimp || !impexcep || !excepimp) with
+    | true -> (read_file !mem_file)
+    | false -> ""
+    end
+    in
+    let lexbuf = Lexing.from_string (memory_functions ^ " \n " ^ !srcfile) in
 
 
    let parse () = Parser.main Lexer.token lexbuf in
@@ -56,7 +61,7 @@ let interpreter () =
 
     if !stackcode then (affiche_code (compile ast));
     if !machine then (execution (compile ast));
-  let _ = if(!outcode = false) then eval ast (initialize_envir ()) else Int 0 in
+  let _ = if(!outcode = false) then eval ast (Environnement.empty ) else Int 0 in
 
   if(!mem_mode) then (print_env !toplevel_envir) else ();
 

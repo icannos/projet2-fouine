@@ -13,7 +13,7 @@ let allocate valeur memoire =
 let  read num memoire =
   let (f,n) = memoire in
   if (num < n) then f num
-  else raise Notfound
+  else -1
 ;;
 
 let modify memoire couple =
@@ -23,4 +23,6 @@ let modify memoire couple =
     let fbis x = if (x = num) then newval
                  else f x in (fbis, n)
   else
-    raise NotFound
+    (f, n)
+
+in

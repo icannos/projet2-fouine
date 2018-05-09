@@ -50,12 +50,20 @@ let rec trad_expr ee =
       |Fun(patt,e) -> let s0 = news()  in let te = trad_expr e in
   mkFun s0 (mkPair (mkFun patt te, s0))
       |Ref(e1) -> let s0 = news() in let s1 = news() in let v0 = newv()  in let te = trad_expr e1 in
-    mkFun s0 (mkLetPair (v0,s1) (mkApp te s0) (mkallocate v0 s1))
-      |Acc(e1) -> let s0 = news() in let s1 = news() in let v = newv() in let l = newv () in let te = trad_expr e1 in
-         mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkLet v (mkread l s1) (mkPair (v,s1)) ))
+      let n = newv () in
+      let alloc_ast = trad_expr (mkallocate v0 s1) in
+        mkFun s0 (mkLetPair (v0,s1) (mkApp te s0) (mkLetPair (n ,s1) (mkApp alloc_ast s1) n))
+
+
+      |Acc(e1) -> let s0 = news() in let s1 = news() in let v = newv() in let l = newv () in let te = trad_expr e1 in let s_ = news () in
+      let read_ast = trad_expr (mkread l s1) in
+         mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkApp read_ast s1) )
+
+
       |Aff(nom, e1)-> let s0 = news() in let s1= news() in let s2 = news() in let s3 =news() in let v1 = newv() in let v2 = newv() in
-      let tnom = trad_expr nom in let te = trad_expr e1 in
-   mkFun s0 (mkLetPair (v1,s1) (mkApp tnom s0) (mkLetPair (v2,s2) (mkApp te s1) (mkLet s3 (mkmodify v1 v2 s2) (mkPair (mkUnit (), s3)))))
+      let tnom = trad_expr nom in let te = trad_expr e1 in let s_ = news () in
+      let modify_ast = trad_expr (mkmodify v1 v2 s2) in
+   mkFun s0 (mkLetPair (v1,s1) (mkApp tnom s0) (mkLetPair (v2,s2) (mkApp te s1) (mkLetPair (s3, s_) (mkApp modify_ast s2) (mkPair (mkUnit (), s3)))))
       |Cond((_, Testeq(e1,e2)), e3, e4)
        |Cond((_,Testneq(e1,e2)), e3, e4)
        |Cond((_,Testlt(e1,e2)), e3, e4)
@@ -63,9 +71,13 @@ let rec trad_expr ee =
        |Cond((_,Testlet(e1,e2)), e3, e4)
        |Cond((_,Testget(e1,e2)), e3, e4) -> let s0 = news() in let s1 = news() in let s2 = news() in let b1 = newv() in let b2 = newv() in
        let te1 = trad_expr e1 in let te2 = trad_expr e2 in let te3 = trad_expr e3 in let te4 = trad_expr e4 in
+
+
   mkFun s0 (mkLetPair (b1,s1) (mkApp te1 s0)(mkLetPair (b2,s2) (mkApp te2 s1) (mkCond (mkBool e b1 b2) (mkApp te3 s2) (mkApp te4 s2))))
-    |App(e1, e2) -> let s0 = news() in let s1 = news() in let s2 = news() in let f = newv() in let v = newv() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
-                                                                                                                                           mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
+
+    |App(e1, e2) -> let s0 = news() in let s1 = news() in let s2 = news() in let f = newv() in let v = newv() in let te1 = trad_expr e1
+    in let te2 = trad_expr e2 in
+            mkFun s0 (mkLetPair (f,s1) (mkApp te1 s0) (mkLetPair (v,s2) (mkApp te2 s1) (mkApp (mkApp f v) s2) )  )
 
     |LetRec(((_, Identifier (nom, _)),e1),e2) -> let v1 = newv() in let s0 = news() in let s1 = news() in let te1 = trad_expr e1 in let te2 = trad_expr e2 in
         mkFun s0 (mkLet (mkIdentifier nom) (mkConst 0) (mkLetPair (v1,s1) (mkApp te1 s0) (mkLetRec (mkIdentifier nom) v1 (mkApp te2 s1) )))

@@ -66,11 +66,8 @@ let mkmodify v1 v2 s2 = mkApp (mkApp (mkIdentifier "modify") s2) (mkPair (v1, v2
 let mkallocate v1 v2 = (mkApp (mkApp (mkIdentifier "allocate") v1) v2);;
 let mkread l s1 = (mkApp (mkApp (mkIdentifier "read") l) s1);;
 
-
-
 let mkConstr nom lexpr = (0, Constr(nom, lexpr));;
 let mkPattCase pattern todo = (0, PattCase(pattern, todo));;
-
 
 (*Les exceptions*)
 let mkTry expression id todo = (0, Try(expression,[mkPattCase id todo]));; (*à compléter pour avoir try a with b -> c *)

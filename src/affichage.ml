@@ -122,14 +122,14 @@ let rec string_of_value = function
   |Unit -> "()"
   |Reference k -> "Reference on " ^ (string_of_value (read_address k))
   |Rec(nom, arg, expr, env) -> ("Recursive function " ^ nom)
-  |Fonction(pattern, expr, env) -> ("Function: " ^ (string_of_expr 0 pattern) ^ "->" ^ (string_of_expr 0 pattern))
+  |Fonction(pattern, expr, env) -> ("Function: " ^ (string_of_expr 0 pattern) ^ "->" ^ "...")
   |LVide -> "[]"
-  |TSum(a,b) -> a ^ "(" ^ (List.fold_right (^) (List.map string_of_value b) "") ^ ")"
-  |Cartesian x-> List.fold_right (^) (List.map string_of_value x) ""
+  |TSum(a,b) -> a ^ "(" ^ (join "," (List.map string_of_value b)) ^ ")"
+  |Cartesian x-> "("^ (join "," (List.map string_of_value x)) ^ ")"
   |Listing(a,b)-> (string_of_value a) ^ "::" ^ (string_of_value b)
   |Bool true -> "true"
   |Bool false -> "false"
-  |Exn x -> "Exception"
+  |Exn x -> "Exception: " ^ (string_of_value x)
 
 ;;
 

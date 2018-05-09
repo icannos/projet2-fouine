@@ -42,7 +42,7 @@ try
 let read_file filename = let chan = open_in filename in read_all chan;;
 
 (* Lis le fichier source passé en argument anonyme et le copie sous forme de string dans srcfile *)
-let getsrcfile filename = srcfile := read_file filename;;
+let getsrcfile filename = srcfile := (!srcfile) ^ (read_file filename);;
 
 let set_mem filename = mem_file := filename;;
 
