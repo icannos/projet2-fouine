@@ -55,7 +55,7 @@ let rec trad_expr ee =
         mkFun s0 (mkLetPair (v0,s1) (mkApp te s0) (mkLetPair (n ,s1) (mkApp alloc_ast s1) n))
 
 
-      |Acc(e1) -> let s0 = news() in let s1 = news() in let v = newv() in let l = newv () in let te = trad_expr e1 in let s_ = news () in
+      |Acc(e1) -> let s0 = news() in let s1 = news() in let l = newv () in let te = trad_expr e1  in
       let read_ast = trad_expr (mkread l s1) in
          mkFun s0 (mkLetPair (l,s1) (mkApp te s0) (mkApp read_ast s1) )
 
