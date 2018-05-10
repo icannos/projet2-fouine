@@ -153,11 +153,13 @@ let rec exec_code c env pile =  match (c, env, pile) with
   (*Partie réduction*)
   | (Couple([])::suitec, _, (Uplet l)::(Valcouple a)::q) -> exec_code c env (Uplet (a::l)::q)
   (*On a récupéré tout le uplet on passe à la suite du code*)
-  | (Couple([])::suitec, _, _) -> exec_code suitec env pile
+  | (Couple([]):: suitec, _,(Uplet l)::q) -> exec_code suitec env pile
+  | (Couple([])::suitec, _, _) -> exec_code c env ((Uplet [])::pile)
+
 
   (*ajout d'une valeur*)
   (*Son calcul*)
-  | (Couple(e1::enext)::suitec,_,_)->  exec_code (e1@[Ajoutcouple]@(Couple(e1::enext)::suitec)) env pile
+  | (Couple(e1::enext)::suitec,_,_)->  exec_code (e1@[Ajoutcouple]@(Couple(enext)::suitec)) env pile
   (*Son ajout*)
   | (Ajoutcouple::suitec, _,v::q) -> exec_code suitec env ((Valcouple v)::q)
 
