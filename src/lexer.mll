@@ -46,6 +46,9 @@ rule token = parse    (* la "fonction" aussi s'appelle token .. *)
   | "::"            { COLONCOLON }
   | ':'             { COLON }
 
+
+  | "type"          { TYPE }
+  | "of"            {  OF  }
   | "fun"           { FUN }
   | "->"            { DONNE }
   | "|"		    { CASE }

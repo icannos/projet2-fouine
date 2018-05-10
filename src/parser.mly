@@ -20,6 +20,7 @@ open Errmgr
 %token <string> NOM
 %token PRINT
 %token REF BANG AFF
+%token TYPE OF
 %token COMMA
 %token UNIT
 %token LBRACKET RBRACKET COLONCOLON COLON
@@ -95,6 +96,18 @@ idtyped:
 typed:
 |NOM {(error_handler  (), TypeId $1 )}
 |typed DONNE typed {(error_handler  (),  Fun($1, $3) )}
+|LPAREN prod_cart RPAREN {(error_handler  (),  Cart($2) )}
+
+;
+
+t_sum:
+|CONSTR                                      {  (error_handler  (), Constr($1, [])) }
+|CONSTR OF prod_cart                         {  (error_handler  (), Constr($1, $3)) }
+;
+
+t_cases:
+|t_sum                                        {[$1]}
+|t_sum CASE t_cases                           {$1::$3}
 ;
 
 toplevel:   /* les let de surface */
@@ -113,7 +126,19 @@ toplevel:   /* les let de surface */
  |rec_binding toplevel	     			{  (error_handler  (), LetRec($1, $2)) }
  |rec_binding 					{  (error_handler  (), LetRec($1, (error_handler  (),Const 0)))}
  |rec_binding DOUBLESEMICOL			{  (error_handler  (), LetRec($1, (error_handler  (), Const 0)))  }
+
+ /* Type declaration */
+ |TYPE NOM EGAL t_cases DOUBLESEMICOL toplevel              {(error_handler (), RecordType(($2, $4), $6))}
+ |TYPE NOM EGAL typed DOUBLESEMICOL simplexpr            {(error_handler (), RecordType(($2, [$4]), $6))}
+ |TYPE NOM EGAL t_cases DOUBLESEMICOL              {(error_handler (), RecordType(($2, $4), (error_handler  (), Const 0) ))}
+ |TYPE NOM EGAL typed DOUBLESEMICOL            {(error_handler (), RecordType(($2, [$4]), (error_handler  (), Const 0)))}
  ;
+
+ prod_cart:
+ |typed {[$1]}
+ |typed TIMES prod_cart {$1::$3}
+ ;
+
 
 simplexpr:
  | PRINT simplexpr			       {  (error_handler  (),PrintInt $2) }
