@@ -20,6 +20,10 @@ let outcode = ref false;;
 let stackcode = ref false;;
 let machine = ref false;;
 
+(* typechecking *)
+
+let typecheckingmode = ref false;;
+let displaytype = ref false;;
 
 
 (* Fichier contenant les fonctions de mémoire *)
@@ -62,7 +66,10 @@ let optlist =
     ("-ER", Arg.Set impexcep, "Active la traduction des aspects imperatifs suivie de la reecriture en continuations");
     ("-machine", Arg.Set machine, "Active l'execution du code compile");
     ("-stackcode", Arg.Set stackcode, "Active l'affichage du code compile");
-    ("-outcode", Arg.Set outcode, "Affiche le programme traduit à l'écran sans l'exécuter")
+    ("-outcode", Arg.Set outcode, "Affiche le programme traduit à l'écran sans l'exécuter");
+
+    ("-disptype", Arg.Set displaytype, "Affiche le type d'une expression sans exécuter le code");
+    ("-typecheck", Arg.Set displaytype, "Active la vérification de type avant l'exécution")
   ]
 ;;
 

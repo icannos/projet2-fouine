@@ -9,15 +9,7 @@ let string_of_identifier = function
   |s -> s
 ;;
 
-(*Ajout d'une fonction pour mettre des pointvirgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
-let rec join sep liste = match liste with
-  | [] -> ""
-  | [a] -> a
-  | a::q -> a ^ sep ^ join sep q;;
 
-let rec tab n = match n with
-  |0-> ""
-  |n-> "  " ^ tab (n-1)
 
 (*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec string_of_expr n ee =

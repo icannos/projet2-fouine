@@ -9,6 +9,7 @@ open Affichage;;
 open Eval;;
 open Tradmachine;;
 open Showmachine;;
+open Typechecking
 
 
 let parse_string s =
@@ -59,9 +60,14 @@ let interpreter () =
     if(!debugmode) then (aff_expr ast; print_newline());
     if(!outcode) then (aff_expr ast; print_newline());
 
+    if(!displaytype) then(
+    let (t, env) = infer ast (EnvType.empty) (EnvType.empty) in
+    print_string ((string_of_ftype EnvType.empty t) ^ "\n"));
+
     if !stackcode then (affiche_code (compile ast));
     if !machine then (execution (compile ast));
-  let _ = if(!outcode = false) then eval ast (Environnement.empty ) else Int 0 in
+  let _ = if(!outcode = false && !displaytype == false) then
+  eval ast (Environnement.empty ) else Int 0 in
 
   if(!mem_mode) then (print_env !toplevel_envir) else ();
 
