@@ -60,6 +60,7 @@ let error_display node_id except =
    | Invalid_argument s -> pf "Bad operation argument: %s\n" s
    | UnificationFails (se, sv) -> pf "Unable to unify %s with %s\n" se sv
    | BadArgument (s1,s2) -> pf "%s is a bad argument for %s \n" s1 s2
+   | TypesDoNotMatch (s1, s2) -> pf "This expression has type %s \nbut an expression of type %s was expected \n" s1 s2
    | x -> raise x)
 
    ;

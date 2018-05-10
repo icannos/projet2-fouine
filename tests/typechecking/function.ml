@@ -1,1 +1,1 @@
-(fun x -> 3) 
+(fun x y -> x + y)
