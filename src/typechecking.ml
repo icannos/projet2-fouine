@@ -17,6 +17,8 @@ type type_list_t = f_type Environnement.t;;
 (* Pour stocker le type des variables *)
 type env_type_t = f_type Environnement.t;;
 
+(* Décide si deux trucs peuvent avoir même type, et si oui renvoie le type
+convenant aux deux trucs, sinon explose*)
 let rec unify e_t1 e_t2 =
   match e_t1, e_t2 with
   |Free a, Free b -> Free a
