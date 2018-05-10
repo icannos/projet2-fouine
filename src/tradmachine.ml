@@ -5,7 +5,6 @@ open Showmachine;;
   
 
 
-
 let rec compile ee =
   (*prend un arbre de fouine pur et renvoie le code associé*)
   let (node_id, e) = ee in
@@ -42,6 +41,10 @@ let rec compile ee =
       | (_, Constr("E", [x])) -> (compile x)@[Raise]
       | _ -> failwith "Bad error constructor for raise in tradmachine.compile"
     end
+
+
+  (*Les couples*)
+  | Cart(exprlist) ->[Couple (List.map compile exprlist)]
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
                  
@@ -143,7 +146,20 @@ let rec exec_code c env pile =  match (c, env, pile) with
     exec_code suitec env (v::q)
   | (Aff::suitec, _, e::(Reference addr)::q) -> Memmachine.add_memory addr e; exec_code suitec env q
 
-  
+
+  (*Les couples*)
+  (*Tant qu'on a un couple non vide on exécute la prochaine valeur, puis on concatène le tout*)
+
+  (*Partie réduction*)
+  | (Couple([])::suitec, _, (Uplet l)::(Valcouple a)::q) -> exec_code c env (Uplet (a::l)::q)
+  (*On a récupéré tout le uplet on passe à la suite du code*)
+  | (Couple([])::suitec, _, _) -> exec_code suitec env pile
+
+  (*ajout d'une valeur*)
+  (*Son calcul*)
+  | (Couple(e1::enext)::suitec,_,_)->  exec_code (e1@[Ajoutcouple]@(Couple(e1::enext)::suitec)) env pile
+  (*Son ajout*)
+  | (Ajoutcouple::suitec, _,v::q) -> exec_code suitec env ((Valcouple v)::q)
 
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();

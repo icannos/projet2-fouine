@@ -9,7 +9,7 @@ let string_of_identifier = function
   |s -> s
 ;;
 
-(*Ajout d'une fonction pour mettre des pointvirgules dans les n-uplets, je trouve ça plus claire que ta méthode, à trancher*)
+(*Ajout d'une fonction pour mettre des pointvirgules par exemple*)
 let rec join sep liste = match liste with
   | [] -> ""
   | [a] -> a
