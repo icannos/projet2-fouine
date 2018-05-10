@@ -36,6 +36,10 @@ type instruction =
   | Endwith
   | Endexcep
 
+  (*Les couples*)
+  | Ajoutcouple
+  | Couple of (instruction list list)
+
 
   
 
@@ -56,6 +60,11 @@ type memslot = I of int
              (*Pour les exceptions*)
              | Exception
              | Ignore (*Je pense qu'un seul suffit mais c'est plus clair pour l'instant*)
+
+            (*Pour les couples*)
+             | Uplet of (memslot list)
+             | Valcouple of memslot
+             
 and
  environnement = (name * memslot) list
 

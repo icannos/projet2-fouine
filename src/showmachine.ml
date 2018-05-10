@@ -4,6 +4,11 @@ let rec tab n = match n with
   |0-> ""
   |n-> "  " ^ tab (n-1)
 
+let rec join sep liste = match liste with
+  | [] -> ""
+  | [a] -> a
+  | a::q -> a ^ sep ^ join sep q;;
+
 let rec affiche_slot slot = match slot with
   |I a -> print_string "affiche_slot "; print_int a;  print_newline ()
   |B a -> print_string (string_of_bool a); print_newline ()
@@ -15,6 +20,8 @@ let rec affiche_slot slot = match slot with
   | Reference a -> print_string "Reference\n"
   | Exception -> print_string "Exception\n"
   | Ignore -> print_string "Ignore\n"
+  | Uplet a -> print_string "Uplet\n"
+  | Valcouple a -> print_string "Valcouple\n"
 
 
 let rec affiche_env env = match env with
@@ -55,7 +62,14 @@ let rec joli_code n l s =
   | Beginwith::q -> joli_code (n+1) q (s ^ (tab n) ^ "Beginwith\n")
   | Endwith::q -> joli_code n q (s ^ (tab (n-1)) ^ "Endwith\n")
   | Endexcep::q -> joli_code (n-1) q (s ^ (tab (n-1)) ^ "Endexcep\n")
-(*|_ -> "Not yet implemented"*)
+  | Couple(liste)::q -> joli_code n q (s ^ "Couple (" ^ (joli_couple n liste "") ^ ")")
+  |_ -> "Not yet implemented"
+and joli_couple n liste s = match liste with
+  | [] -> s
+  (*| [t] ->joli_couple n [] (s ^ (joli_code n t ""))*)
+  | t::q -> joli_couple n q (s ^ (joli_code n t "") ^ ",")
+             
+                                           
   ;;
 
 

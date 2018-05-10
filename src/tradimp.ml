@@ -24,7 +24,7 @@ let rec trad_expr ee =
 
   try match e with
       | Const x -> let s0 = news () in mkFun s0 (mkPair ((mkConst x), s0))
-      | Identifier (x, _) -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0)) (*j'ai synthétiser les deux cas dans le dernier, on peut  discuter ce choix*)
+      | Identifier (x, _) -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0)) 
       | Cart(lexpr) -> let s0 = news() in
             let rec tradlist bs acc = begin function
                   | [] -> let l = List.rev acc in mkPair (mkCart(l), bs)
