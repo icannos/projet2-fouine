@@ -24,5 +24,4 @@ let modify memoire couple =
                  else f x in (fbis, n)
   else
     (f, n)
-
-in
+;;

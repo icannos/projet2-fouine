@@ -51,6 +51,7 @@ type expr =
   (* Types *)
   |Typed of extexpr
   |TypeId of name
+  |RecordType of (name * extexpr list) * extexpr
 
   (* Pure *)
   |Pure of extexpr

@@ -2,9 +2,6 @@ open Env;;
 open Affichage;;
 
 
-
-
-
 let safe_add e1 e2 = match e1,e2 with
   |Int x, Int y -> Int(x + y)
   |_, Exn x|Exn x, _ -> Exn x
