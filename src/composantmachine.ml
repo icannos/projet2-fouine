@@ -38,6 +38,7 @@ type instruction =
 
   (*Les couples*)
   | Ajoutcouple
+  | Acoupler of (instruction list list)
   | Couple of (instruction list list)
 
 
@@ -63,6 +64,7 @@ type memslot = I of int
 
             (*Pour les couples*)
              | Uplet of (memslot list)
+             | Amatcher of (memslot list)
              | Valcouple of memslot
              
 and

@@ -8,6 +8,15 @@
 *.cmxs
 *.cmxa
 
+*.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.toc
+*.synctex.gz
+*.xoj
+
 # ocamlbuild working directory
 _build/
 bin/

@@ -3,7 +3,9 @@ open Errmgr;;
 open Composantmachine;;
 open Showmachine;;
   
-
+let rec endcouple l =match l with
+  | [] -> []
+  | t::q -> Endlet::(endcouple q)
 
 let rec compile ee =
   (*prend un arbre de fouine pur et renvoie le code associé*)
@@ -17,6 +19,7 @@ let rec compile ee =
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
   | Let(((_, Identifier ("_",_)),e1),e2)->(compile e1)@(compile e2)
   | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
+  | Let(((_, Cart(l)), e1),e2)-> (compile e1)@[Acoupler (List.map compile l)]@(compile e2)@(endcouple l)
   | Identifier (x, _) -> [Access x]
   | Fun((_, Identifier (nom,_)) , expr) ->  [Clos(nom, ((compile expr)@[Ret]))]
   | LetRec(((_, Identifier (f,_)), e1), e2) -> (compile e1)@[Rec f]@[Let f]@(compile e2)@[Endlet]
@@ -164,12 +167,17 @@ let rec exec_code c env pile =  match (c, env, pile) with
   (*Son ajout*)
   | (Ajoutcouple::suitec, _,v::q) -> exec_code suitec env ((Valcouple v)::q)
 
+
+
+(*Pour le cas où on ajoute des valeurs*)
+  | ((Acoupler(l))::suitec, _, (Uplet liste)::q) -> exec_code c env ((Amatcher liste)::q)
+  | ((Acoupler([]))::suitec, _, (Amatcher [])::q) -> exec_code suitec env q
+  | ((Acoupler (([Access nom])::suitenom))::suitec, _, (Amatcher (valeur::suiteval))::q) -> exec_code ((Acoupler suitenom)::suitec) ((nom,valeur)::env) ((Amatcher suiteval)::q)
+                                          
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;
            print_newline(); raise Notmatched)
-
-
 
 
 let execution c = exec_code c [] [];;
