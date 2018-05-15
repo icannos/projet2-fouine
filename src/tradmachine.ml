@@ -1,17 +1,19 @@
 open Expr;;
 open Errmgr;;
+open Affichage
 open Composantmachine;;
 open Showmachine;;
-  
-let rec endcouple l =match l with
-  | [] -> []
-  | t::q -> Endlet::(endcouple q)
 
+let rec endcouple l =match l with
+  | [] -> print_string "hey";[]
+  | _::q -> print_string "cc";Endlet::(endcouple q)
+;;
 let rec compile ee =
+print_string (string_of_expr 0 ee);
   (*prend un arbre de fouine pur et renvoie le code associé*)
   let (node_id, e) = ee in
   try match  e with
-                                
+
   | Const k -> [C k]
   | Add(e1,e2) -> (compile e2)@(compile e1)@[Add]
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
@@ -19,7 +21,8 @@ let rec compile ee =
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
   | Let(((_, Identifier ("_",_)),e1),e2)->(compile e1)@(compile e2)
   | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
-  | Let(((_, Cart(l)), e1),e2)-> (compile e1)@[Acoupler (List.map compile l)]@(compile e2)@(endcouple l)
+  | Let(((_, Cart(l)), e1),e2)-> (* let ends = endcouple l in *)
+  (compile e1)@[Acoupler (List.map compile l)]@(compile e2)
   | Identifier (x, _) -> [Access x]
   | Fun((_, Identifier (nom,_)) , expr) ->  [Clos(nom, ((compile expr)@[Ret]))]
   | LetRec(((_, Identifier (f,_)), e1), e2) -> (compile e1)@[Rec f]@[Let f]@(compile e2)@[Endlet]
@@ -47,11 +50,11 @@ let rec compile ee =
 
 
   (*Les couples*)
-  | Cart(exprlist) ->[Couple (List.map compile exprlist)]
+  | Cart(exprlist) -> [Couple (List.map compile exprlist)]
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
-                 
-  
+
+
 
 with x -> error_display node_id x
 
@@ -98,7 +101,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
 
   (*hop, on ignore juste ce qu'il se passe*)
   | (_::suitec, env, (Ignore)::q) -> exec_code suitec env pile
-                
+
   | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
      print_int a; print_newline () ; exec_code suitec env pile
   | (Add::suitec,_, (I a)::(I b)::q)  ->
@@ -173,7 +176,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | ((Acoupler(l))::suitec, _, (Uplet liste)::q) -> exec_code c env ((Amatcher liste)::q)
   | ((Acoupler([]))::suitec, _, (Amatcher [])::q) -> exec_code suitec env q
   | ((Acoupler (([Access nom])::suitenom))::suitec, _, (Amatcher (valeur::suiteval))::q) -> exec_code ((Acoupler suitenom)::suitec) ((nom,valeur)::env) ((Amatcher suiteval)::q)
-                                          
+
   | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;

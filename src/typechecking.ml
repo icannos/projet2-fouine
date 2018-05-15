@@ -21,7 +21,7 @@ let rec string_of_ftype type_list = function
 |Int_f -> "int"
 |Fun_f(t1,t2) -> (string_of_ftype type_list t1) ^ " -> " ^ (string_of_ftype type_list t2)
 |List_f t -> (string_of_ftype type_list t) ^ " list"
-|Cart_f l -> join "*" (List.map (string_of_ftype type_list) l)
+|Cart_f l -> join " * " (List.map (string_of_ftype type_list) l)
 |UserType s -> s ^ " (aka "^ string_of_ftype type_list (EnvType.find s type_list) ^ " )"
 |Free s -> s
 |Ref_f t -> "ref " ^ string_of_ftype type_list t
@@ -157,7 +157,18 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let env = ref envir in
   let connmon_t = t_unify e4_t e3_t env type_list in (connmon_t, !env)
 
-
+  |Cart l ->
+  let rec typelist env type_list =
+      begin function
+      |[] -> [], env
+      |x::q -> let (x_t, envir) = infer x env type_list in
+               let (ctype, envir) = typelist envir type_list q in
+               x_t::ctype, envir
+      end in
+      let ctype1, envir = typelist env type_list l in
+      let ctype2, envir = typelist envir type_list l in
+      let env = ref envir in let ctype = t_unify (Cart_f ctype2) (Cart_f ctype1) env type_list in
+          ctype, !env
 
 
 
