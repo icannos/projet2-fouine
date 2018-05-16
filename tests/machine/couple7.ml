@@ -1,0 +1,1 @@
+let (a,b,c,d)=(7,2*5, let e = 5 in e+6, 3) in prInt a; prInt b; prInt c; prInt d
