@@ -47,7 +47,6 @@ type expr =
   (* Tests Constructor *)
   |Cond of bextexpr * extexpr * extexpr
 
-
   (* Types *)
   |Typed of extexpr
   |TypeId of name

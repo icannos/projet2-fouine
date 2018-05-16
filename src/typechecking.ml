@@ -3,6 +3,13 @@ open Env
 open Errmgr
 open Display
 
+let free_type_counter = ref (-1);;
+
+let new_free_type () =
+free_type_counter:= 1+ !free_type_counter;
+("'" ^ (string_of_int !free_type_counter))
+;;
+
 module EnvType = Map.Make(String);;
 
 
@@ -11,21 +18,25 @@ type f_type = Int_f
 | Fun_f of f_type * f_type (* Une fonction fouine, de type truc donne bidule *)
 | Cart_f of f_type list (* Un produit cart c'est une liste de type*)
 | UserType of string (* Nom du type somme défini par le programmeur *)
-| Free of string (* Pour stocker des trucs par encore typé *)
+| Free of string (* Pour stocker des trucs par encore typés *)
 | Ref_f of f_type (* Si on est une ref on connait le type du truc pointé*)
-| Unit_t
+| Unit_f
+
+and
+(* Pour stocker le type des variables *)
+env_type_t = f_type EnvType.t
 ;;
 
 (* Convertit un objet type en une chaîne lisible *)
 let rec string_of_ftype type_list = function
 |Int_f -> "int"
-|Fun_f(t1,t2) -> (string_of_ftype type_list t1) ^ " -> " ^ (string_of_ftype type_list t2)
+|Fun_f(t1,t2) -> "(" ^ (string_of_ftype type_list t1) ^ " -> " ^ (string_of_ftype type_list t2) ^ ")"
 |List_f t -> (string_of_ftype type_list t) ^ " list"
 |Cart_f l -> join " * " (List.map (string_of_ftype type_list) l)
 |UserType s -> s ^ " (aka "^ string_of_ftype type_list (EnvType.find s type_list) ^ " )"
 |Free s -> s
 |Ref_f t -> "ref " ^ string_of_ftype type_list t
-|Unit_t -> "unit"
+|Unit_f -> "unit"
 ;;
 
 let print_envtype type_list k t = ps (k ^ ": " ^ (string_of_ftype type_list t) ^" ");;
@@ -46,8 +57,7 @@ let rec parent_t env x = match getvartype env x with
   | x -> x
 ;;
 
-(* Pour stocker le type des variables *)
-type env_type_t = f_type EnvType.t;;
+
 
 (* Récupère les types des variables pour les sauvergarder lorsqu'on les écrase*)
 let save_vars patt env =
@@ -63,6 +73,18 @@ let save_vars patt env =
 let rec setback_vars env = function
 |[] -> ()
 |(x,t)::q -> env := EnvType.add x t !env; setback_vars env q
+;;
+
+let rec type_arg env = function
+|Int_f -> Int_f
+|Fun_f(t1,t2) -> Fun_f(type_arg env t1, type_arg env t2)
+|List_f t ->List_f (type_arg env t)
+|Cart_f l -> Cart_f (List.map (type_arg env) l)
+|UserType s -> UserType s
+|Free s when EnvType.mem s !env -> getvartype env s
+|Ref_f t -> Ref_f (type_arg env t)
+|Unit_f -> Unit_f
+|_ -> failwith "Something gone wrong with Typechecking.type_arg"
 ;;
 
 
@@ -84,15 +106,16 @@ let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : 
   in unif e_t1 e_t2
 ;;
 
+
 let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let (node_id, e) = ee in (* Le node_id est important ici pour râler concernant
     les types qui matchent pas *)
 
     try
   match e with
+  | Uni -> Unit_f, env
   | Const x -> Int_f, env
   | Identifier (x,_) -> let env = ref env in parent_t env x, !env
-  | Vide -> List_f (Free "'a"), env
   | Fun(patt, expr) ->
   let env = ref env in
   (* On sauvegarde les variables qui vont être cachées par l'argument de la fonction *)
@@ -115,11 +138,11 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   (* traitement de e1 *)
     let (e1_t, envir) = infer e1 env type_list in
     (* Une fois que l'on a une idée du type de e1, on essaie de le faire correspondre à un entier*)
-    let env = ref envir in let e1_t = t_unify e1_t Int_f env type_list in
+    let env = ref envir in let _ = t_unify e1_t Int_f env type_list in
   (* traitement de e2, ayant déjà les connaissances issues de e1 *)
     let (e2_t, envir) = infer e2 !env type_list in
     (* Une fois que l'on a une idée du type de e2, on essaie de le faire correspondre à un entier*)
-    let env = ref envir in let e2_t = t_unify e2_t Int_f env type_list in
+    let env = ref envir in let _ = t_unify e2_t Int_f env type_list in
           (Int_f, !env) (* C'est une addition, ça renvoie un entier *)
 
   |App(f, e) -> begin match infer f env type_list with
@@ -132,8 +155,14 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   let (e_t, envir) = infer e env type_list in
                   let env = ref envir in
                   (* On essaie de matcher les 2*)
-                  let _ = t_unify e_t patt_t env type_list in
-                  (expr_t , !env) (* On renvoie le type de retour de la fonctions*)
+                  let _ = t_unify (Fun_f(e_t, expr_t)) (Fun_f(patt_t, expr_t)) env type_list in
+                  (type_arg env expr_t , !env) (* On renvoie le type de retour de la fonctions*)
+
+                  |Free a, envir -> let (e_t, envir) = infer e env type_list in
+                            let env = ref envir in
+                            let function_type = Free (new_free_type ()) in
+                            let _ = t_unify (Free a) (Fun_f(e_t, function_type)) env type_list in
+                            (function_type, !env)
 
                   (* Il faudrait traiter le cas où l'on ne connait pas encore f, donc on doit inférer
                   que f est du type T -> ? où T est le type du truc sur lequel on l'applique *)
@@ -148,7 +177,8 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let (e1_t, envir) = infer e1 !env type_list in
 
   let (patt_t, envir) = infer patt envir type_list in
-  let env = ref envir in let _ = t_unify e1_t patt_t env type_list in
+  let env = ref envir in let _ = t_unify e1_t patt_t env type_list   in
+  setback_vars env svars;
   infer e2 !env type_list
 
   |Ref(e) ->   let (e_t, envir) = infer e env type_list in (Ref_f e_t, envir)
@@ -161,13 +191,13 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   let (e2_t, envir) = infer e2 env type_list in
         begin match e1_t with
         |Ref_f t -> let env = ref envir in
-        let _ = t_unify t e2_t env type_list in (Unit_t, !env)
+        let _ = t_unify t e2_t env type_list in (Unit_f, !env)
         |x -> raise (TypesDoNotMatch
           (string_of_ftype type_list x, string_of_ftype type_list (Ref_f e2_t) ))
         end
 
   |PrintInt e -> let (e_t, envir) = infer e env type_list in
-  let env = ref envir in let e_t = t_unify e_t Int_f env type_list in
+  let env = ref envir in let _ = t_unify e_t Int_f env type_list in
     (Int_f, !env)
 
   |Cond((_, Testeq(e1,e2)), e3, e4)
@@ -178,9 +208,9 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   |Cond((_,Testget(e1,e2)), e3, e4) ->
   (* On ne compare que des entiers *)
   let (e1_t, envir) = infer e1 env type_list in
-  let env = ref envir in let e1_t = t_unify e1_t Int_f env type_list in
+  let env = ref envir in let _ = t_unify e1_t Int_f env type_list in
   let (e2_t, envir) = infer e2 !env type_list in
-  let env = ref envir in let e2_t = t_unify e2_t Int_f env type_list in
+  let env = ref envir in let _ = t_unify e2_t Int_f env type_list in
   let (e3_t, envir) = infer e3 !env type_list in
   let (e4_t, envir) = infer e4 envir type_list in
   let env = ref envir in
@@ -198,6 +228,18 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
       let ctype2, envir = typelist envir type_list l in
       let env = ref envir in let ctype = t_unify (Cart_f ctype2) (Cart_f ctype1) env type_list in
           ctype, !env
+
+  |Vide -> (List_f(Free(new_free_type ())), env)
+  |Liste(e1, e2) -> let (e1_t, envir) = infer e1 env type_list in
+                  begin match infer e2 envir type_list with
+                  |List_f(l_t), envir -> let env = ref envir in
+                    t_unify (List_f e1_t) (List_f l_t) env type_list, !env
+                  |Free x, envir -> let env = ref envir in t_unify (List_f e1_t) (Free x) env type_list, !env
+                  |t, _ -> (raise (TypesDoNotMatch(string_of_ftype type_list (List_f e1_t), string_of_ftype type_list t)))
+                  end
+
+  | _ -> failwith "You should never fall in that case. In Typechecking.infer"
+
 
   with x -> error_display node_id x
   ;;
