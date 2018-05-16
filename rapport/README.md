@@ -13,6 +13,15 @@
 > "Un je ne sais quoi" -- __Jankélévitch__
 
 
+cf Rapport
+
+## Sur notre épopée
+
+Au commencement était un petit tableur tout innocent.
+
+
+
+
 • ce qui a marché, ce qui n’a pas marché, au long des rendus 2, 3 et 4.
 • Les bugs importants que vous avez rencontrés : ceux que vous avez pu corriger, ceux que vous n’avez
 pas été en mesure de corriger (vous pouvez, le cas échéant, indiquer qu’un bug s’est manifesté trop

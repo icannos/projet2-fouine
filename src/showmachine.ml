@@ -22,6 +22,7 @@ let rec affiche_slot slot = match slot with
   | Ignore -> print_string "Ignore\n"
   | Uplet a -> print_string "Uplet\n"
   | Valcouple a -> print_string "Valcouple\n"
+  | Amatcher a -> print_string "Amatcher\n"
 
 
 let rec affiche_env env = match env with
@@ -62,13 +63,13 @@ let rec joli_code n l s =
   | Beginwith::q -> joli_code (n+1) q (s ^ (tab n) ^ "Beginwith\n")
   | Endwith::q -> joli_code n q (s ^ (tab (n-1)) ^ "Endwith\n")
   | Endexcep::q -> joli_code (n-1) q (s ^ (tab (n-1)) ^ "Endexcep\n")
-  | Couple(liste)::q -> joli_code n q (s ^ "Couple (" ^ (joli_couple n liste "") ^ ")")
-  | Acoupler(liste)::q -> joli_code n q (s ^ "Couple (" ^ (joli_couple n liste "") ^ ")")
+  | Couple(liste)::q -> joli_code n q (s ^ "Couple (\n" ^ (joli_couple n liste "") ^ ")\n")
+  | Acoupler(liste)::q -> joli_code n q (s ^ "Couple (\n" ^ (joli_couple n liste "") ^ ")\n")
   |_ -> "Not yet implemented"
 and joli_couple n liste s = match liste with
   | [] -> s
-  (*| [t] ->joli_couple n [] (s ^ (joli_code n t ""))*)
-  | t::q -> joli_couple n q (s ^ (joli_code n t "") ^ ",")
+  | [t] ->joli_couple n [] (s ^ (joli_code 0 t ""))
+  | t::q -> joli_couple n q (s ^ (joli_code 0 t "") ^ ",")
              
                                            
   ;;

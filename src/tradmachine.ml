@@ -20,7 +20,7 @@ let rec compile ee =
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
   | Let(((_, Identifier ("_",_)),e1),e2)->(compile e1)@(compile e2)
   | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
-  | Let(((_, Cart(l)), e1),e2)-> (* let ends = endcouple l in *)
+  | Let(((_, Cart(l)), e1),e2)-> 
   (compile e1)@[Acoupler (List.map compile l)]@(compile e2)
   | Identifier (x, _) -> [Access x]
   | Fun((_, Identifier (nom,_)) , expr) ->  [Clos(nom, ((compile expr)@[Ret]))]
