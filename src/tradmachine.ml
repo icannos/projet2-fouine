@@ -5,11 +5,10 @@ open Composantmachine;;
 open Showmachine;;
 
 let rec endcouple l =match l with
-  | [] -> print_string "hey";[]
-  | _::q -> print_string "cc";Endlet::(endcouple q)
+  | [] -> []
+  | _::q -> Endlet::(endcouple q)
 ;;
 let rec compile ee =
-print_string (string_of_expr 0 ee);
   (*prend un arbre de fouine pur et renvoie le code associé*)
   let (node_id, e) = ee in
   try match  e with

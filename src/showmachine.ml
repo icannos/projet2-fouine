@@ -1,8 +1,8 @@
 open Composantmachine;;
-  
-let rec tab n = match n with
-  |0-> ""
-  |n-> "  " ^ tab (n-1)
+
+
+(* hotfix *)
+let rec tab n = if n < 0 then "" else "  " ^ tab (n-1)
 
 let rec join sep liste = match liste with
   | [] -> ""
@@ -63,7 +63,7 @@ let rec joli_code n l s =
   | Endwith::q -> joli_code n q (s ^ (tab (n-1)) ^ "Endwith\n")
   | Endexcep::q -> joli_code (n-1) q (s ^ (tab (n-1)) ^ "Endexcep\n")
   | Couple(liste)::q -> joli_code n q (s ^ "Couple (" ^ (joli_couple n liste "") ^ ")")
-  |Acoupler(liste)::q -> joli_code n q (s ^ "Couple (" ^ (joli_couple n liste "") ^ ")")
+  | Acoupler(liste)::q -> joli_code n q (s ^ "Couple (" ^ (joli_couple n liste "") ^ ")")
   |_ -> "Not yet implemented"
 and joli_couple n liste s = match liste with
   | [] -> s
