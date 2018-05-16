@@ -33,9 +33,17 @@ let print_envtype type_list k t = ps (k ^ ": " ^ (string_of_ftype type_list t) ^
 (* On stocke les types définis par l'utilisateur *)
 type type_list_t = f_type EnvType.t;;
 
+(* Utilitaires pour lire les types dans l'environnement*)
 let updatevar env x v = env := EnvType.add x v !env;;
 let getvartype env x = try EnvType.find x !env
         with _ -> env := (EnvType.add x (Free(x)) (!env)); Free x
+;;
+
+(* Le find de l'union find *)
+let rec parent_t env x = match getvartype env x with
+  | Free a when a = x -> Free x
+  | Free a -> parent_t env a
+  | x -> x
 ;;
 
 (* Pour stocker le type des variables *)
@@ -51,7 +59,7 @@ let save_vars patt env =
     VarsSet.iter save_and_reset (getIdentifiersInConstr patt); !ids_saved
 
 ;;
-
+(* On remet les variables sauvegardées*)
 let rec setback_vars env = function
 |[] -> ()
 |(x,t)::q -> env := EnvType.add x t !env; setback_vars env q
@@ -76,12 +84,6 @@ let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : 
   in unif e_t1 e_t2
 ;;
 
-let rec parent_t env x = match getvartype env x with
-  | Free a when a = x -> Free x
-  | Free a -> parent_t env a
-  | x -> x
-;;
-
 let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let (node_id, e) = ee in (* Le node_id est important ici pour râler concernant
     les types qui matchent pas *)
@@ -93,9 +95,17 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   | Vide -> List_f (Free "'a"), env
   | Fun(patt, expr) ->
   let env = ref env in
+  (* On sauvegarde les variables qui vont être cachées par l'argument de la fonction *)
   let svars = save_vars patt env in
+
+  (* On détermine le type de l'expression et on essaie d'inférer le type des vars qui la composent *)
   let (expr_t, envir) = infer expr !env type_list in
+
+  (* Une fois qu'on a une idée des types variables du corps, grâce à celui-ci, on peut décider,
+  au moins en partie du type du pattern en argument *)
   let (patt_t, envir) = infer patt envir type_list in
+
+  (* On restaure les variables qu'on avait caché le temps de traiter le corps de la fonction *)
   let env = ref envir in setback_vars env svars;
       (Fun_f(patt_t, expr_t), !env)
   | Add(e1, e2)
@@ -104,18 +114,31 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   | Div(e1, e2) ->
   (* traitement de e1 *)
     let (e1_t, envir) = infer e1 env type_list in
+    (* Une fois que l'on a une idée du type de e1, on essaie de le faire correspondre à un entier*)
     let env = ref envir in let e1_t = t_unify e1_t Int_f env type_list in
   (* traitement de e2, ayant déjà les connaissances issues de e1 *)
     let (e2_t, envir) = infer e2 !env type_list in
+    (* Une fois que l'on a une idée du type de e2, on essaie de le faire correspondre à un entier*)
     let env = ref envir in let e2_t = t_unify e2_t Int_f env type_list in
-          (Int_f, !env)
+          (Int_f, !env) (* C'est une addition, ça renvoie un entier *)
 
   |App(f, e) -> begin match infer f env type_list with
+  (* On essaie de trouver le type de f, ce serait cool que ce soit une fonction vu qu'on l'applique *)
                 |Fun_f(patt_t, expr_t), envir ->
+                (* Si c'est une fonction bah on essaie de voir si le type de l'argument de la fonction et
+                le type du truc sur lequel on applique peuvent correspondre*)
+
+                (* D'abord on infère le type du truc sur lequel on veut appliquer*)
                   let (e_t, envir) = infer e env type_list in
                   let env = ref envir in
+                  (* On essaie de matcher les 2*)
                   let _ = t_unify e_t patt_t env type_list in
-                  (expr_t , !env)
+                  (expr_t , !env) (* On renvoie le type de retour de la fonctions*)
+
+                  (* Il faudrait traiter le cas où l'on ne connait pas encore f, donc on doit inférer
+                  que f est du type T -> ? où T est le type du truc sur lequel on l'applique *)
+
+                  (* Si on connait pas on explose*)
                 |x, _-> raise (NotFunction (string_of_ftype type_list x))
                 end
 
