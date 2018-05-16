@@ -76,6 +76,12 @@ let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : 
   in unif e_t1 e_t2
 ;;
 
+let rec parent_t env x = match getvartype env x with
+  | Free a when a = x -> Free x
+  | Free a -> parent_t env a
+  | x -> x
+;;
+
 let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let (node_id, e) = ee in (* Le node_id est important ici pour râler concernant
     les types qui matchent pas *)
@@ -83,7 +89,7 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
     try
   match e with
   | Const x -> Int_f, env
-  | Identifier (x,_) -> let env = ref env in (getvartype env x, !env)
+  | Identifier (x,_) -> let env = ref env in parent_t env x, !env
   | Vide -> List_f (Free "'a"), env
   | Fun(patt, expr) ->
   let env = ref env in
@@ -169,11 +175,6 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
       let ctype2, envir = typelist envir type_list l in
       let env = ref envir in let ctype = t_unify (Cart_f ctype2) (Cart_f ctype1) env type_list in
           ctype, !env
-
-
-
-
-
 
   with x -> error_display node_id x
   ;;
