@@ -6,7 +6,7 @@
 \usepackage[french]{babel}
 
 
-\title{Rapport projet 2}
+\title{L'épopée projet 2}
 \author{Maxime Darrin  \and Edwige Cyffers }
 \date{}
 
@@ -15,32 +15,72 @@
 
 \maketitle
 
-\section{Présentation}
+\section{Les origines du mal}
 
-	Au commencement était un petit tableur tout innocent. Un souvenir ému du projet d'asr1, et la conviction que l'on pouvait reproduire un aussi belle expérience. Depuis, bien sûr, les épreuves se sont enchaînées, les difficultés ont parfois été un peu plus ardues que prévues, mais nous vous rendons tout de même un rendu avancé qui fonctionne correctement, malgré une catégorisation initiale en intermédiaires.
+	Au commencement était un Tetris.
 	
-	Par rapport aux exigences du rendu avancé, nous avons traité les couples comme étant des n-uplets dans toutes les parties du projet. Fouine comporte également le matching, les constructeurs (sous réserve de toujours mettre des parenthèses) et les listes. enfin, on peut noter une tentative d'inférence de type.
-
-
-	Nous exposons à la partie~\ref{s:orga} comment notre programme est structuré.
-
-
-\section{Organisation du code}
-\label{s:orga}
-
-Le code est structuré de la manière suivante~:
-\begin{itemize}
-\item l'ensemble du code est dans scr, nous n'avons pas séparés les différentes parties du projet.
-\item les tests sont par contre séparés en différents dossiers selon leurs buts, et possèdent des scripts associés. \cite{Landin:1966:NPL:365230.365257}
-
-\end{itemize}
-
-\section{Critique des performances}
-
-	Je te laisse faire ton TIPE.
+	\paragraph{}
+	Un peu buggé, certes. Mais issu d'une belle expérience. Oui, on pouvait partir de rien, avancer petit à petit, et finir par transformer quelques litres de thé en un Tétris avec son et couleur. Avec cette première expérience est née une certitude : ensemble, nous pouvions aller bien plus loin que chacun de notre côté. Bref,nous formions un vrai binôme.
 	
-\section{Conclusion}
-	Je te laisse ce privilège aussi.
+	Parce que c'était lui, parce que c'était moi.
+	
+	
+	Alors nous avons récidivé. Nous nous sommes remis à l'ouvrage. Emportés par notre élan, nous avons fait plus que ce que nous devions faire. Catégorisé en intermédiaire (parce que nous avions fait du CamlLight en prépa, et rein de plus pour Edwige), nous avons pourtant fait tout ce qui était demandé aux avancés.
+	
+	
+	\paragraph{}
+	Dès lors, le mal était fait, l'engrenage c'était enclenché, nous allions continuer ce rythme effréné jusqu'à la fin de projet 2
+	
+	De toute façon, il ne faut pas faire de projet si on veut avoir des samedis.
+	
+	%~\ref{s:orga}
+
+\section{La lutte}
+
+	
+%\label{s:orga}
+	L'interpréteur s'est peu à peu construit. Malgré un léger désaccord initial sur l'implémentation des fonctions, nous avons sorti du néant un code, parfois lourd, parfois maladroit, mais qui faisait ce qu'on lui demandait.
+	
+	Heureusement, de valeureux relecteurs \footnote{Pardois appelés correcteurs, et plus exactement Henning Basold,
+	Daniel Hirschkoff et 
+	Bertrand Simon} veillaient au grain.
+
+	\subsection{Quelques motifs récurrents}
+	
+		Ce combat a donc été marqué par un certain nombre de techniques de travail plus ou moins évolué
+		
+		\begin{itemize}
+			\item La méthode de la lecture de parseur.out
+			\item La méthode de la dichotomie pour trouver l'erreur en temps  du problème à coup de commentaire bien choisis
+			\item La méthode exponentielle : lorsqu'on est convaincu que les résultat est proche, il suffit de faire un parcours exhaustif de tout les possibilités
+			\item La méthode de la réécriture complète : simple et définitif
+			\item La méthode de finalement c'est juste un bonus, parfois appelé méthode du renoncement par manque de temps
+			\item La méthode de "il semblerait que ça marche" : hélas, n'arrive pas souvent.
+		\end{itemize}
+	
+	\subsection{Commits en tout genre}
+	
+		Ces méthodes de travail ont pu transparaître dans le noms de certains commits, dont nous avons donc gardé un petit florilège.
+		
+		\begin{tabular}{l|l|r}
+			Date & Auteur & Nom\\
+			01/01/2018 & Maxime & Truc\\
+		\end{tabular}
+
+
+	\section{inutile}
+	Parce que c'est demandé, nous le mettons discrètement \cite{Landin:1966:NPL:365230.365257}. Parce que ce n'est pas demandé, mais que ça semble plus que nécessaire : 
+	
+	La fouine (Martes foina) est une espèce de mammifères carnivores d'Europe et d'Asie, au pelage gris-brun, courte sur patte et de mœurs nocturnes. C'est une martre (ou marte) faisant partie de la famille des Mustélidés, au même titre que la belette, le blaireau, la loutre, le putois ou le furet, petits mammifères carnivores se caractérisant souvent par leur odeur forte.\cite{wiki:Fouine}
+
+
+
+\section{Projet intégré, à nous deux maintenant}
+	
+	Elle ne savait pas ce qu'était un parseur, il ne savait pas utilisé de fonctionnelle. Et pourtant, avec un peu de chance, beaucoup de travail, de temps et de détermination, nous avons fait quelque chose dont nous sommes fiers.
+	
+	Et un projet de plus ensemble. Nous attendons le prochain de pied ferme.
+
 
 \bibliographystyle{plain}
 \bibliography{biblio}

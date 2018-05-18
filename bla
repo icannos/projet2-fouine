@@ -1,0 +1,45 @@
+.
+├── rapport
+│   ├── biblio.bib
+│   ├── presentation.pdf
+│   ├── rapport.pdf
+│   └── README.md
+├── README.md
+├── src
+│   ├── affichage.ml
+│   ├── arguments.ml
+│   ├── composantmachine.ml
+│   ├── constructeur.ml
+│   ├── display.ml
+│   ├── env.ml
+│   ├── errmgr.ml
+│   ├── eval.ml
+│   ├── expr.ml
+│   ├── lexer.mll
+│   ├── main.ml
+│   ├── main.native
+│   ├── Makefile
+│   ├── memfonc.ml
+│   ├── memmachine.ml
+│   ├── memory.ml
+│   ├── parser.mly
+│   ├── safe.ml
+│   ├── showmachine.ml
+│   ├── tradcont.ml
+│   ├── tradimp.ml
+│   ├── tradmachine.ml
+│   └── typechecking.ml
+├── tests
+│   ├── machine
+│   ├── manual
+│   │   └── README.txt
+│   ├── simples
+│   ├── test_simples.sh
+│   ├── test_trans_er.sh
+│   ├── test_trans_excep.sh
+│   ├── test_trans_imp.sh
+│   ├── test_trans_re.sh
+│   ├── trans_excep
+│   ├── trans_imp
+│   └── typechecking
+
