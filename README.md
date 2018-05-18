@@ -13,6 +13,8 @@
 > "Cet intérêt, nous l'appelons passion losrque, refoulant tou autre intérêt ou but, l'individualité entière se projette sur un objectif avec toutes les fibres de son vouloir intérieur et concentre dans ce but tout ses forces et tous ses besoins. Rien de grand ne s'est accompli sans passion." -- __Hegel__
 
 
+Le readme global est dans le dossier rapport.
+
 ## Remarques -- rendu 4
 
 Nous avons implémenté une machine à pile qui gère les parties de fouine demandées : fonction récursives, aspects impératifs et exceptions et les nuplets. En bonus, nous avons choisi de faire de l'inférence de types.

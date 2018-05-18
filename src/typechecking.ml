@@ -5,6 +5,15 @@ open Display
 
 let free_type_counter = ref (-1);;
 
+(*Renvoie la lettre associée à un entier entre 0 et 25*)
+let intToLetter c =String.make 1 (char_of_int (c + 97));;
+
+(*Renvoie le polymorphisme voulu pour un entier donne ie 0 renvoie a' *)
+let int_to_letters n = let num = n/26 in
+                       if num = 0 then  ((intToLetter n) ^ "'")
+                       else ((intToLetter (n mod 26)) ^ (string_of_int num) ^ "'");;
+  
+
 let new_free_type () =
 free_type_counter:= 1+ !free_type_counter;
 ("'" ^ (string_of_int !free_type_counter))
