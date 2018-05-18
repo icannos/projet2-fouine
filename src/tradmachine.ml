@@ -79,8 +79,8 @@ let rec val_env env x = match env with
 
 
 let rec exec_code c env pile =  match (c, env, pile) with
-  | ([], _, (I x)::q) -> print_string "Haut de la pile en fin de calcul : "; print_int x; print_newline ()
-  | ([], _, (Uplet a)::q) ->print_string "Haut de la pile en fin de calcul : ";affiche_slot (Uplet a)
+  | ([], _, (I x)::q) -> (*print_string "Haut de la pile en fin de calcul : ";*) print_int x; print_newline ()
+  | ([], _, (Uplet a)::q) ->(*print_string "Haut de la pile en fin de calcul : ";*)affiche_slot (Uplet a)
   | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
 (*Les exceptions*)
       (*Je les mets au début, car il faut que l'exception soit détectée en priorité*)
@@ -101,7 +101,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
   (*hop, on ignore juste ce qu'il se passe*)
   | (_::suitec, env, (Ignore)::q) -> exec_code suitec env pile
 
-  | (Print::suitec, _, (I a)::q) -> print_string "j'affiche ";
+  | (Print::suitec, _, (I a)::q) -> (*print_string "j'affiche ";*)
      print_int a; print_newline () ; exec_code suitec env pile
   | (Add::suitec,_, (I a)::(I b)::q)  ->
      exec_code suitec env ((I (a+b))::q)

@@ -66,7 +66,7 @@ let interpreter () =
 
     if !stackcode then (affiche_code (compile ast));
     if !machine then (execution (compile ast));
-  let _ = if(!outcode = false && !displaytype == false) then
+  let _ = if(!outcode = false && !displaytype == false && !machine == false && !stackcode == false) then
   eval ast (Environnement.empty ) else Int 0 in
 
   if(!mem_mode) then (print_env !toplevel_envir) else ();
