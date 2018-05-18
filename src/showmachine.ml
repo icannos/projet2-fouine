@@ -75,7 +75,8 @@ let rec joli_code n l s =
   | Endexcep::q -> joli_code (n-1) q (s ^ (tab (n-1)) ^ "Endexcep\n")
   | Couple(liste)::q -> joli_code n q (s ^ (tab n) ^"Couple (\n" ^ (joli_couple (n+1) liste "") ^ ")\n")
   | Acoupler(liste)::q -> joli_code n q (s ^ "Couple (\n" ^ (joli_couple (n+1) liste "") ^ ")\n")
-  |_ -> "Not yet implemented"
+  | Ajoutcouple::q -> joli_code n q (s ^(tab n) ^ "Ajoutcouple\n")
+(*|_ -> "Not yet implemented"*)
 and joli_couple n liste s = match liste with
   | [] -> s
   | [t] ->joli_couple n [] (s ^ (joli_code n t ""))

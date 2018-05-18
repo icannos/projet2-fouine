@@ -176,7 +176,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | ((Acoupler([]))::suitec, _, (Amatcher [])::q) -> exec_code suitec env q
   | ((Acoupler (([Access nom])::suitenom))::suitec, _, (Amatcher (valeur::suiteval))::q) -> exec_code ((Acoupler suitenom)::suitec) ((nom,valeur)::env) ((Amatcher suiteval)::q)
 
-  | _ -> ( print_string "Code:"; print_newline();affiche_code c ; print_newline();
+  | _ -> ( print_string "Something goes wrong !\n"; print_string "Code:"; print_newline();affiche_code c ; print_newline();
     print_string "Environnement:"; print_newline();affiche_env env; print_newline(); print_newline();
            print_string "Pile:";print_newline(); affiche_pile pile;
            print_newline(); raise Notmatched)
