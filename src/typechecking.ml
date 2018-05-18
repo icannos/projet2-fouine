@@ -237,6 +237,8 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   |t, _ -> (raise (TypesDoNotMatch(string_of_ftype type_list (List_f e1_t), string_of_ftype type_list t)))
                   end
 
+  | _ -> failwith "Unknown"
+
   | _ -> failwith "You should never fall in that case. In Typechecking.infer"
 
 

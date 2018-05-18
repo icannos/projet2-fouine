@@ -72,10 +72,6 @@ open Errmgr
 %left DIV
 %left PRINT
 
-
-
-
-
 %start main
 
 %type <Expr.extexpr> main
@@ -272,8 +268,6 @@ priexpr:
  | BANG priexpr			        	{  (error_handler  (), Acc $2 )    }
  | INT                                          {  (error_handler  (), Const $1) }
  | LPAREN simplexpr RPAREN                      { $2 }
-
-
 ;
 
 boolexpr:

@@ -18,9 +18,8 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
-  | Let(((_, Identifier ("_",_)),e1),e2)->(compile e1)@(compile e2)
   | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
-  | Let(((_, Cart(l)), e1),e2)-> 
+  | Let(((_, Cart(l)), e1),e2)->
   (compile e1)@[Acoupler (List.map compile l)]@(compile e2)
   | Identifier (x, _) -> [Access x]
   | Fun((_, Identifier (nom,_)) , expr) ->  [Clos(nom, ((compile expr)@[Ret]))]
@@ -130,8 +129,10 @@ let rec exec_code c env pile =  match (c, env, pile) with
   | ((C k)::suitec,_,_)  -> exec_code suitec env ((I k)::pile)
   | ((Access x)::suitec,_,_) -> let v = val_env env x in
                             exec_code suitec env (v::pile)
+  | ((Let x)::suitec,_,v::q) when x = "_" ->
+                         exec_code suitec env q
   | ((Let x)::suitec,_,v::q) ->
-                         exec_code suitec  ((x,v)::env)  q
+                          exec_code suitec  ((x,v)::env)  q
   | (Endlet::suitec, t::q,_) ->
                         exec_code suitec q  pile
   | (Ret::suitec,_,  v::Eps::(Lcode c1)::(Lenv e1)::q) ->
