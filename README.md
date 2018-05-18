@@ -54,9 +54,12 @@ Comme d'habitude, nous insistons sur le fait que nous travaillons généralement
 
 Fait par Maxime
 - L'inférence de types
+- Débuggage des traductions
 
 Fait par Edwige
 - La machine
+- Lecture du sujet
+- Readme
 
 Fait par Alain
 - Thérapie de couple

@@ -1,13 +1,23 @@
 open Composantmachine;;
 
 
-(* hotfix *)
-let rec tab n = if n < 0 then "" else "  " ^ tab (n-1)
+(*Le cas <0 est malheureusement présent dans des cas vicieux de n uplets qui déclenchent des endlet peu contrôlés*)
+let rec tab n = if n <= 0 then "" else "  " ^ tab (n-1)
 
 let rec join sep liste = match liste with
   | [] -> ""
   | [a] -> a
   | a::q -> a ^ sep ^ join sep q;;
+
+let affiche_uplet a= print_string "Uplet (";
+ let rec aux s liste = match liste with
+   |[] -> print_string (s ^ ")\n")
+   |[I a] -> aux (s ^(string_of_int a)) []
+   |[x] -> aux (s ^ "NAN") []
+   |(I a)::q -> aux (s ^(string_of_int a)^",") q
+   | _::q -> aux (s ^ "NAN , ") q
+in aux "" a;;
+                                                     
 
 let rec affiche_slot slot = match slot with
   |I a -> print_string "affiche_slot "; print_int a;  print_newline ()
@@ -20,7 +30,7 @@ let rec affiche_slot slot = match slot with
   | Reference a -> print_string "Reference\n"
   | Exception -> print_string "Exception\n"
   | Ignore -> print_string "Ignore\n"
-  | Uplet a -> print_string "Uplet\n"
+  | Uplet a -> affiche_uplet a
   | Valcouple a -> print_string "Valcouple\n"
   | Amatcher a -> print_string "Amatcher\n"
 
@@ -63,13 +73,13 @@ let rec joli_code n l s =
   | Beginwith::q -> joli_code (n+1) q (s ^ (tab n) ^ "Beginwith\n")
   | Endwith::q -> joli_code n q (s ^ (tab (n-1)) ^ "Endwith\n")
   | Endexcep::q -> joli_code (n-1) q (s ^ (tab (n-1)) ^ "Endexcep\n")
-  | Couple(liste)::q -> joli_code n q (s ^ "Couple (\n" ^ (joli_couple n liste "") ^ ")\n")
-  | Acoupler(liste)::q -> joli_code n q (s ^ "Couple (\n" ^ (joli_couple n liste "") ^ ")\n")
+  | Couple(liste)::q -> joli_code n q (s ^ (tab n) ^"Couple (\n" ^ (joli_couple (n+1) liste "") ^ ")\n")
+  | Acoupler(liste)::q -> joli_code n q (s ^ "Couple (\n" ^ (joli_couple (n+1) liste "") ^ ")\n")
   |_ -> "Not yet implemented"
 and joli_couple n liste s = match liste with
   | [] -> s
-  | [t] ->joli_couple n [] (s ^ (joli_code 0 t ""))
-  | t::q -> joli_couple n q (s ^ (joli_code 0 t "") ^ ",")
+  | [t] ->joli_couple n [] (s ^ (joli_code n t ""))
+  | t::q -> joli_couple n q (s ^ (joli_code n t "") ^ ",")
              
                                            
   ;;
