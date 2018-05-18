@@ -1,3 +1,4 @@
+(** Transformations de programme: élimination de l'impératif*)
 open Affichage;;
 open Expr;;
 open Env;;
@@ -8,23 +9,26 @@ open Constructeur;;
 let  nbv =ref 0;;
 let  nbs =ref 0;;
 
-(*fonction qui renvoie un sn où n est un numéro par encore utilisé*)
+(**fonction qui renvoie un sn où n est un numéro par encore utilisé, où sn
+est une variable correspondant à l'environnement*)
 let news () =
   nbs := !nbs + 1;
  (0,Identifier ("s" ^ (string_of_int !nbs), (0,Typed((0,TypeId "_")))));;
 
+(** Crée une nouvelle variable correspondant à une valeur*)
 let newv () =
   nbv := !nbv + 1;
  (0,Identifier ("v" ^ (string_of_int !nbv), (0,Typed((0,TypeId "_")))));;
 
 (*des méta-constructeurs qui évitent un code de traduction illisible sont dans constructeurs*)
 
+(** Effectue la transformation de programme éliminant les aspects impératifs *)
 let rec trad_expr ee =
   let (node_id, e) = ee in
 
   try match e with
       | Const x -> let s0 = news () in mkFun s0 (mkPair ((mkConst x), s0))
-      | Identifier (x, _) -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0)) 
+      | Identifier (x, _) -> let s0 = news () in mkFun s0 (mkPair ((mkIdentifier x), s0))
       | Cart(lexpr) -> let s0 = news() in
             let rec tradlist bs acc = begin function
                   | [] -> let l = List.rev acc in mkPair (mkCart(l), bs)

@@ -1,3 +1,4 @@
+(** Opérations sécurisées pour éviter les explosions de fouine*)
 open Env;;
 open Affichage;;
 

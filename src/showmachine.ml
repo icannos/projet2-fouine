@@ -1,14 +1,17 @@
+(** Gère l'affichage des éléments de la machine à pile*)
 open Composantmachine;;
 
 
 (*Le cas <0 est malheureusement présent dans des cas vicieux de n uplets qui déclenchent des endlet peu contrôlés*)
 let rec tab n = if n <= 0 then "" else "  " ^ tab (n-1)
 
+(** Semblable à la fonction python: met bout à bout des éléments d'une liste en les séparant par un séparateur*)
 let rec join sep liste = match liste with
   | [] -> ""
   | [a] -> a
   | a::q -> a ^ sep ^ join sep q;;
 
+(** Affiche un n-uplet avec les commandes de la machine à pile*)
 let affiche_uplet a= print_string "Uplet (";
  let rec aux s liste = match liste with
    |[] -> print_string (s ^ ")\n")
@@ -17,8 +20,8 @@ let affiche_uplet a= print_string "Uplet (";
    |(I a)::q -> aux (s ^(string_of_int a)^",") q
    | _::q -> aux (s ^ "NAN , ") q
 in aux "" a;;
-                                                     
 
+(** Affiche une case mémoire de la machine à pile*)
 let rec affiche_slot slot = match slot with
   |I a -> print_string "affiche_slot "; print_int a;  print_newline ()
   |B a -> print_string (string_of_bool a); print_newline ()
@@ -34,15 +37,17 @@ let rec affiche_slot slot = match slot with
   | Valcouple a -> print_string "Valcouple\n"
   | Amatcher a -> print_string "Amatcher\n"
 
-
+(** Affiche l'environnement complet *)
 let rec affiche_env env = match env with
   | [] -> ()
   | (nom, _)::q -> print_string nom; print_newline() ; affiche_env q
+
 
 let rec affiche_pile pile = match pile with
   | [] -> ()
   | memslot::q -> affiche_slot memslot; affiche_pile q
 
+(** Fournit un code lisible par un humain*)
 let rec joli_code n l s =
   match l with
   | [] -> s
@@ -81,9 +86,9 @@ and joli_couple n liste s = match liste with
   | [] -> s
   | [t] ->joli_couple n [] (s ^ (joli_code n t ""))
   | t::q -> joli_couple n q (s ^ (joli_code n t "") ^ ",")
-             
-                                           
+
+
   ;;
 
-
+(** Affiche le code lisible associé à l'expression *)
 let affiche_code e = print_string (joli_code 0 e ""); print_newline ();;

@@ -1,3 +1,6 @@
+(** L'interpreter fouine et sa fonction eval*)
+
+
 open Affichage;;
 open Expr;;
 open Env;;
@@ -8,6 +11,8 @@ open Errmgr;;
 
 let toplevel_envir = ref (Environnement.empty);;
 
+(** Consruit l'environnement nécessaire à une fonction en n'ajoutant que les variables du corps de la fonction qui ne sont pas
+des arguments à la cloture*)
 let buildEnv pattern env expr =
   let nenv = ref (Environnement.empty) in
   let addVar key  =
@@ -22,6 +27,7 @@ let buildEnv pattern env expr =
 
 ;;
 
+(** Tente d'unifier une expression et une valeur dans le cadre d'un pattern matching*)
 let unification expr v env = (*fonction de type expr-> value-> env -> env, ajoute dans l'environnement l'unification de expr avec v si c'est possible, si l'unification est impossible on lève l'exception UnificationFails, à remplir un jour*)
   let envir = ref env in
   let rec unif (expr,v) = match expr, v with
@@ -41,7 +47,7 @@ let unification expr v env = (*fonction de type expr-> value-> env -> env, ajout
   unif (expr,v); !envir
 ;;
 
-(*fonction value -> liste de Patcase -> env -> (expr, env) renvoie l'expression qui correspond au premier matching qui convient, et l'environnement associé. En cas d'aucun matching possible, on lève à nouveau l'expression UnificationFails *)
+(** renvoie l'expression qui correspond au premier matching qui convient, et l'environnement associé. En cas d'aucun matching possible, on lève à nouveau l'expression UnificationFails *)
 let rec trymatch value caselist env = match caselist with
   |[] -> raise (UnificationFails("", ""))
   |[(_, PattCase(patt, x))] -> (x, unification patt value env)
@@ -50,9 +56,9 @@ let rec trymatch value caselist env = match caselist with
 ;;
 
 
-(* sémantique opérationnelle à grands pas *)
+(** sémantique opérationnelle à grands pas *)
 
-(*
+(**
 Pour gérer les exceptions, il y a les cas try...with et raise à traier mais pas
 seulement. Pour chaque autre cas si on effectue 2 eval typiquement:
 
@@ -72,7 +78,6 @@ exception.
 
 *)
 
-(* eval -> expr -> env -> value*)
 let rec eval ee env  =
   debug ee env;
   let (node_id, e) = ee in

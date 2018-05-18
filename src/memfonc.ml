@@ -1,6 +1,6 @@
 
 
-  (*Réécriture en fonctionnel pur : la mémoire est désormais un couple une fonction et le nombre d'image (ie le premier entier qui n'a pas encore image*)
+  (**Réécriture en fonctionnel pur : la mémoire est désormais un couple une fonction et le nombre d'image (ie le premier entier qui n'a pas encore image*)
 let allocate valeur memoire =
   let (f, n) = memoire in
   let fbis x = if (x = n) then valeur

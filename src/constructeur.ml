@@ -1,3 +1,5 @@
+(** Définit l'ensemble des méta constructeurs utiles pour écrire proprement les transformations de programme*)
+
 open Expr;;
 
 

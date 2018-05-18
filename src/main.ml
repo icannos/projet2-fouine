@@ -1,3 +1,5 @@
+(** Intrepeter fouine*)
+
 open Tradimp;;
 open Tradcont;;
 open Arguments;;
@@ -11,12 +13,14 @@ open Tradmachine;;
 open Showmachine;;
 open Typechecking
 
-
+(** Parse une chaine de caractère à l'aide d'ocamlyacc *)
 let parse_string s =
   let lexbuf = Lexing.from_string s in
   Parser.main Lexer.token lexbuf
 ;;
 
+(** Initialise l'environnement au début de l'exécution de l'interpreter,
+elle cela pourrait servir à l'implémentation d'un interpreter intéractif *)
 let initialize_envir () =
   match (!tradimp || !impexcep || !excepimp) with
   | true ->
@@ -27,7 +31,7 @@ let initialize_envir () =
 
 ;;
 
-(* Fonction principale  *)
+(** Fonction principale: c'est le main de notre programme*)
 let interpreter () =
 
   (* On parse les arguments passés en CLI *)

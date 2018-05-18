@@ -1,3 +1,5 @@
+(** Transformations de programmes: élimine les exceptions*)
+
 open Affichage;;
 open Expr;;
 open Env;;
@@ -10,20 +12,21 @@ let  nbk =ref 0;;
 let  nbkE =ref 0;;
 let  nbva = ref 0;;
 
-
+(** Crée une nouvelle variable de continuation*)
 let newk () =
   nbk := !nbk + 1;
  (0,Identifier ("k" ^ (string_of_int !nbk), (0,Typed((0,TypeId "_")))));;
 
+(** Crée une nouvelle variable de continuation exceptionnelle*)
 let newkE () =
   nbkE := !nbkE + 1;
  (0,Identifier ("kE" ^ (string_of_int !nbkE),(0,Typed((0,TypeId "_")))));;
-
+(** Crée une nouvelle variable correspondant à une valeur*)
 let newva () =
   nbva := !nbva + 1;
  (0,Identifier ("va" ^ (string_of_int !nbva), (0,Typed((0,TypeId "_")))));;
 
-
+(** Effectue la traduction en continuation en éliminant les exceptions*)
   let rec cont_expr ee =
   let (node_id, e) = ee in
 

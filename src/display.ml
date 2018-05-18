@@ -1,4 +1,4 @@
-
+(** Quelques fonctions utilitaires utiles tout au long du projet, sans être spécifiques à fouine*)
 open Arguments
 
 (* Some shortcuts *)

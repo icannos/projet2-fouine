@@ -1,3 +1,5 @@
+(** Gère la mémoire de la machine à pile*)
+
 open Composantmachine;;
 
 
@@ -13,7 +15,6 @@ module IntHash =
         end
 ;;
 
-(*Je ne vois que cette méthode, je te laisse faire mieux*)
 module Mem  = Hashtbl.Make(IntHash);;
 
 type memoire_t = memslot Mem.t;;
@@ -22,12 +23,12 @@ let memoire = (Mem.create 100);;
 Mem.add memoire 0 (I 0);;
 Mem.remove memoire 0;;
 
- (*fonction qui remplit une adresse*)
+ (** fonction qui remplit une adresse*)
 let add_memory addr v  =  Mem.replace memoire addr v;;
 
 
- (*fonction qui lit une référence*)
+ (** fonction qui lit une référence*)
 let read_address addr =  Mem.find memoire addr;;
 
-
+(** Crée une nouvelle adresse mémoire*)
 let new_address ()  = Mem.length memoire;;

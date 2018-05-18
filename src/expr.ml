@@ -1,9 +1,10 @@
-(* un type pour toutes les expressions qu'on manipule *)
+(** un type pour toutes les expressions qu'on manipule *)
 
 
 type name = string;;
 module VarsSet = Set.Make(String);;
 
+(** Type des commandes fouines *)
 type expr =
 
   (* Arith Constr *)
@@ -62,13 +63,14 @@ type expr =
   | Testgt of extexpr * extexpr
   | Testlet of extexpr * extexpr
   | Testget of extexpr * extexpr
-
+(** Type de notre AST, il est étiqueté par des entiers pour pouvoir récupérer la position du noeud en cas d'erreur *)
  and extexpr = int * expr
  and bextexpr = int * bexpr
 ;;
 
 
-
+(** Renvoie l'ensemble des variables présentes dans une expression servant de Pattern
+cela permet de construire l'ensemble des variables libres dans le corps d'une fonction*)
 let rec getIdentifiersInConstr expr =
   (*pattern  -> VarsSet name qui correspond à l'ensemble des variables utilisées dans le pattern*)
   let (_, e) = expr in
@@ -83,8 +85,7 @@ let rec getIdentifiersInConstr expr =
   |_  -> raise Errmgr.FindingIdentifierFailed
 ;;
 
-(* Renvoie les variables libres d'une expression *)
-(*type de la fonction : set  -> set  -> expr -> set, donc il faut modifier les tests bool�ens, dis moi si cette technique te semble correcte*)
+(** Renvoie les variables libres d'une expression  donc il faut modifier les tests bool�ens, dis moi si cette technique te semble correcte*)
 let rec freevars bindedvars fvars ee = let (node_id, e) = ee in
   match e with
   |Aff(e1, e2)  -> VarsSet.union (freevars bindedvars fvars e1) (freevars bindedvars fvars e2)
@@ -140,7 +141,7 @@ and freevarsb bindedvars fvars ee =
 
 ;;
 
-
+(** Détecte les portions de fouine pure, mais elle n'est pas utilisée car nous sommes en avancé en fait*)
 let rec inquisition ast =
   let (node_id, e) = ast in
   match e with

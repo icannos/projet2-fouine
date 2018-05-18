@@ -1,4 +1,4 @@
-(*fonctions de gestion de la mémoire*)
+(** fonctions de gestion de la mémoire pour les aspects impératifs*)
 open Env;;
 (*création de notre mémoire : HashTable indéxée par des int*)
 
@@ -17,20 +17,22 @@ module IntHash =
 
 module Mem  = Hashtbl.Make(IntHash);;
 
-type memoire_t = value Mem.t;; (*définitions analogues aux environnements*)
+(**définitions analogues aux environnements*)
+type memoire_t = value Mem.t;;
 
-let memoire = (Mem.create 100);;(*initialisation de la mémoire*)
+(*initialisation de la mémoire*)
+let memoire = (Mem.create 100);;
 
 (*A priori temporaire c'est juste pour permettre au compilateur d'inférer les types, je ne sais pas faire autrement: il faudra demander. *)
 Mem.add memoire 0 (Int 0);;
 Mem.remove memoire 0;;
 
- (*fonction qui remplit une adresse*)
+ (**fonction qui remplit une adresse*)
 let add_memory addr v  =  Mem.replace memoire addr v;;
 
 
- (*fonction qui lit une référence*)
+ (**fonction qui lit une référence*)
 let read_address addr =  Mem.find memoire addr;;
 
-
+(**crée une nouvelle adresse*)
 let new_address ()  = Mem.length memoire;;

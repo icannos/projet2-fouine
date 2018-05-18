@@ -1,3 +1,5 @@
+(** Ce module gère l'affichage des composantes du noyau de fouine *)
+
 open Display;;
 open Env;;
 open Expr;;
@@ -11,7 +13,7 @@ let string_of_identifier = function
 
 
 
-(*string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
+(** string_of_expr prend en entrée une expression et retourne  un code executable en Caml *)
 let rec string_of_expr n ee =
   let (node_id, e) = ee in
   match e with
@@ -61,7 +63,7 @@ and string_of_expr_bin n op a b =
 
 
 
-(* fonction d'affichage des expressions *)
+(** Convertit un arbre de syntaxe en une chaîne de caractère de code caml*)
 let rec istring_of_expr ee =
 let (node_id, e) = ee in
   match e with
@@ -109,6 +111,8 @@ and  istring_aux s a b =
 
 ;;
 
+
+(** Convertit une valeur interne en texte lisible *)
 let rec string_of_value = function
   |Int x -> string_of_int x
   |Unit -> "()"
@@ -125,6 +129,7 @@ let rec string_of_value = function
 
 ;;
 
+(** Affiche une valeur interne*)
 let print_value v = ps (string_of_value v);;
 
 let penv_item identifier v =
@@ -133,7 +138,8 @@ let penv_item identifier v =
 
 let print_env env = ps"{"; Environnement.iter penv_item env; ps "} \n";;
 
-
+(** Cette fonction générique est appelée au début de la fonction d'évaluation,
+elle permet de rendre modulaire l'affichage du débug*)
 let debug e env =
   if !verbosemode then (print_env env);;
 

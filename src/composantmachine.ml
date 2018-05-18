@@ -1,8 +1,10 @@
+(** Ce module définit les composantes nécessaires à l'implémentation de la machine à pile*)
+
 exception Notmatched;;
 
 type name = string;;
 
-
+(** Notre langage de la machine à pile*)
 type instruction =
   | C of int
   | Add
@@ -42,11 +44,12 @@ type instruction =
   | Couple of (instruction list list)
 
 
-  
 
 
+(** Un programme pour la machine à pile est une liste d'instructions*)
 type code = instruction list
 
+(** Représente une case mémoire de notre machine à pile*)
 type memslot = I of int
              | B of bool
              (*Pour les fonctions*)
@@ -66,8 +69,9 @@ type memslot = I of int
              | Uplet of (memslot list)
              | Amatcher of (memslot list)
              | Valcouple of memslot
-             
-and
- environnement = (name * memslot) list
 
+and
+(** L'environnement est un ensemble de cases mémoire*)
+ environnement = (name * memslot) list
+(** La pile est un ensemble de cases mémoire*)
 type pile = memslot list

@@ -1,13 +1,19 @@
+(** Ce module implémente la machine à pile ainsi que le compilateur fouine vers
+stackcode*)
+
 open Expr;;
 open Errmgr;;
 open Affichage
 open Composantmachine;;
 open Showmachine;;
 
+(** Complète la compilation des couples par les endlet nécessaires*)
 let rec endcouple l =match l with
   | [] -> []
   | _::q -> Endlet::(endcouple q)
 ;;
+
+(** Compile le code fouine en stackcode*)
 let rec compile ee =
   (*prend un arbre de fouine pur et renvoie le code associé*)
   let (node_id, e) = ee in
@@ -56,6 +62,7 @@ let rec compile ee =
 
 with x -> error_display node_id x
 
+(** Compile les booléens en stackcode*)
 and compileb ee =
   let node_id, e = ee in
   match e with
@@ -68,15 +75,16 @@ and compileb ee =
   | Testget(e1,e2) -> (compile e1)@(compile e2)@[Ge]
 ;;
 
-
+(** Accède à la valeur associée à la clef x dans l'environnement *)
 let rec val_env env x = match env with
   | [] -> raise Not_found
   | (a,b)::q when a = x -> b
   | _::q -> val_env q x
+  ;;
 
 
 
-
+(** Exécute un code écrit en stackcode avec la machine à pile *)
 let rec exec_code c env pile =  match (c, env, pile) with
   | ([], _, (I x)::q) -> (*print_string "Haut de la pile en fin de calcul : ";*) print_int x; print_newline ()
   | ([], _, (Uplet a)::q) ->(*print_string "Haut de la pile en fin de calcul : ";*) affiche_slot (Uplet a)

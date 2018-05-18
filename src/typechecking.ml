@@ -1,3 +1,6 @@
+(** Module gérant l'inférence de type de notre interpreter *)
+
+
 open Expr
 open Env
 open Errmgr
@@ -5,30 +8,31 @@ open Display
 
 let free_type_counter = ref (-1);;
 
-(*Renvoie la lettre associée à un entier entre 0 et 25*)
+(**Renvoie la lettre associée à un entier entre 0 et 25*)
 let intToLetter c =String.make 1 (char_of_int (c + 97));;
 
-(*Renvoie le polymorphisme voulu pour un entier donne ie 0 renvoie a' *)
+(**Renvoie le polymorphisme voulu pour un entier donne ie 0 renvoie a' *)
 let int_to_letters n = let num = n/26 in
                        if num = 0 then  ((intToLetter n) ^ "'")
                        else ((intToLetter (n mod 26)) ^ (string_of_int num) ^ "'");;
-  
 
+(** Construit un nouveau type polymorphique libre *)
 let new_free_type () =
 free_type_counter:= 1+ !free_type_counter;
 ("'" ^ (string_of_int !free_type_counter))
 ;;
 
+(** Module utilisé pour stocker l'envi des types *)
 module EnvType = Map.Make(String);;
 
 
 type f_type = Int_f
-| List_f of f_type (* On stocke le type d'élément stockés dans la liste *)
-| Fun_f of f_type * f_type (* Une fonction fouine, de type truc donne bidule *)
-| Cart_f of f_type list (* Un produit cart c'est une liste de type*)
-| UserType of string (* Nom du type somme défini par le programmeur *)
-| TypeOf of string (* Pour stocker des trucs par encore typés *)
-| Ref_f of f_type (* Si on est une ref on connait le type du truc pointé*)
+| List_f of f_type (** On stocke le type d'élément stockés dans la liste *)
+| Fun_f of f_type * f_type (** Une fonction fouine, de type truc donne bidule *)
+| Cart_f of f_type list (** Un produit cart c'est une liste de type*)
+| UserType of string (** Nom du type somme défini par le programmeur *)
+| TypeOf of string (** Pour stocker des trucs par encore typés *)
+| Ref_f of f_type (** Si on est une ref on connait le type du truc pointé*)
 | Unit_f
 
 and
@@ -36,7 +40,7 @@ and
 env_type_t = f_type EnvType.t
 ;;
 
-(* Convertit un objet type en une chaîne lisible *)
+(** Convertit un objet type en une chaîne lisible *)
 let rec string_of_ftype type_list = function
 |Int_f -> "int"
 |Fun_f(t1,t2) -> "(" ^ (string_of_ftype type_list t1) ^ " -> " ^ (string_of_ftype type_list t2) ^ ")"
@@ -48,18 +52,21 @@ let rec string_of_ftype type_list = function
 |Unit_f -> "unit"
 ;;
 
+(** Affiche l'environnement complet *)
 let print_envtype type_list k t = ps (k ^ ": " ^ (string_of_ftype type_list t) ^" ");;
 
-(* On stocke les types définis par l'utilisateur *)
+(** On stocke les types définis par l'utilisateur *)
 type type_list_t = f_type EnvType.t;;
 
-(* Utilitaires pour lire les types dans l'environnement*)
+(** Utilitaire pour mettre à jour le type d'une variable, utilisée dans l'union
+de l'union find*)
 let updatevar env x v = env := EnvType.add x v !env;;
+(** Utilitaire pour lire les types dans l'environnement*)
 let getvartype env x = try EnvType.find x !env
         with _ -> env := (EnvType.add x (TypeOf(x)) (!env)); TypeOf x
 ;;
 
-(* Le find de l'union find *)
+(** Le find de l'union find *)
 let rec parent_t env x = match getvartype env x with
   | TypeOf a when a = x -> TypeOf x
   | TypeOf a -> parent_t env a
@@ -68,7 +75,7 @@ let rec parent_t env x = match getvartype env x with
 
 
 
-(* Récupère les types des variables pour les sauvergarder lorsqu'on les écrase*)
+(** Récupère les types des variables pour les sauvergarder lorsqu'on les écrase*)
 let save_vars patt env =
     let ids_saved = ref [] in
 
@@ -78,12 +85,14 @@ let save_vars patt env =
     VarsSet.iter save_and_reset (getIdentifiersInConstr patt); !ids_saved
 
 ;;
-(* On remet les variables sauvegardées*)
+(** Remet les variables sauvegardées*)
 let rec setback_vars env = function
 |[] -> ()
 |(x,t)::q -> env := EnvType.add x t !env; setback_vars env q
 ;;
 
+(** Affecte leur type aux arguments d'une fonction lors d'une application, pour
+déterminer le type de retoure de la fonction *)
 let rec type_arg env = function
 |Int_f -> Int_f
 |Fun_f(t1,t2) -> Fun_f(type_arg env t1, type_arg env t2)
@@ -97,7 +106,7 @@ let rec type_arg env = function
 ;;
 
 
-(* Décide si deux trucs peuvent avoir même type, et si oui renvoie le type
+(** Décide si deux trucs peuvent avoir même type, et si oui renvoie le type
 convenant aux deux trucs, sinon explose*)
 let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : type_list_t) =
   let rec unif e_t1 e_t2 =
@@ -116,7 +125,8 @@ let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : 
   in unif e_t1 e_t2
 ;;
 
-
+(** Fonction principale de l'inférence de type: elle renvoie le type de l'expression
+ainsi que les affectations de type à toutes les variables *)
 let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let (node_id, e) = ee in (* Le node_id est important ici pour râler concernant
     les types qui matchent pas *)
