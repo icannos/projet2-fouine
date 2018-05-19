@@ -80,6 +80,18 @@ let rec parent_t env x = match getvartype env x with
   | x -> x
 ;;
 
+let erase_vars env vars =
+  let l = ref [] in
+    let erase_var k =
+    let ptype = new_free_type () in
+      l := (k, getvartype env k)::(!l);
+      env := (EnvType.add k (TypeOf(ptype)) (!env));
+      env := (EnvType.add ptype (TypeOf(ptype)) (!env))
+    in
+
+    VarsSet.iter erase_var vars; !l
+;;
+
 (** Utilitaire pour mettre à jour le type d'une variable, utilisée dans l'union
 de l'union find*)
 let updatevar env x v = env := EnvType.add x v !env;;
@@ -112,7 +124,7 @@ let rec type_arg env = function
 |TypeOf s when EnvType.mem s !env -> parent_t env s
 |Ref_f t -> Ref_f (type_arg env t)
 |Unit_f -> Unit_f
-|_ -> failwith "Something gone wrong with Typechecking.type_arg"
+|x -> x
 ;;
 
 
@@ -206,14 +218,31 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                 end
 
   |Let((patt, e1), e2) ->
-  let env = ref env in
-  let svars = save_vars patt env in
-  let (e1_t, envir) = infer e1 !env type_list in
+  (* On infère le type du pattern sans supprimer les variables de même nom
+   extérieure car on peut faire let a = a in .. avec a défini avant*)
+  let (e1_t, envir) = infer e1 env type_list in
+  let env = ref envir in
+  (* Efface de l'environnement les variables écrasées par le nouveau binding *)
+  let svars = erase_vars env (getIdentifiersInConstr patt) in
 
   let (patt_t, envir) = infer patt envir type_list in
   let env = ref envir in let _ = t_unify e1_t patt_t env type_list   in
-  setback_vars env svars;
-  infer e2 !env type_list
+
+  let e2_t, envir = infer e2 !env type_list in
+  let env = ref envir in setback_vars env svars; (e2_t, !env)
+
+  | LetRec(((node, Identifier (nom, x)), e1), e2) ->
+    let env = ref env in
+    let svars = erase_vars env (getIdentifiersInConstr (node, Identifier (nom, x))) in
+    let (f_t, envir) = infer (node, Identifier (nom, x)) !env type_list in
+    let env = ref envir in
+    let patt_t = TypeOf (new_free_type ()) and expr_t = TypeOf (new_free_type ()) in
+    let _ = t_unify f_t (Fun_f(patt_t, expr_t)) env type_list in
+    let (e1_t, envir) = infer e1 !env type_list in
+    let env = ref envir in
+    let _ = t_unify f_t e1_t env type_list in
+    let (e2_t, envir) = infer e2 !env type_list in
+    let env = ref envir in setback_vars env svars; (e2_t, !env)
 
   |Ref(e) ->   let (e_t, envir) = infer e env type_list in (Ref_f e_t, envir)
   |Acc(e) -> let (e_t, envir) = infer e env type_list in
