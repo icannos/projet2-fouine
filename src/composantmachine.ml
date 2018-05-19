@@ -27,7 +27,7 @@ type instruction =
   | Ge
   | Print
 
-  (*Les aspects récursifs*)
+  (*Les aspects impératifs*)
   | Ref
   | Aff
   | Bang
@@ -60,6 +60,7 @@ type memslot = I of int
              | Eps
              (*Pour les aspects impératifs*)
              | Reference of int
+             | Presquerien (*Philosophie première, Jankélévitch*)
 
              (*Pour les exceptions*)
              | Exception
