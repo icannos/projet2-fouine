@@ -15,6 +15,10 @@
 
 Le readme global est dans le dossier rapport.
 
+## Utilisation
+
+Exécuter la commande make à la racine du projet aura pour effet de compiler la présentation, le rapport, fouine ainsi que la documentation.
+
 ## Remarques -- rendu 4
 
 Nous avons implémenté une machine à pile qui gère les parties de fouine demandées : fonction récursives, aspects impératifs et exceptions et les nuplets. En bonus, nous avons choisi de faire de l'inférence de types.

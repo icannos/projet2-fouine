@@ -12,9 +12,12 @@
 
 > "Un je ne sais quoi" -- __Jankélévitch__
 
+## Documentation
+
+L'intégralité du projet Fouine est documenté dans le dossier `doc/`. La documentation est générée lors de la compilation du projet et disponible en html et en PDF dans les dossiers correspondants. Toutes les fonctions sont commentées et décrites dans les fichiers sources et donc dans la documentation.
 
 ## Organisation du projet
-
+```
 .
 ├── rapport
 │   ├── biblio.bib
@@ -59,7 +62,7 @@
 │   ├── trans_excep
 │   ├── trans_imp
 │   └── typechecking
-
+```
 ## L'interpréteur fouine
 
 Notre interpréteur est à notre connaissance parfaitement fonctionnel. Il comporte des aspects impératifs reposant sur une mémoire sous forme de table de hashage. Nous gérons les exceptions sous la forme demandée, mais aussi dans un cadre plus général d'un constructeur quelconque.
@@ -73,8 +76,9 @@ Pour gérer les continuations, nous récupérons l'arbre issu du parseur que nou
 ## La gestion des erreurs
 
 Nous avons implémenté un système d'erreurs qui affiche précisément où l'erreur a lieu. Pour cela, nous avons étiqueté notre arbre de parseur par des noeuds, que nous récupérons en cas de problème lors de la fonction eval. Ce système a permis de faire un joli affichage pour notre interpréteur, cependant nous avons du renoncé à conserver des noeuds cohérents lors des transformations de programme.
-Pour la machine, nous avons aussi une gestion élémentaire : en cas de problème au cours de l'exécution, on affiche qu'on a eu un problème, puis on affiche le code restant, les noms des éléments présents dans l'environnement et ce qu'il y a dans la pile. 
+Pour la machine, nous avons aussi une gestion élémentaire : en cas de problème au cours de l'exécution, on affiche qu'on a eu un problème, puis on affiche le code restant, les noms des éléments présents dans l'environnement et ce qu'il y a dans la pile.
 
+L'inférence de type utilise ce mécanisme pour signaler l'emplacement des erreurs de typage.
 
 ## La machine
 
@@ -91,15 +95,25 @@ Ses composants sont définis dans composantmachine. Nous récupérons l'arbre is
 La suite logique, que nous aurions aimé traiter avec plus de temps était de rajouter les indices de Brujin, mais l'extension aux transformations et au couple s'est déjà révélée suffisamment chronophage.
 
 ## L'inférence de type
+Nous gérons l'inférence de type dans le fichier `typechecking.ml`. L'inférence de type correspond à un union find pour déterminer les classes d'équivalences des différentes variables et à un algorithme d'unification qui essaie de déterminer si deux éléments peuvent avoir le même type.
 
+Pour plus d'informations voir le ReadMe du Rendu 4.
 
+## Bonus traités
+
+Nous avons traité un certain nombre des bonus proposés tout au long du projet et nous avons essayé de les maintenir malgré la difficulté croissante. Pour exemple l'inférence de type gère les listes et les n-uplets pas les types sommes. C'était prévu mais le temps nous a fait défaut.
+
+* n-uplets (avec une limitation syntaxique: on impose des parenthèses autours systématiquement)
+* Les type sommes (même limitation)
+* Le pattern Matching (uniquement le match ... with et sans les when)
+* Les listes
+* L'inférence de type
 
 ## Les tests
 
-Nos tests sont regroupés par sous dossier selon la partie de code qu'ils testent. Ils possèdent des scripts associés qui les exécutent automatiquement et les comparent à la sortie fournies par Caml.
+Nos tests sont regroupés par sous dossier selon la partie de code qu'ils testent. Ils possèdent des scripts associés qui les exécutent automatiquement et les comparent à la sortie fournies par Caml ou à la sortie de fouine dans le cas des traductions.
 
+## Ce qu'il resterait à faire
 
-
-
-
-
+Nous avons posé les bases de l'ajout de types utilisateurs et de leur inférence. Le parsing de la commande `type name = ...` a été réalisé mais nous n'avons pas eu le temps de terminer.
+Nous aurions aussi voulu terminer l'implémentation des transformations de programmes pour prendre en compte le pattern maching et les types sommes.
