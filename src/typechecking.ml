@@ -197,7 +197,7 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   |TypeOf a, envir -> let (e_t, envir) = infer e env type_list in
                             let env = ref envir in
                             let return_type = TypeOf (new_free_type ()) in
-                            let commont_type = t_unify (TypeOf a) (Fun_f(e_t, return_type)) env type_list in
+                            let _ = t_unify (TypeOf a) (Fun_f(e_t, return_type)) env type_list in
                             (return_type, !env)
 
 
@@ -271,8 +271,6 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   |TypeOf x, envir -> let env = ref envir in t_unify (List_f e1_t) (TypeOf x) env type_list, !env
                   |t, _ -> (raise (TypesDoNotMatch(string_of_ftype type_list (List_f e1_t), string_of_ftype type_list t)))
                   end
-
-  | _ -> failwith "Unknown"
 
   | _ -> failwith "You should never fall in that case. In Typechecking.infer"
 

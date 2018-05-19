@@ -86,9 +86,9 @@ let rec val_env env x = match env with
 
 (** Exécute un code écrit en stackcode avec la machine à pile *)
 let rec exec_code c env pile =  match (c, env, pile) with
-  | ([], _, (I x)::q) -> (*print_string "Haut de la pile en fin de calcul : ";*) print_int x; print_newline ()
-  | ([], _, (Uplet a)::q) ->(*print_string "Haut de la pile en fin de calcul : ";*) affiche_slot (Uplet a)
-  | ([],[],[]) -> print_string "Programme terminé sur la pile vide\n"
+  | ([], _, (I x)::q) -> () (*print_string "Haut de la pile en fin de calcul : "; print_int x; print_newline () *)
+  | ([], _, (Uplet a)::q) -> () (*print_string "Haut de la pile en fin de calcul : "; affiche_slot (Uplet a) *)
+  | ([],[],[]) -> () (*print_string "Programme terminé sur la pile vide\n"*)
 (*Les exceptions*)
       (*Je les mets au début, car il faut que l'exception soit détectée en priorité*)
   (*Si onretrouve un Raise, la valeur de la pile est celle de l'exception, qu'on remet donc sur la pile dans une exception*)
