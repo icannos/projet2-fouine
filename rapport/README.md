@@ -37,7 +37,6 @@ L'intégralité du projet Fouine est documenté dans le dossier `doc/`. La docum
 │   ├── expr.ml : définition des expressions fouine
 │   ├── lexer.mll
 │   ├── main.ml
-│   ├── main.native
 │   ├── Makefile
 │   ├── memfonc.ml : une mémoire totalement fonctionnelle pour les continuations
 │   ├── memmachine.ml : une mémoire similaire à celle de fouine pour notre machine
@@ -71,7 +70,7 @@ Plus généralement, nous avons traité les couples dans le cas des n-uplets, ma
 
 ## Les traductions
 
-Pour gérer les continuations, nous récupérons l'arbre issu du parseur que nous transformons en un autre arbre grâce à des méta constructeurs. Actuellement, les transformations -R -E et -RE fonctionnent sur tous les attendus. Cependant la traduction -ER résiste car les fonctions de mémoire ne semblent pas être appelées correctement.
+Pour gérer les continuations, nous récupérons l'arbre issu du parseur que nous transformons en un autre arbre grâce à des méta constructeurs. Actuellement, les transformations -R -E et -RE fonctionnent sur tous les attendus. Cependant la traduction -RE résiste car les fonctions de mémoire ne semblent pas être appelées correctement.
 
 ## La gestion des erreurs
 
@@ -107,7 +106,7 @@ Nous avons traité un certain nombre des bonus proposés tout au long du projet 
 * Les type sommes (même limitation)
 * Le pattern Matching (uniquement le match ... with et sans les when)
 * Les listes
-* L'inférence de type
+* L'inférence de type (Avec une gestion simple du polymorphisme)
 
 ## Les tests
 

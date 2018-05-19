@@ -221,18 +221,25 @@ and evalb ee env =
         |_ -> raise (NotFunction (string_of_expr 0 ee1))
       end
 
-  and evalapp e1 e2  env =  match  eval e1 env with
-                    |Exn x -> Exn x
-                    |Fonction((_, Identifier ("_", _)), expr, fenv) ->  eval expr fenv
-                    |Fonction(argument, expr, fenv) ->  eval expr (unification argument (eval e2 env) fenv) (*on remplace le xpar la valeur d'appel*)
-                    |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (unification arg (eval e2 env) recenv)
-                    |Int k -> raise (CannotApply "integer")
-                    |Reference(_) -> raise (CannotApply "a reference") (* On râle si on essaie d'appliquer une référence *)
-                    |Unit -> raise (CannotApply "unit")
-                    |LVide -> raise (CannotApply "lvide")
-                    |TSum(_,_) -> raise (CannotApply "tsum")
-                    |Cartesian x -> raise (CannotApply ("cartesian: " ^ (string_of_value (Cartesian x))))
-                    |Listing(_,_) -> raise (CannotApply "a list")
-                    |Bool _ -> raise (CannotApply "a boolean")
+  and evalapp e1 e2  env =
+
+  match (eval e2 env) with
+  |Exn x -> Exn x
+  |v_e2 ->
+  begin
+      match  eval e1 env with
+                        |Exn x -> Exn x
+                        |Fonction((_, Identifier ("_", _)), expr, fenv) ->  eval expr fenv
+                        |Fonction(argument, expr, fenv) ->  eval expr (unification argument v_e2 fenv) (*on remplace le xpar la valeur d'appel*)
+                        |Rec(nom, arg, fexpr, fenv) -> let recenv = Environnement.add nom (Rec(nom, arg, fexpr, fenv)) fenv in  eval fexpr (unification arg v_e2 recenv)
+                        |Int k -> raise (CannotApply "integer")
+                        |Reference(_) -> raise (CannotApply "a reference") (* On râle si on essaie d'appliquer une référence *)
+                        |Unit -> raise (CannotApply "unit")
+                        |LVide -> raise (CannotApply "lvide")
+                        |TSum(_,_) -> raise (CannotApply "tsum")
+                        |Cartesian x -> raise (CannotApply ("cartesian: " ^ (string_of_value (Cartesian x))))
+                        |Listing(_,_) -> raise (CannotApply "a list")
+                        |Bool _ -> raise (CannotApply "a boolean")
+  end
 
 ;;

@@ -13,9 +13,11 @@ doc:
 	mkdir -p ../doc/latex
 	mkdir -p ../doc/html
 	ocamldoc -html -I _build/ *.ml -d ../doc/html/ -charset utf8
+	ln -sf ../doc/html/index.html ../doc/index.html
 	ocamldoc -latex -I _build/ *.ml -o ../doc/latex/fouine_documentation.out 
 	sed -i 's/latin1/utf8/' ../doc/latex/fouine_documentation.out
-	pdflatex -interaction=nonstopmode -output-directory ../doc/latex/ ../doc/latex/fouine_documentation.out > /dev/null
+	pdflatex -interaction=nonstopmode -output-directory ../doc/latex/ ../doc/latex/fouine_documentation.out > /dev/null	
+	ln -sf ../doc/latex/fouine_documentation.pdf ../doc/fouine_documentation.pdf
 	
 byte:
 	ocamlbuild -yaccflag -v main.byte
@@ -27,4 +29,5 @@ clean:
 	rm -r -d ../bin/
 	rm -r -d ../doc/latex
 	rm -r -d ../doc/html
-	
+	rm ../doc/fouine_documentation.pdf
+	rm ../doc/index.html
