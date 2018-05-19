@@ -10,7 +10,6 @@ exec:
 
 	
 doc:
-	mkdir -p ../doc
 	mkdir -p ../doc/latex
 	mkdir -p ../doc/html
 	ocamldoc -html -I _build/ *.ml -d ../doc/html/
@@ -26,5 +25,6 @@ byte:
 clean:
 	ocamlbuild -clean
 	rm -r -d ../bin/
-	rm -r -d ../doc
+	rm -r -d ../doc/latex
+	rm -r -d ../doc/html
 	

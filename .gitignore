@@ -77,3 +77,8 @@ flycheck_*.el
 
 # directory configuration
 .dir-locals.el
+
+# Generated doc
+
+/doc/latex/*
+/doc/html/*
