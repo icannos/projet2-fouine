@@ -15,7 +15,15 @@ do
 
 		# On pipe les sorties des deux exécutions sur le diff
 		# On ajoute à la volée la définition de prInt pour qu' OCaml ne râle pas
-		$fouinepath -R $tests_dir/$test 
+				output=$(diff <($fouinepath $tests_dir/$test ) <( $fouinepath -R $tests_dir/$test ))
+
+		# on affiche ok s'il n'y a pas de problèmes, sinon on affiche la sortie du diff.
+		if [[ -z ${output//} ]]
+		then
+			echo -e "Ok."
+		else
+			echo -e $output
+		fi
 
 
 
