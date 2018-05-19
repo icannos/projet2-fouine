@@ -58,9 +58,6 @@ let rec compile ee =
   | Cart(exprlist) -> [Couple (List.map compile exprlist)]
   | _ -> failwith "Something gone wrong with tradmachine.compile."
 
-
-
-
 with x -> error_display node_id x
 
 (** Compile les booléens en stackcode*)
@@ -122,10 +119,10 @@ let rec exec_code c env pile =  match (c, env, pile) with
 
   |(Eq::suitec, _, u::v::q)-> exec_code suitec env ((B (u=v))::q)
   |(Neq::suitec, _, u::v::q)-> exec_code suitec env ((B (u<>v))::q)
-  |(Lt::suitec, _, u::v::q)-> exec_code suitec env ((B (u<v))::q)
-  |(Gt::suitec, _, u::v::q)-> exec_code suitec env ((B (u>v))::q)
-  |(Le::suitec, _, u::v::q)-> exec_code suitec env ((B (u<=v))::q)
-  |(Ge::suitec, _, u::v::q)-> exec_code suitec env ((B (u>=v))::q)
+  |(Lt::suitec, _, u::v::q)-> exec_code suitec env ((B (u>v))::q)
+  |(Gt::suitec, _, u::v::q)-> exec_code suitec env ((B (u<v))::q)
+  |(Le::suitec, _, u::v::q)-> exec_code suitec env ((B (u>=v))::q)
+  |(Ge::suitec, _, u::v::q)-> exec_code suitec env ((B (u<=v))::q)
 
   |(IfThenElse(e1, e2)::suitec, _, u::q) ->
   begin
