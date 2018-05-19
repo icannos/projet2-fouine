@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Composantmachine.html">
+<link rel="next" href="Display.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Affichage" rel="Chapter" href="Affichage.html">
+<link title="Arguments" rel="Chapter" href="Arguments.html">
+<link title="Composantmachine" rel="Chapter" href="Composantmachine.html">
+<link title="Constructeur" rel="Chapter" href="Constructeur.html">
+<link title="Display" rel="Chapter" href="Display.html">
+<link title="Env" rel="Chapter" href="Env.html">
+<link title="Errmgr" rel="Chapter" href="Errmgr.html">
+<link title="Eval" rel="Chapter" href="Eval.html">
+<link title="Expr" rel="Chapter" href="Expr.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Memfonc" rel="Chapter" href="Memfonc.html">
+<link title="Memmachine" rel="Chapter" href="Memmachine.html">
+<link title="Memory" rel="Chapter" href="Memory.html">
+<link title="Safe" rel="Chapter" href="Safe.html">
+<link title="Showmachine" rel="Chapter" href="Showmachine.html">
+<link title="Tradcont" rel="Chapter" href="Tradcont.html">
+<link title="Tradimp" rel="Chapter" href="Tradimp.html">
+<link title="Tradmachine" rel="Chapter" href="Tradmachine.html">
+<link title="Typechecking" rel="Chapter" href="Typechecking.html"><title>Constructeur</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Composantmachine.html" title="Composantmachine">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Display.html" title="Display">Next</a>
+</div>
+<h1>Module <a href="type_Constructeur.html">Constructeur</a></h1>
+
+<pre><span id="MODULEConstructeur"><span class="keyword">module</span> Constructeur</span>: <code class="code">sig</code> <a href="Constructeur.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Définit l'ensemble des méta constructeurs utiles pour écrire proprement les transformations de programme</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="VALmkApp"><span class="keyword">val</span> mkApp</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkAppxy"><span class="keyword">val</span> mkAppxy</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkAppxyz"><span class="keyword">val</span> mkAppxyz</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -><br>       <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkFun"><span class="keyword">val</span> mkFun</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkFunxy"><span class="keyword">val</span> mkFunxy</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkLet"><span class="keyword">val</span> mkLet</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkLetPair"><span class="keyword">val</span> mkLetPair</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> * <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -><br>       <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkLetRec"><span class="keyword">val</span> mkLetRec</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkIdentifier"><span class="keyword">val</span> mkIdentifier</span> : <code class="type"><a href="Expr.html#TYPEname">Expr.name</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkPair"><span class="keyword">val</span> mkPair</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> * <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkAdd"><span class="keyword">val</span> mkAdd</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkMul"><span class="keyword">val</span> mkMul</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkDiv"><span class="keyword">val</span> mkDiv</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkSou"><span class="keyword">val</span> mkSou</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkConst"><span class="keyword">val</span> mkConst</span> : <code class="type">int -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkCart"><span class="keyword">val</span> mkCart</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> list -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkConstr"><span class="keyword">val</span> mkConstr</span> : <code class="type"><a href="Expr.html#TYPEname">Expr.name</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> list -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkMatch"><span class="keyword">val</span> mkMatch</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> list -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkPattCase"><span class="keyword">val</span> mkPattCase</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkPrintInt"><span class="keyword">val</span> mkPrintInt</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkCond"><span class="keyword">val</span> mkCond</span> : <code class="type"><a href="Expr.html#TYPEbextexpr">Expr.bextexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkBool"><span class="keyword">val</span> mkBool</span> : <code class="type"><a href="Expr.html#TYPEexpr">Expr.expr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEbexpr">Expr.bexpr</a></code></pre>
+<pre><span id="VALmkLVide"><span class="keyword">val</span> mkLVide</span> : <code class="type">unit -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkListe"><span class="keyword">val</span> mkListe</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkUnit"><span class="keyword">val</span> mkUnit</span> : <code class="type">unit -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkRef"><span class="keyword">val</span> mkRef</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkAcc"><span class="keyword">val</span> mkAcc</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkAff"><span class="keyword">val</span> mkAff</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkmodify"><span class="keyword">val</span> mkmodify</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkallocate"><span class="keyword">val</span> mkallocate</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkread"><span class="keyword">val</span> mkread</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkConstr"><span class="keyword">val</span> mkConstr</span> : <code class="type"><a href="Expr.html#TYPEname">Expr.name</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> list -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkPattCase"><span class="keyword">val</span> mkPattCase</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkTry"><span class="keyword">val</span> mkTry</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkExep"><span class="keyword">val</span> mkExep</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> list -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre>
+<pre><span id="VALmkRaise"><span class="keyword">val</span> mkRaise</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> int * <a href="Expr.html#TYPEexpr">Expr.expr</a></code></pre></body></html>

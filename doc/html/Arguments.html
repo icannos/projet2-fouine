@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Affichage.html">
+<link rel="next" href="Composantmachine.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Affichage" rel="Chapter" href="Affichage.html">
+<link title="Arguments" rel="Chapter" href="Arguments.html">
+<link title="Composantmachine" rel="Chapter" href="Composantmachine.html">
+<link title="Constructeur" rel="Chapter" href="Constructeur.html">
+<link title="Display" rel="Chapter" href="Display.html">
+<link title="Env" rel="Chapter" href="Env.html">
+<link title="Errmgr" rel="Chapter" href="Errmgr.html">
+<link title="Eval" rel="Chapter" href="Eval.html">
+<link title="Expr" rel="Chapter" href="Expr.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Memfonc" rel="Chapter" href="Memfonc.html">
+<link title="Memmachine" rel="Chapter" href="Memmachine.html">
+<link title="Memory" rel="Chapter" href="Memory.html">
+<link title="Safe" rel="Chapter" href="Safe.html">
+<link title="Showmachine" rel="Chapter" href="Showmachine.html">
+<link title="Tradcont" rel="Chapter" href="Tradcont.html">
+<link title="Tradimp" rel="Chapter" href="Tradimp.html">
+<link title="Tradmachine" rel="Chapter" href="Tradmachine.html">
+<link title="Typechecking" rel="Chapter" href="Typechecking.html"><title>Arguments</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Affichage.html" title="Affichage">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Composantmachine.html" title="Composantmachine">Next</a>
+</div>
+<h1>Module <a href="type_Arguments.html">Arguments</a></h1>
+
+<pre><span id="MODULEArguments"><span class="keyword">module</span> Arguments</span>: <code class="code">sig</code> <a href="Arguments.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Gère l'ensemble des arguments pouvant être passés en ligne de commande à fouine</p>
+</div>
+</div>
+<hr width="100%">
+<p>Modes de débuggages</p>
+
+<pre><span id="VALdebugmode"><span class="keyword">val</span> debugmode</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALverbosemode"><span class="keyword">val</span> verbosemode</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALmem_mode"><span class="keyword">val</span> mem_mode</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALtradimp"><span class="keyword">val</span> tradimp</span> : <code class="type">bool Pervasives.ref</code></pre><div class="info ">
+<div class="info-desc">
+<p>Modes de traduction</p>
+</div>
+</div>
+
+<pre><span id="VALtradexcep"><span class="keyword">val</span> tradexcep</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALimpexcep"><span class="keyword">val</span> impexcep</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALexcepimp"><span class="keyword">val</span> excepimp</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALoutcode"><span class="keyword">val</span> outcode</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALstackcode"><span class="keyword">val</span> stackcode</span> : <code class="type">bool Pervasives.ref</code></pre><div class="info ">
+<div class="info-desc">
+<p>pour la compilation</p>
+</div>
+</div>
+
+<pre><span id="VALmachine"><span class="keyword">val</span> machine</span> : <code class="type">bool Pervasives.ref</code></pre><p>typechecking</p>
+
+<pre><span id="VALtypecheckingmode"><span class="keyword">val</span> typecheckingmode</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALdisplaytype"><span class="keyword">val</span> displaytype</span> : <code class="type">bool Pervasives.ref</code></pre>
+<pre><span id="VALmem_file"><span class="keyword">val</span> mem_file</span> : <code class="type">string Pervasives.ref</code></pre><div class="info ">
+<div class="info-desc">
+<p>Fichier contenant les fonctions de mémoire</p>
+</div>
+</div>
+
+<pre><span id="VALsrcfile"><span class="keyword">val</span> srcfile</span> : <code class="type">string Pervasives.ref</code></pre>
+<pre><span id="VALread_all"><span class="keyword">val</span> read_all</span> : <code class="type">Pervasives.in_channel -> string</code></pre><div class="info ">
+<div class="info-desc">
+<p>Lit un in_channel entier jusqu'à tomber sur End_of_file</p>
+</div>
+</div>
+<p>Lit spécifiquement un fichier</p>
+
+<pre><span id="VALread_file"><span class="keyword">val</span> read_file</span> : <code class="type">string -> string</code></pre>
+<pre><span id="VALgetsrcfile"><span class="keyword">val</span> getsrcfile</span> : <code class="type">string -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Lit le fichier source passé en argument anonyme et le copie sous forme de string dans srcfile</p>
+</div>
+</div>
+
+<pre><span id="VALset_mem"><span class="keyword">val</span> set_mem</span> : <code class="type">string -> unit</code></pre>
+<pre><span id="VALoptlist"><span class="keyword">val</span> optlist</span> : <code class="type">(string * Arg.spec * string) list</code></pre><div class="info ">
+<div class="info-desc">
+<p>Ensemble des arguments possibles</p>
+</div>
+</div>
+
+<pre><span id="VALusage"><span class="keyword">val</span> usage</span> : <code class="type">string</code></pre><div class="info ">
+<div class="info-desc">
+<p>Message de doc</p>
+</div>
+</div>
+</body></html>

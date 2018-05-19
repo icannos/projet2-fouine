@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="next" href="Arguments.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Affichage" rel="Chapter" href="Affichage.html">
+<link title="Arguments" rel="Chapter" href="Arguments.html">
+<link title="Composantmachine" rel="Chapter" href="Composantmachine.html">
+<link title="Constructeur" rel="Chapter" href="Constructeur.html">
+<link title="Display" rel="Chapter" href="Display.html">
+<link title="Env" rel="Chapter" href="Env.html">
+<link title="Errmgr" rel="Chapter" href="Errmgr.html">
+<link title="Eval" rel="Chapter" href="Eval.html">
+<link title="Expr" rel="Chapter" href="Expr.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Memfonc" rel="Chapter" href="Memfonc.html">
+<link title="Memmachine" rel="Chapter" href="Memmachine.html">
+<link title="Memory" rel="Chapter" href="Memory.html">
+<link title="Safe" rel="Chapter" href="Safe.html">
+<link title="Showmachine" rel="Chapter" href="Showmachine.html">
+<link title="Tradcont" rel="Chapter" href="Tradcont.html">
+<link title="Tradimp" rel="Chapter" href="Tradimp.html">
+<link title="Tradmachine" rel="Chapter" href="Tradmachine.html">
+<link title="Typechecking" rel="Chapter" href="Typechecking.html"><title>Affichage</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Arguments.html" title="Arguments">Next</a>
+</div>
+<h1>Module <a href="type_Affichage.html">Affichage</a></h1>
+
+<pre><span id="MODULEAffichage"><span class="keyword">module</span> Affichage</span>: <code class="code">sig</code> <a href="Affichage.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Ce module gère l'affichage des composantes du noyau de fouine</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><span id="VALstring_of_identifier"><span class="keyword">val</span> string_of_identifier</span> : <code class="type">'a -> 'a</code></pre>
+<pre><span id="VALstring_of_expr"><span class="keyword">val</span> string_of_expr</span> : <code class="type">int -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEname">Expr.name</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>string_of_expr prend en entrée une expression et retourne  un code executable en Caml</p>
+</div>
+</div>
+
+<pre><span id="VALaff_bexpr"><span class="keyword">val</span> aff_bexpr</span> : <code class="type">int -> <a href="Expr.html#TYPEbextexpr">Expr.bextexpr</a> -> <a href="Expr.html#TYPEname">Expr.name</a></code></pre>
+<pre><span id="VALstring_of_expr_bin"><span class="keyword">val</span> string_of_expr_bin</span> : <code class="type">int -> string -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEname">Expr.name</a></code></pre>
+<pre><span id="VAListring_of_expr"><span class="keyword">val</span> istring_of_expr</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> string</code></pre><div class="info ">
+<div class="info-desc">
+<p>Convertit un arbre de syntaxe en une chaîne de caractère de code caml</p>
+</div>
+</div>
+
+<pre><span id="VAListring_of_bexpr"><span class="keyword">val</span> istring_of_bexpr</span> : <code class="type"><a href="Expr.html#TYPEbextexpr">Expr.bextexpr</a> -> string</code></pre>
+<pre><span id="VAListring_aux"><span class="keyword">val</span> istring_aux</span> : <code class="type">string -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> <a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> string</code></pre>
+<pre><span id="VALstring_of_value"><span class="keyword">val</span> string_of_value</span> : <code class="type"><a href="Env.html#TYPEvalue">Env.value</a> -> string</code></pre><div class="info ">
+<div class="info-desc">
+<p>Convertit une valeur interne en texte lisible</p>
+</div>
+</div>
+
+<pre><span id="VALprint_value"><span class="keyword">val</span> print_value</span> : <code class="type"><a href="Env.html#TYPEvalue">Env.value</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Affiche une valeur interne</p>
+</div>
+</div>
+
+<pre><span id="VALpenv_item"><span class="keyword">val</span> penv_item</span> : <code class="type">string -> <a href="Env.html#TYPEvalue">Env.value</a> -> unit</code></pre>
+<pre><span id="VALprint_env"><span class="keyword">val</span> print_env</span> : <code class="type"><a href="Env.html#TYPEvalue">Env.value</a> Env.Environnement.t -> unit</code></pre>
+<pre><span id="VALdebug"><span class="keyword">val</span> debug</span> : <code class="type">'a -> <a href="Env.html#TYPEvalue">Env.value</a> Env.Environnement.t -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>Cette fonction générique est appelée au début de la fonction d'évaluation,
+elle permet de rendre modulaire l'affichage du débug</p>
+</div>
+</div>
+
+<pre><span id="VALaff_expr"><span class="keyword">val</span> aff_expr</span> : <code class="type"><a href="Expr.html#TYPEextexpr">Expr.extexpr</a> -> unit</code></pre></body></html>

@@ -19,7 +19,7 @@ let int_to_letters n = let num = n/26 in
 (** Construit un nouveau type polymorphique libre *)
 let new_free_type () =
 free_type_counter:= 1+ !free_type_counter;
-("'" ^ (string_of_int !free_type_counter))
+(int_to_letters !free_type_counter)
 ;;
 
 (** Module utilisé pour stocker l'envi des types *)
@@ -52,18 +52,25 @@ let rec string_of_ftype type_list = function
 |Unit_f -> "unit"
 ;;
 
-(** Affiche l'environnement complet *)
+(** Affiche un élément de l'environnement *)
 let print_envtype type_list k t = ps (k ^ ": " ^ (string_of_ftype type_list t) ^" ");;
+
+(** Affiche l'environnement complet *)
+let print_env_t type_list env = EnvType.iter (print_envtype type_list) env; ps "\n";;
 
 (** On stocke les types définis par l'utilisateur *)
 type type_list_t = f_type EnvType.t;;
 
-(** Utilitaire pour mettre à jour le type d'une variable, utilisée dans l'union
-de l'union find*)
-let updatevar env x v = env := EnvType.add x v !env;;
+
+
 (** Utilitaire pour lire les types dans l'environnement*)
 let getvartype env x = try EnvType.find x !env
-        with _ -> env := (EnvType.add x (TypeOf(x)) (!env)); TypeOf x
+        with Not_found ->
+        (let ptype = new_free_type () in
+        env := (EnvType.add x (TypeOf(ptype)) (!env));
+        env := (EnvType.add ptype (TypeOf(ptype)) (!env));
+
+        TypeOf x)
 ;;
 
 (** Le find de l'union find *)
@@ -73,6 +80,9 @@ let rec parent_t env x = match getvartype env x with
   | x -> x
 ;;
 
+(** Utilitaire pour mettre à jour le type d'une variable, utilisée dans l'union
+de l'union find*)
+let updatevar env x v = env := EnvType.add x v !env;;
 
 
 (** Récupère les types des variables pour les sauvergarder lorsqu'on les écrase*)
@@ -99,7 +109,7 @@ let rec type_arg env = function
 |List_f t ->List_f (type_arg env t)
 |Cart_f l -> Cart_f (List.map (type_arg env) l)
 |UserType s -> UserType s
-|TypeOf s when EnvType.mem s !env -> getvartype env s
+|TypeOf s when EnvType.mem s !env -> parent_t env s
 |Ref_f t -> Ref_f (type_arg env t)
 |Unit_f -> Unit_f
 |_ -> failwith "Something gone wrong with Typechecking.type_arg"
@@ -112,7 +122,13 @@ let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : 
   let rec unif e_t1 e_t2 =
     match e_t1, e_t2 with
     |x, y when x = y -> x
-    |TypeOf a, TypeOf b -> updatevar env a (TypeOf a);updatevar env b (TypeOf a); TypeOf a
+    |TypeOf a, TypeOf b ->
+
+    if a < b then
+        (updatevar env a (parent_t env a);updatevar env b ( (parent_t env a)); (parent_t env a))
+    else
+      (updatevar env a ( (parent_t env b));updatevar env b ( (parent_t env b)); (parent_t env b))
+
     |TypeOf a, x |x, TypeOf a -> updatevar env a x;x
     |Fun_f(x1, y1), Fun_f(x2, y2) -> Fun_f(unif x1 x2 , unif y1 y2)
     |Ref_f(x1), Ref_f(x2) -> Ref_f(unif x1 x2)
@@ -135,7 +151,7 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   match e with
   | Uni -> Unit_f, env
   | Const x -> Int_f, env
-  | Identifier (x,_) -> let env = ref env in parent_t env x, !env
+  | Identifier (x,_) -> let env = ref env in (parent_t env x,  !env)
   | Fun(patt, expr) ->
   let env = ref env in
   (* On sauvegarde les variables qui vont être cachées par l'argument de la fonction *)
@@ -181,7 +197,7 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   |TypeOf a, envir -> let (e_t, envir) = infer e env type_list in
                             let env = ref envir in
                             let return_type = TypeOf (new_free_type ()) in
-                            let _ = t_unify (TypeOf a) (Fun_f(e_t, return_type)) env type_list in
+                            let commont_type = t_unify (TypeOf a) (Fun_f(e_t, return_type)) env type_list in
                             (return_type, !env)
 
 
