@@ -86,7 +86,7 @@ Ses composants sont définis dans composantmachine. Nous récupérons l'arbre is
 - Les aspects impératifs sont implémentés de façon très analogue à celle dans fouine
 - Les fonctions récursives sont définies par ClotR(f, x,code,env) Maxime just do that please
 - Les couples sont implémentés.
-- Au niveau de l'affichage : on affiche comme demandé le haut de la pile à la fin et les print en cours d'exécution. Si le haut de la pile est un uplet, on affiche les éléments qui sont des nombres, et NAN sinon.
+- Au niveau de l'affichage : on affiche les print en cours d'exécution. Nous avons laissé en commentaire dans tradmachine la possibilité d'afficher le haut de la pile en fin d'exécution. Si le haut de la pile est un uplet, on affiche les éléments qui sont des nombres, et NAN sinon.
 
 La suite logique, que nous aurions aimé traiter avec plus de temps était de rajouter les indices de Brujin, mais l'extension aux transformations et au couple s'est déjà révélée suffisamment chronophage.
 
