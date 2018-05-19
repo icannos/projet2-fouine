@@ -36,6 +36,7 @@ let rec affiche_slot slot = match slot with
   | Uplet a -> affiche_uplet a
   | Valcouple a -> print_string "Valcouple\n"
   | Amatcher a -> print_string "Amatcher\n"
+  | Presquerien -> print_string "Presquerien\n"
 
 (** Affiche l'environnement complet *)
 let rec affiche_env env = match env with
@@ -57,6 +58,7 @@ let rec joli_code n l s =
   | Div::q -> joli_code n q (s ^ (tab n) ^ "Div \n")
   | (C k)::q -> joli_code n q (s ^ (tab n) ^ "C " ^ (string_of_int k) ^ "\n")
   | (Access x)::q -> joli_code n q (s ^ (tab n) ^ "Access "^ x ^ "\n")
+  | (Let "_")::q -> joli_code n  q (s ^ (tab n) ^ "Let _" ^"\n")
   | (Let x)::q -> joli_code (n+1) q (s ^ (tab n) ^ "Let " ^x ^"\n")
   | Endlet::q -> joli_code (n-1) q (s ^  (tab (n-1)) ^"Endlet \n")
   | Ret::q -> joli_code n q (s ^ (tab n) ^ "Ret \n")

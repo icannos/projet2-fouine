@@ -24,6 +24,7 @@ let rec compile ee =
   | Mul(e1,e2) -> (compile e2)@(compile e1)@[Mul]
   | Sou(e1,e2) -> (compile e2)@(compile e1)@[Sub]
   | Div(e1,e2) -> (compile e2)@(compile e1)@[Div]
+  | Let(((_, Identifier ("_",_)),e1),e2) ->  (compile e1)@[Let "_"]@(compile e2)
   | Let(((_, Identifier (nom,_)),e1),e2) ->  (compile e1)@[Let nom]@(compile e2)@[Endlet]
   | Let(((_, Cart(l)), e1),e2)->
   (compile e1)@[Acoupler (List.map compile l)]@(compile e2)
@@ -77,7 +78,7 @@ and compileb ee =
 
 (** Accède à la valeur associée à la clef x dans l'environnement *)
 let rec val_env env x = match env with
-  | [] -> raise Not_found
+  | [] -> print_string x;  failwith "n'est pas matche"
   | (a,b)::q when a = x -> b
   | _::q -> val_env q x
   ;;
@@ -87,7 +88,7 @@ let rec val_env env x = match env with
 (** Exécute un code écrit en stackcode avec la machine à pile *)
 let rec exec_code c env pile =  match (c, env, pile) with
   | ([], _, (I x)::q) -> () (*print_string "Haut de la pile en fin de calcul : "; print_int x; print_newline () *)
-  | ([], _, (Uplet a)::q) -> () (*print_string "Haut de la pile en fin de calcul : "; affiche_slot (Uplet a) *)
+  | ([], _, (x)::q) -> () (*print_string "Haut de la pile en fin de calcul : "; affiche_slot (x) *)
   | ([],[],[]) -> () (*print_string "Programme terminé sur la pile vide\n"*)
 (*Les exceptions*)
       (*Je les mets au début, car il faut que l'exception soit détectée en priorité*)
@@ -159,7 +160,7 @@ let rec exec_code c env pile =  match (c, env, pile) with
     exec_code suitec env ((Reference addr)::q)
   | (Bang::suitec, _, (Reference addr)::q)-> let v = Memmachine.read_address addr in
     exec_code suitec env (v::q)
-  | (Aff::suitec, _, e::(Reference addr)::q) -> Memmachine.add_memory addr e; exec_code suitec env q
+  | (Aff::suitec, _, e::(Reference addr)::q) -> Memmachine.add_memory addr e; exec_code suitec env (Presquerien::q)
 
 
   (*Les couples*)
