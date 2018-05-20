@@ -62,7 +62,9 @@ Notre langage à pile est défini comme dans le cours, avec les choix suivants p
 - Au niveau de l'affichage : on affiche les print en cours d'exécution.
 En cas de problème au cours de l'exécution, on affiche qu'on a eu un problème, puis on affiche le code restant, les noms des éléments présents dans l'environnement et ce qu'il y a dans la pile. Pour un uplet, on affiche les éléments qui sont des nombres, et NAN sinon.
 
-Voici une description du langage de notre machine:
+Nous avions prévu de réaliser un `lexer` et un `parser` ainsi que de quoi exporter le code pile compilé dans un fichier texte. Mais nous avons manqué de temps.
+
+Voici une description du langage de notre machine (aussi disponible dans le dossier `doc/`):
 
 ```
 type instruction =
