@@ -16,6 +16,8 @@
 
 L'intégralité du projet Fouine est documenté dans le dossier `doc/`. La documentation est générée lors de la compilation du projet et disponible en html et en PDF dans les dossiers correspondants. Toutes les fonctions sont commentées et décrites dans les fichiers sources et donc dans la documentation.
 
+Des versions compilées de notre rapport et de notre présentation se trouvent dans le dossier `pdf/` à la racine du projet.
+
 ## Organisation du projet
 ```
 .

@@ -19,6 +19,8 @@ Le readme global est dans le dossier rapport.
 
 Exécuter la commande make à la racine du projet aura pour effet de compiler la présentation, le rapport, fouine ainsi que la documentation.
 
+(Au cas où la compilation des documents tex ne fonctionnent pas correctement, nos 2 pdf sont présentés dans le dossier pdf à la racine du projet. Les versions produites par le make seront elles sauvegardées dans le dossier rapport.) De plus le dossier `pdf` n'est pas affecté par un `clean`.
+
 * A la racine:
   * `make` génère le rapport, la présentation ainsi que fouine et sa documentation
     - `make fouine` (exécute `make` dans le dossier `src/`)
@@ -30,11 +32,11 @@ Exécuter la commande make à la racine du projet aura pour effet de compiler la
     - `make doc`
   * `make clean` supprime la documentation et l'exécutable
 
-
-
 ## Documentation
 
 La documentation se trouve dans le dossier doc. Quelques informations complémentaires écrites à la main sont présentes ainsi que la documentation générée par ocamldoc lors de la compilation.
+
+Des versions compilées de notre rapport et de notre présentation se trouvent dans le dossier `pdf/` à la racine du projet.
 
 ## Remarques -- rendu 4
 
@@ -99,7 +101,7 @@ type instruction =
 
 ## L'inférence de type
 
-Nous gérons l'inférence de type dans le fichier `typechecking.ml`. L'inférence de type correspond à un union find pour déterminer les classes d'équivalences des différentes variables et à un algorithme d'unification qui essaie de déterminer si deux éléments peuvent avoir le même type.
+Nous gérons l'inférence de type dans le fichier `typechecking.ml`. Tous les cas traités sont décrits et commentés dans le fichier source. L'inférence de type correspond à un union find pour déterminer les classes d'équivalences des différentes variables et à un algorithme d'unification qui essaie de déterminer si deux éléments peuvent avoir le même type.
 
 Nous avons implémenté ces aspects à partir d'une fonction `infer` qui renvoie le type de l'expression considérée ainsi qu'un environnement contenant les assignations de types aux différentes variables. Une seconde fonction `t_unify` tente d'unifier 2 types qui lui sont passés en argument. Si elle réussit, elle retourne le type convenant aux 2 sinon elle explose et engendre une erreur rattrapée par le gestionnaire d'erreur qui peut alors afficher la ligne / caractères qui posent problème ainsi que les 2 types qui ne sont pas cohérents.
 
