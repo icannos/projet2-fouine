@@ -53,6 +53,8 @@ La structure d'union find est implémentée en utilisant un constructeur de type
 
 Nous gérons une forme simple du polymorphisme ainsi que le typage de certains des bonus précédemment réalisés comme les listes ou les n-uplets.
 
+L'option `-disptype` affiche le type de sortie d'un programme (et vérifie la cohérence de ses types sans l'exécuter). Quant à l'option `-typecheck` elle provoque la vérification des types, sans afficher le type de sortie puis exécute le programme si on a pas explosé avant à cause d'une erreur de typage.
+
 
 
 ## Remarques
