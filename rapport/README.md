@@ -27,6 +27,8 @@ Des versions compilées de notre rapport et de notre présentation se trouvent d
 │   ├── rapport.pdf
 │   └── README.md
 ├── README.md
+├── doc Contient la documentation de notre projet
+├── pdf Contient les versions compilées de notre rapport et de notre présentation
 ├── src
 │   ├── affichage.ml : gère l'affichage de fouine.
 │   ├── arguments.ml : gère l'ensemble des arguments que l'on peut passer à fouine
