@@ -5,4 +5,4 @@ let rec ackermann m = fun n ->
                                  else if n > 0 then ackermann (m-1) (ackermann m (n-1))
                                  else 0
                                else 0
-    in ackermann 5 3
+    in prInt (ackermann 2 3)

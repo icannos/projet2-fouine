@@ -66,7 +66,9 @@ let interpreter () =
 
     if(!displaytype) then(
     let (t, env) = infer ast (EnvType.empty) (EnvType.empty) in
-    print_string ((string_of_ftype EnvType.empty t) ^ "\n"));
+    print_string ("Type de sortie: " ^ (string_of_ftype EnvType.empty t) ^ "\n"));
+
+    (if(!typecheckingmode) then (let _ = infer ast (EnvType.empty) (EnvType.empty) in ()));
 
     if !stackcode then (affiche_code (compile ast));
     if !machine then (execution (compile ast));

@@ -71,7 +71,7 @@ let optlist =
     ("-outcode", Arg.Set outcode, "Affiche le programme traduit à l'écran sans l'exécuter");
 
     ("-disptype", Arg.Set displaytype, "Affiche le type d'une expression sans exécuter le code");
-    ("-typecheck", Arg.Set displaytype, "Active la vérification de type avant l'exécution")
+    ("-typecheck", Arg.Set typecheckingmode, "Active la vérification de type avant l'exécution")
   ]
 ;;
 
