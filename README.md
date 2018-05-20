@@ -90,6 +90,7 @@ type instruction =
 
   (*Les couples*)
   | Ajoutcouple
+  | Acoupler of (instruction list list) (*Pour les couples à gauche d'un let*)
   | Couple of (instruction list list)
 
 ```
