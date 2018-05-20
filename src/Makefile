@@ -26,7 +26,7 @@ byte:
 
 clean:
 	ocamlbuild -clean
-	rm -f -d ../bin/
+	rm -f -r -d ../bin/
 	rm -f ../doc/fouine_documentation.pdf
 	rm -f ../doc/index.html
 	rm -f -r -d ../doc/latex/
