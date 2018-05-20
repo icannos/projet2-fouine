@@ -1,0 +1,19 @@
+Interpreter Fouine -- Edwige Cyffers & Maxime Darrin
+  -debug Active le mode de debuggage
+  --debug Active le mode de debuggage
+  -d Active le mode de debuggage
+  --verbose Active le mode verbose
+  -v Active le mode verbose
+  -m Affiche le dernier environnement connu
+  -R Active la traduction des aspects imperatifs
+  --memory-file Permet de spécifier le fichier dans lequel aller chercher les fonctions de gestion de la mémoire
+  -E Active la traduction en continuation
+  -RE Active la traduction en continuation puis en supprimant les aspects imperatifs
+  -ER Active la traduction des aspects imperatifs suivie de la reecriture en continuations
+  -machine Active l'execution du code compile
+  -stackcode Active l'affichage du code compile
+  -outcode Affiche le programme traduit à l'écran sans l'exécuter
+  -disptype Affiche le type d'une expression sans exécuter le code
+  -typecheck Active la vérification de type avant l'exécution
+  -help  Display this list of options
+  --help  Display this list of options

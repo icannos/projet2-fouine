@@ -19,6 +19,23 @@ Le readme global est dans le dossier rapport.
 
 Exécuter la commande make à la racine du projet aura pour effet de compiler la présentation, le rapport, fouine ainsi que la documentation.
 
+* A la racine:
+  * `make` génère le rapport, la présentation ainsi que fouine et sa documentation
+    - `make fouine` (exécute `make` dans le dossier `src/`)
+    - `make report`
+  * `make clean` supprime la documention, l'exécutable, les fichiers temporaires tex etc...
+* Dans `src/`
+  * `make` compile fouine et sa documentation
+    - `make exec`
+    - `make doc`
+  * `make clean` supprime la documentation et l'exécutable
+
+
+
+## Documentation
+
+La documentation se trouve dans le dossier doc. Quelques informations complémentaires écrites à la main sont présentes ainsi que la documentation générée par ocamldoc lors de la compilation.
+
 ## Remarques -- rendu 4
 
 Nous avons implémenté une machine à pile qui gère les parties de fouine demandées : fonction récursives, aspects impératifs et exceptions et les nuplets. En bonus, nous avons choisi de faire de l'inférence de types.
