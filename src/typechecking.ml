@@ -13,8 +13,8 @@ let intToLetter c =String.make 1 (char_of_int (c + 97));;
 
 (**Renvoie le polymorphisme voulu pour un entier donne ie 0 renvoie a' *)
 let int_to_letters n = let num = n/26 in
-                       if num = 0 then  ((intToLetter n) ^ "'")
-                       else ((intToLetter (n mod 26)) ^ (string_of_int num) ^ "'");;
+                       if num = 0 then  ("'"^(intToLetter n))
+                       else ("'"^(intToLetter (n mod 26)) ^ (string_of_int num));;
 
 (** Construit un nouveau type polymorphique libre *)
 let new_free_type () =
@@ -48,7 +48,7 @@ let rec string_of_ftype type_list = function
 |Cart_f l -> "(" ^ (join " * " (List.map (string_of_ftype type_list) l)) ^ ")"
 |UserType s -> s ^ " (aka "^ string_of_ftype type_list (EnvType.find s type_list) ^ " )"
 |TypeOf s -> s
-|Ref_f t -> "ref " ^ string_of_ftype type_list t
+|Ref_f t -> string_of_ftype type_list t ^ " ref"
 |Unit_f -> "unit"
 ;;
 
@@ -79,6 +79,8 @@ let rec parent_t env x = match getvartype env x with
   | x -> x
 ;;
 
+(** Efface l'ensemble de variables donné en entrée, et renvoie une liste de
+sauvegarde contenant leurs anciennes affectations *)
 let erase_vars env vars =
   let l = ref [] in
     let erase_var k =
@@ -135,6 +137,7 @@ let t_unify (e_t1 : f_type) (e_t2 : f_type) (env : env_type_t ref) (type_list : 
     |x, y when x = y -> x
     |TypeOf a, TypeOf b ->
 
+    (* On utilise le tye polymorphique le moins grand par ordre alphabétique*)
     if a < b then
         let _ = updatevar env a (parent_t env a) in
         let _ = updatevar env b (parent_t env a) in
@@ -211,9 +214,13 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                   let _ = t_unify (Fun_f(e_t, expr_t)) (Fun_f(patt_t, expr_t)) env type_list in
                   (type_arg env expr_t , !env) (* On renvoie le type de retour de la fonction*)
 
+                  (* Dans le cas où l'on applique une variable encore non typée, on sait
+                  que ça doit être une fonction prenant en argument le type de l'expression passée*)
                   |TypeOf a, envir -> let (e_t, envir) = infer e envir type_list in
                             let env = ref envir in
+                            (* On construit son type de retour qui est libre *)
                             let return_type = TypeOf (new_free_type ()) in
+                            (* On fait correspondre le type encore indéfini à une fonction correspondante*)
                             let _ = t_unify (TypeOf a) (Fun_f(e_t, return_type)) env type_list in
                              (return_type, !env)
 
@@ -228,46 +235,85 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let (e1_t, envir) = infer e1 env type_list in
   let env = ref envir in
   (* Efface de l'environnement les variables écrasées par le nouveau binding *)
-  let svars = erase_vars env (getIdentifiersInConstr patt) in
+  let _ = erase_vars env (getIdentifiersInConstr patt) in
 
+  (* Maintenant qu'on sait ce qu'on affecte au pattern, on peut en déterminer le type de tous
+  les identifiers *)
   let (patt_t, envir) = infer patt !env type_list in
 
+  (* Puis on unifie ce type avec le type que l'on cherche à déconstruire*)
+  let env = ref envir in
   let _ = t_unify e1_t patt_t env type_list   in
+
+  (* Ensuite on donne le type de l'expression dans laquelle on a fait l'affectations*)
   let e2_t, envir = infer e2 !env type_list in
-   let env = ref envir in let _ = setback_vars env svars in (e2_t, !env)
+    (e2_t, envir)
 
   | LetRec(((node, Identifier (nom, x)), e1), e2) ->
     let env = ref env in
+    (* On met d'abord à l'abri les variables écrasées par l'affectation de f*)
     let svars = erase_vars env (getIdentifiersInConstr (node, Identifier (nom, x))) in
+    (* Ensuite on constuit le type de l'identifier de la fonction récursive *)
     let (f_t, envir) = infer (node, Identifier (nom, x)) !env type_list in
     let env = ref envir in
+    (* On décide dès lors que f est de type 'a -> 'b, on va s'en servir dans le corps de
+    la fonction *)
     let patt_t = TypeOf (new_free_type ()) and expr_t = TypeOf (new_free_type ()) in
     let _ = t_unify f_t (Fun_f(patt_t, expr_t)) env type_list in
+
+    (* On infère le type du corps (et de toutes les variables qui s'y trouvent,
+    en particulier on précise le type de la fonction récursive elle même)*)
     let (e1_t, envir) = infer e1 !env type_list in
     let env = ref envir in
+
+    (* On essaie alors de faire correspondre f à son affectation réelle*)
     let _ = t_unify f_t e1_t env type_list in
+
+    (* On décide du type de la suite et on remet en place l'ancien environnement*)
     let (e2_t, envir) = infer e2 !env type_list in
     let env = ref envir in setback_vars env svars; (e2_t, !env)
 
-  |Ref(e) ->   let (e_t, envir) = infer e env type_list in (Ref_f e_t, envir)
-  |Acc(e) -> let (e_t, envir) = infer e env type_list in
+  |Ref(e) -> (* On décide le type de e et on dit que ceci est de type type de e ref*)
+  let (e_t, envir) = infer e env type_list in (Ref_f e_t, envir)
+
+  |Acc(e) ->
+      (* On décide le type de e et si c'est pas une référence ou un type libre on explose*)
+      let (e_t, envir) = infer e env type_list in
         begin match e_t with
         |Ref_f t -> (t, envir)
+        |TypeOf s -> (*Si c'est un type libre, on obtient comme info que c'est une référence,
+        sur un type libre*)
+        let env = ref envir in
+        let type_ref = TypeOf(new_free_type ()) in
+        let _ = t_unify (TypeOf s) (Ref_f type_ref) env type_list in (type_ref, !env)
+
+        (* Sinon explose: mais c'est rattrapé par la gestion des erreurs *)
         |x -> raise (TypesDoNotMatch (string_of_ftype type_list x, "'a ref" ))
         end
+
   |Aff(e1, e2) -> let (e1_t, envir) = infer e1 env type_list in
-                  let (e2_t, envir) = infer e2 env type_list in
+                  let (e2_t, envir) = infer e2 envir type_list in
         begin match e1_t with
         |Ref_f t -> let env = ref envir in
         let _ = t_unify t e2_t env type_list in (Unit_f, !env)
+        |TypeOf s -> (*Si c'est un type libre, on obtient comme info que c'est une référence,
+        sur le type de e2*)
+        let env = ref envir in
+        let _ = t_unify (TypeOf s) (Ref_f e2_t) env type_list in (Unit_f, !env)
+
+        (* Sinon on explose *)
         |x -> raise (TypesDoNotMatch
           (string_of_ftype type_list x, string_of_ftype type_list (Ref_f e2_t) ))
         end
 
-  |PrintInt e -> let (e_t, envir) = infer e env type_list in
+  |PrintInt e ->
+  (* On essaie de trovuer le type de e puis de le faire correspondre avec int puisque
+  PrInt prend un entier en argument: c'est un axiome*)
+  let (e_t, envir) = infer e env type_list in
   let env = ref envir in let _ = t_unify e_t Int_f env type_list in
     (Int_f, !env)
 
+    (* On traite toutes les conditions d'un seul coup*)
   |Cond((_, Testeq(e1,e2)), e3, e4)
   |Cond((_,Testneq(e1,e2)), e3, e4)
   |Cond((_,Testlt(e1,e2)), e3, e4)
@@ -279,12 +325,17 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   let env = ref envir in let _ = t_unify e1_t Int_f env type_list in
   let (e2_t, envir) = infer e2 !env type_list in
   let env = ref envir in let _ = t_unify e2_t Int_f env type_list in
+
+  (* On calcule ensuite les types des deux branches*)
   let (e3_t, envir) = infer e3 !env type_list in
   let (e4_t, envir) = infer e4 envir type_list in
   let env = ref envir in
+  (* On essaie de les faire correspondre, si ça correspond pas on explose*)
   let connmon_t = t_unify e4_t e3_t env type_list in (connmon_t, !env)
 
   |Cart l ->
+  (** Fonction utilitaire pour typer chaque composante du couple en ayant les connaissances
+  obtenues en traitant le précédent *)
   let rec typelist env type_list =
       begin function
       |[] -> [], env
@@ -292,20 +343,31 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
                let (ctype, envir) = typelist envir type_list q in
                x_t::ctype, envir
       end in
+      (* On effectue 2 passes ensuite pour ne rien rater *)
       let ctype1, envir = typelist env type_list l in
       let ctype2, envir = typelist envir type_list l in
+      (* On tente d'unifier ces deux passes pour faire toutes les associatiations
+      identifiers - types  *)
       let env = ref envir in let ctype = t_unify (Cart_f ctype2) (Cart_f ctype1) env type_list in
           ctype, !env
 
-  |Vide -> (List_f(TypeOf(new_free_type ())), env)
-  |Liste(e1, e2) -> let (e1_t, envir) = infer e1 env type_list in
+  |Vide -> (List_f(TypeOf(new_free_type ())), env) (* Une liste vide a le type 'a list*)
+  |Liste(e1, e2) ->
+          (* On calcule le type de l'élément de tête *)
+          let (e1_t, envir) = infer e1 env type_list in
+                  (* On calcule le type du reste de la liste *)
                   begin match infer e2 envir type_list with
+                  (* Si c'est une liste liste de type l_t, on essaie de faire correspondre le type du
+                  premier élément avec *)
                   |List_f(l_t), envir -> let env = ref envir in
                     let c_t = t_unify (List_f e1_t) (List_f l_t) env type_list in c_t, !env
                   |TypeOf x, envir ->
+                  (* Si la suite est un type indéfini alors le tout est une liste du type du premier élément*)
                   let env = ref envir in
                   let c_t = t_unify (List_f e1_t) (TypeOf x) env type_list in
                   (c_t, !env)
+
+                  (* Si ça ne peut pas être une liste on explose *)
                   |t, _ -> (raise (TypesDoNotMatch(string_of_ftype type_list (List_f e1_t), string_of_ftype type_list t)))
                   end
 
