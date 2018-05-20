@@ -230,11 +230,11 @@ let rec infer ee (env : env_type_t) (type_list : type_list_t) =
   (* Efface de l'environnement les variables écrasées par le nouveau binding *)
   let svars = erase_vars env (getIdentifiersInConstr patt) in
 
-  let (patt_t, envir) = infer patt envir type_list in
-  let env = ref envir in let _ = t_unify e1_t patt_t env type_list   in
+  let (patt_t, envir) = infer patt !env type_list in
 
+  let _ = t_unify e1_t patt_t env type_list   in
   let e2_t, envir = infer e2 !env type_list in
-  let env = ref envir in setback_vars env svars; (e2_t, !env)
+   let env = ref envir in let _ = setback_vars env svars in (e2_t, !env)
 
   | LetRec(((node, Identifier (nom, x)), e1), e2) ->
     let env = ref env in

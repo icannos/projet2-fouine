@@ -16,7 +16,7 @@ doc:
 	ln -sf ../doc/html/index.html ../doc/index.html
 	ocamldoc -latex -I _build/ *.ml -o ../doc/latex/fouine_documentation.out 
 	sed -i 's/latin1/utf8/' ../doc/latex/fouine_documentation.out
-	pdflatex -interaction=nonstopmode -output-directory ../doc/latex/ ../doc/latex/fouine_documentation.out > /dev/null	
+	- pdflatex -interaction=nonstopmode -output-directory ../doc/latex/ ../doc/latex/fouine_documentation.out > /dev/null	
 	ln -sf ../doc/latex/fouine_documentation.pdf ../doc/fouine_documentation.pdf
 	
 byte:
@@ -26,8 +26,9 @@ byte:
 
 clean:
 	ocamlbuild -clean
-	rm -r -d ../bin/
-	rm -r -d ../doc/latex
-	rm -r -d ../doc/html
-	rm ../doc/fouine_documentation.pdf
-	rm ../doc/index.html
+	rm -f -d ../bin/
+	rm -f ../doc/fouine_documentation.pdf
+	rm -f ../doc/index.html
+	rm -f -r -d ../doc/latex/
+	rm -f -r -d ../doc/html/
+
