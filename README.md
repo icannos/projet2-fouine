@@ -55,18 +55,50 @@ Notre langage à pile est défini comme dans le cours, avec les choix suivants p
 
 - Les fonctions récursives sont définies par ClotR(f, x,code,env) sur la pile. Pour traduire un `let rec` on évalue d'abord le contenu que l'on place sur la pile (qui est une cloture d'une fonction classique), puis la commande `Rec f` construit une clôture récursive à partir de la cloture sur la pile. De plus, de la même manière que dans l'interpreter. Une cloture récursive conserve le nom de la fonction, l'argument, le code et l'état de la pile lors de sa création.
 
-- Les couples sont implémentés de la façon suivante. On distingue les couples lors du let, et ceux utilisé avec des valeurs déjà définies. Dans le premier cas, on construit un Acoupler alors que sinon on définit un simple couple. Le fonctionnement est le suivant : on calcule progressivement toutes les valeurs du n-uplets sur la pile dans des Valcouple, puis quand le n-uplet est terminé on dépile jusqu'au début du couple. Ce fonctionnement ne marchait pas pour les déclarations de forme let (a,b) = (1,2) car il engendrait un Access à une variable qui devait au contraire être déclaré, d'où l'apparition de acoupler. Des solutions plus élégantes et plus efficaces sont sans aucun doute possible, par exemple pour permettre des déclarations enchâsser.
+- Les couples sont implémentés de la façon suivante. On distingue les couples lors du let, et ceux utilisés avec des valeurs déjà définies. Dans le premier cas, on construit un Acoupler alors que sinon on définit un simple couple. Le fonctionnement est le suivant : on calcule progressivement toutes les valeurs du n-uplet sur la pile dans des Valcouple, puis quand le n-uplet est terminé on dépile jusqu'au début du couple. Ce fonctionnement ne marchait pas pour les déclarations de forme let (a,b) = (1,2) car il engendrait un Access à une variable qui devait au contraire être déclaré, d'où l'apparition de acoupler. Des solutions plus élégantes et plus efficaces sont sans aucun doute possibles, par exemple pour permettre des déclarations enchâssées.
 
-- Au niveau de l'affichage : on affiche comme demandé le haut de la pile à la fin et les print en cours d'exécution.
-En cas de problème au cours de l'exécution, on affiche qu'on a eu un problème, puis on affiche le code restant, les noms des éléments présents dans l'environnement et ce qu'il y a dans la pile. Si le haut de la pile est un uplet, on affiche les éléments qui sont des nombres, et NAN sinon.
+- Au niveau de l'affichage : on affiche les print en cours d'exécution.
+En cas de problème au cours de l'exécution, on affiche qu'on a eu un problème, puis on affiche le code restant, les noms des éléments présents dans l'environnement et ce qu'il y a dans la pile. Pour un uplet, on affiche les éléments qui sont des nombres, et NAN sinon.
+
+Voici une description du langage de notre machine: 
+type instruction =
+  | C of int (*Pour les constantes*)
+  | Add  | Mul | Sub | Div
+  | Let of name (*Fidèle aux notations du cours*)
+  | Access of name
+  | Endlet
+  | Clos of name * (instruction list)
+  | Rec of name
+  | Ret
+  | Apply
+  | IfThenElse of (instruction list) * (instruction list)
+  | Eq | Neq  | Lt  | Gt  | Le  | Ge
+  | Print
+
+  (*Les aspects impératifs*)
+  | Ref
+  | Aff
+  | Bang
+
+(*Les exceptions*)
+  | Raise
+  | Beginwith
+  | Endwith
+  | Endexcep
+
+  (*Les couples*)
+  | Ajoutcouple
+  | Couple of (instruction list list)
+
+
 
 ## L'inférence de type
 
 Nous gérons l'inférence de type dans le fichier `typechecking.ml`. L'inférence de type correspond à un union find pour déterminer les classes d'équivalences des différentes variables et à un algorithme d'unification qui essaie de déterminer si deux éléments peuvent avoir le même type.
 
-Nous avons implémenté ces aspects à partir d'une fonction `infer` qui renvoie le type de l'expression considérée ainsi qu'un environnement contenant les assignations de types aux différentes variables. Une seconde fonction `t_unify` tente d'unifier 2 types qui lui sont passés en argument. Si elle réussit, dans ce cas elle retourne le type convenant aux 2 sinon elle explose et engendre une erreur rattrapée par le gestionnaire d'erreur qui peut alors afficher la ligne / caractères qui posent problème ainsi que les 2 types qui ne sont pas cohérents.
+Nous avons implémenté ces aspects à partir d'une fonction `infer` qui renvoie le type de l'expression considérée ainsi qu'un environnement contenant les assignations de types aux différentes variables. Une seconde fonction `t_unify` tente d'unifier 2 types qui lui sont passés en argument. Si elle réussit, elle retourne le type convenant aux 2 sinon elle explose et engendre une erreur rattrapée par le gestionnaire d'erreur qui peut alors afficher la ligne / caractères qui posent problème ainsi que les 2 types qui ne sont pas cohérents.
 
-La structure d'union find est implémentée en utilisant un constructeur de type `TypeOf` pour signifier que l'élément en question a le type de telle variable. Cela correspond à une structure d'abre dont la racine possède un type explicite ou non que l'on assigne à tous les éléments de la classe d'équivalent.
+La structure d'union find est implémentée en utilisant un constructeur de type `TypeOf` pour signifier que l'élément en question a le type de telle variable. Cela correspond à une structure d'arbre dont la racine possède un type explicite ou non que l'on assigne à tous les éléments de la classe d'équivalence.
 
 Nous gérons une forme simple du polymorphisme ainsi que le typage de certains des bonus précédemment réalisés comme les listes ou les n-uplets.
 
@@ -79,7 +111,7 @@ L'option `-disptype` affiche le type de sortie d'un programme (et vérifie la co
 - Nous avons corrigé le bug lié aux retours à la ligne.
 - Nous avons corrigé une partie importante des traductions. Un problème persiste cependant lorsque l'on effectue la traduction -ER car nos fonctions de gestion de la mémoire sont écrites en fouine et ne passent pas la traduction en continuation (question de pattern matching etc...). (Nous n'avions pas vu ce problème lors du rendu précédent)
 - Nous avons aussi effectué un "fix" rapide pour coller aux consignes pour la syntaxe des exceptions: (E x).
-- Les tests sont en cours de réorganisation dans tests. `machine` correspond aux tests de la machine à pile, `manual` aux tests nécessitant une correction manuelle, `simples` les tests pouvant être corrigés par OCaml, `trans_excep` les tests pour la traduction -E et `trans_imp` ceux pour la traduction impérative. Des scripts bash pour chaque dossier sont fournis.
+- Les tests sont dans différents sous-dossiers de tests. `machine` correspond aux tests de la machine à pile, `manual` aux tests nécessitant une correction manuelle, `simples` les tests pouvant être corrigés par OCaml, `trans_excep` les tests pour la traduction -E et `trans_imp` ceux pour la traduction impérative. Des scripts bash pour chaque dossier sont fournis.
 
 
 

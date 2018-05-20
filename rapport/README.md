@@ -66,7 +66,7 @@ L'intégralité du projet Fouine est documenté dans le dossier `doc/`. La docum
 
 Notre interpréteur est à notre connaissance parfaitement fonctionnel. Il comporte des aspects impératifs reposant sur une mémoire sous forme de table de hashage. Nous gérons les exceptions sous la forme demandée, mais aussi dans un cadre plus général d'un constructeur quelconque.
 
-Plus généralement, nous avons traité les couples dans le cas des n-uplets, mais nous imposons les parenthèses autour de ceux-ci. Nous avons fait le matching et les types sommes,ainsi que les listes. L'affichage a été amélioré progressivement.
+Plus généralement, nous avons traité les couples dans le cas des n-uplets, mais nous imposons les parenthèses autour de ceux-ci. Nous avons fait le matching et les types sommes, ainsi que les listes. L'affichage a été amélioré progressivement.
 
 ## Les traductions
 
@@ -87,7 +87,7 @@ Ses composants sont définis dans composantmachine. Nous récupérons l'arbre is
 
 - Pour les exeptions, on ne gère que le cas des (E variable).
 - Les aspects impératifs sont implémentés de façon très analogue à celle dans fouine
-- Les fonctions récursives sont définies par ClotR(f, x,code,env) Maxime just do that please
+- Les fonctions récursives sont définies par ClotR(f, x,code,env) Pour traduire un `let rec` on évalue d'abord le contenu que l'on place sur la pile (qui est une cloture d'une fonction classique), puis la commande `Rec f` construit une clôture récursive à partir de la cloture sur la pile. De plus, de la même manière que dans l'interpréteur. Une clôture récursive conserve le nom de la fonction, l'argument, le code et l'état de la pile lors de sa création.
 - Les couples sont implémentés.
 - Au niveau de l'affichage : on affiche les print en cours d'exécution. Nous avons laissé en commentaire dans tradmachine la possibilité d'afficher le haut de la pile en fin d'exécution. Si le haut de la pile est un uplet, on affiche les éléments qui sont des nombres, et NAN sinon.
 
